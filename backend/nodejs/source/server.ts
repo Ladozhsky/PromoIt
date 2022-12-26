@@ -2,7 +2,7 @@
 import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
-import userRoutes from './routes/user.routes';
+import userRoutes from './routes/campaign.routes';
 
 const router: Express = express();
 
@@ -28,7 +28,7 @@ router.use((req, res, next) => {
 });
 
 /** Routes */
-router.use('/user/', userRoutes.router);
+router.use('/promo/', userRoutes.router);
 
 /** Error handling */
 router.use((req, res, next) => {
