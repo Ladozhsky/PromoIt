@@ -32,6 +32,45 @@ export class SqlHelper {
         });
     }
 
+    public static createNew<T>(errorService: ErrorService, query: string, original: T, ...params: (string | number)[]): Promise<T> {
+        return new Promise<T>((resolve, reject) => {
+            SqlHelper.openConnection(errorService)
+                .then((connection: Connection) => {
+                    const queries: string[] = [query, Queries.SelectIdentity];
+                    const executedQuery: string = queries.join(";");
+                    let executionCounter: number = 0;
+                    connection.query(executedQuery, params, (queryError: Error | undefined, queryResult: T[] | undefined) => {
+                        if (queryError) {
+                            reject(errorService.getError(AppError.QueryError));
+                        }
+                        else {
+                            executionCounter++;
+                            const badQueryError: systemError = errorService.getError(AppError.QueryError);
+
+                            if (executionCounter === queries.length) {
+                                if (queryResult !== undefined) {
+                                    if (queryResult.length === 1) {
+                                        (original as any).id = (queryResult[0] as any).id;
+                                        resolve(original);
+                                    }
+                                    else {
+                                        reject(badQueryError);
+                                    }
+                                }
+                                else {
+                                    reject(badQueryError);
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch((error: systemError) => {
+                    reject(error);
+                })
+        });
+    }
+    
+
 
     private static openConnection(errorService: ErrorService): Promise<Connection> {
         return new Promise<Connection>((resolve, reject) => {

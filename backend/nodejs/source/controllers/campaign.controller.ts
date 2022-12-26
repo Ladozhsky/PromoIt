@@ -4,6 +4,7 @@ import { RequestHelper } from '../helpers/request.helper';
 import { ResponseHelper } from '../helpers/response.helper';
 import { ErrorService } from '../services/error.service';
 import { CampaignService } from '../services/campaign.services';
+import { NON_EXISTENT_ID } from '../constants';
 
 const errorService: ErrorService = new ErrorService();
 const campaignService: CampaignService = new CampaignService(errorService);
@@ -20,4 +21,22 @@ const getCampaigns = async (req: Request, res: Response, next: NextFunction) => 
         });
 };
 
-export default { getCampaigns }
+const addCampaign = async (req: Request, res: Response, next: NextFunction) => {
+    const body: campaign = req.body;
+
+    campaignService.addCampaign({
+        campaign_name: body.campaign_name,
+        hashtag: body.hashtag,
+        description: body.description,
+        user_id: body.user_id,
+        company_id: body.company_id
+    })
+        .then((result: campaign) => {
+            return res.status(200).json(result);
+        })
+        .catch((error: systemError) => {
+            return ResponseHelper.handleError(res, error);
+        });
+};
+
+export default { getCampaigns, addCampaign }
