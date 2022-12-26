@@ -7,7 +7,7 @@ export interface systemError {
 }
 
 export interface campaign {
-    campaign_id: number;
+    //campaign_id: number;
     campaign_name: string;
     hashtag: string;
     description: string;

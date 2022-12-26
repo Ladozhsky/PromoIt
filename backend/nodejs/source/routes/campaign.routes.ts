@@ -4,6 +4,8 @@ import controller from '../controllers/campaign.controller';
 const router = express.Router();
 
 router.get('/campaigns', controller.getCampaigns);
+router.post('/campaigns', controller.addCampaign);
+
 
 
 export default { router };
