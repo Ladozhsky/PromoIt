@@ -2,7 +2,7 @@
 import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
-import userRoutes from './routes/campaign.routes';
+import userRoutes from './routes/company.routes';
 
 const router: Express = express();
 
