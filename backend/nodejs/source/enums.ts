@@ -7,3 +7,9 @@ export enum AppError {
     InputParameterNotSupplied = "NoParameter",
     DeletionConflict = "DeletionConflict"
 }
+
+export enum CompanyType {
+    Owner = "Owner",
+    NPO = "NPO",
+    Business = "Business"
+}
