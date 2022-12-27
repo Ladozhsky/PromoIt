@@ -1,4 +1,4 @@
-import { AppError} from "./enums";
+import { AppError, CompanyType} from "./enums";
 
 export interface systemError {
     key: AppError;
@@ -7,10 +7,16 @@ export interface systemError {
 }
 
 export interface campaign {
-    //campaign_id: number;
     campaign_name: string;
     hashtag: string;
     description: string;
     user_id: number;
     company_id: number;
+}
+
+export interface company {
+    company_name: string;
+    site: string;
+    email: string;
+    company_type: CompanyType;
 }
