@@ -14,6 +14,8 @@ interface localCampaign {
 
 interface ICampaignService {
   getCampaigns(): Promise<campaign[]>;
+  getCampaignsByUserId(userId: number): Promise<campaign[]>;
+  addCampaign(campaign: campaign): Promise<campaign>
 }
 
 export class CampaignService implements ICampaignService {
@@ -30,6 +32,28 @@ export class CampaignService implements ICampaignService {
       SqlHelper.executeQueryArrayResult<localCampaign>(
         this._errorService,
         Queries.Campaigns
+      )
+        .then((queryResult: localCampaign[]) => {
+          queryResult.forEach((campaign: localCampaign) => {
+            result.push(this.parseLocalCampaign(campaign));
+          });
+
+          resolve(result);
+        })
+        .catch((error: systemError) => {
+          reject(error);
+        });
+    });
+  }
+
+  public getCampaignsByUserId(userId: number): Promise<campaign[]> {
+    return new Promise<campaign[]>((resolve, reject) => {
+      const result: campaign[] = [];
+
+      SqlHelper.executeQueryArrayResult<localCampaign>(
+        this._errorService,
+        Queries.CampaignsByUserId,
+        userId
       )
         .then((queryResult: localCampaign[]) => {
           queryResult.forEach((campaign: localCampaign) => {

@@ -21,6 +21,27 @@ const getCampaigns = async (req: Request, res: Response, next: NextFunction) => 
         });
 };
 
+const getCampaignsByUserId = async (req: Request, res: Response, next: NextFunction) => {
+    const numericParamOrError: number | systemError = RequestHelper.ParseNumericInput(errorService, req.params.id)
+    if (typeof numericParamOrError === "number") {
+        if (numericParamOrError > 0) {
+            campaignService.getCampaignsByUserId(numericParamOrError)
+                .then((result: campaign[]) => {
+                    return res.status(200).json(result);
+                })
+                .catch((error: systemError) => {
+                    return ResponseHelper.handleError(res, error);
+                });
+        }
+        else {
+            // TODO: Error handling
+        }
+    }
+    else {
+        return ResponseHelper.handleError(res, numericParamOrError);
+    }
+};
+
 const addCampaign = async (req: Request, res: Response, next: NextFunction) => {
     const body: campaign = req.body;
 
@@ -39,4 +60,4 @@ const addCampaign = async (req: Request, res: Response, next: NextFunction) => {
         });
 };
 
-export default { getCampaigns, addCampaign }
+export default { getCampaigns, addCampaign, getCampaignsByUserId }

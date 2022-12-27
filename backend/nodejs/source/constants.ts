@@ -3,8 +3,9 @@ export class SqlParameters {
 }
 
 export class Queries {
-    public static Campaigns: string = "SELECT * FROM campaign";
     public static SelectIdentity: string = "SELECT SCOPE_IDENTITY() AS id;";
+    public static Campaigns: string = "SELECT * FROM campaign";
+    public static CampaignsByUserId: string = "SELECT * FROM campaign WHERE user_id = ?";
     public static AddCampaign: string = "INSERT campaign (campaign_name, hashtag, description, user_id, company_id) VALUES (?, ?, ?, ?, ?)";
 
     public static Companies: string = "SELECT * FROM company";
