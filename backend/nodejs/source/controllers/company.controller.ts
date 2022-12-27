@@ -20,21 +20,21 @@ const getCompanies = async (req: Request, res: Response, next: NextFunction) => 
         });
 };
 
-// const addCompany = async (req: Request, res: Response, next: NextFunction) => {
-//     const body: company = req.body;
+const addCompany = async (req: Request, res: Response, next: NextFunction) => {
+    const body: company = req.body;
 
-//     companyService.addCompany({
-//         company_name: body.company_name,
-//         site: body.site,
-//         email: body.email,
-//         company_type: body.company_type
-//     })
-//         .then((result: company) => {
-//             return res.status(200).json(result);
-//         })
-//         .catch((error: systemError) => {
-//             return ResponseHelper.handleError(res, error);
-//         });
-// };
+    companyService.addCompany({
+        company_name: body.company_name,
+        site: body.site,
+        email: body.email,
+        company_type: body.company_type
+    })
+        .then((result: company) => {
+            return res.status(200).json(result);
+        })
+        .catch((error: systemError) => {
+            return ResponseHelper.handleError(res, error);
+        });
+};
 
-export default { getCompanies }
+export default { getCompanies, addCompany }

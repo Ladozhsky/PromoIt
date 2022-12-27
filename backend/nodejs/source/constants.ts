@@ -8,6 +8,8 @@ export class Queries {
     public static AddCampaign: string = "INSERT campaign (campaign_name, hashtag, description, user_id, company_id) VALUES (?, ?, ?, ?, ?)";
 
     public static Companies: string = "SELECT * FROM company";
+    public static AddCompany: string = "INSERT company (company_name, site, email, company_type) VALUES (?, ?, ?, ?)";
+
 
 }
 

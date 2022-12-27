@@ -44,26 +44,25 @@ export class CompanyService implements ICompanyService {
     });
   }
 
-//   public addCampaign(campaign: campaign): Promise<campaign> {
-//     return new Promise<campaign>((resolve, reject) => {
-//       SqlHelper.createNew(
-//         this._errorService,
-//         Queries.AddCampaign,
-//         campaign,
-//         campaign.campaign_name,
-//         campaign.hashtag,
-//         campaign.description,
-//         campaign.user_id,
-//         campaign.company_id
-//       )
-//         .then((result: campaign) => {
-//           resolve(result);
-//         })
-//         .catch((error: systemError) => {
-//           reject(error);
-//         });
-//     });
-//   }
+  public addCompany(company: company): Promise<company> {
+    return new Promise<company>((resolve, reject) => {
+      SqlHelper.createNew(
+        this._errorService,
+        Queries.AddCompany,
+        company,
+        company.company_name,
+        company.site,
+        company.email,
+        company.company_type,
+      )
+        .then((result: company) => {
+          resolve(result);
+        })
+        .catch((error: systemError) => {
+          reject(error);
+        });
+    });
+  }
 
   private parseLocalCompany(local: localCompany): company {
     return {
