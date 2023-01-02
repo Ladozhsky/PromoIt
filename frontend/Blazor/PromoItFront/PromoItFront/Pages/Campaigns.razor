@@ -1,0 +1,44 @@
+﻿
+
+@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Collections.Generic
+
+@inject HttpClient Http
+
+<PageTitle>Campaigns</PageTitle>
+
+<h1>All campaigns</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Hashtag</th>
+            <th>Description</th>
+            <th>Date of create</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var campaign in campaigns)
+        {
+@*            <tr>@campaign.CampaignName</tr>
+            <tr>@campaign.Hashtag</tr>
+            <tr>@campaign.Description</tr>
+            <tr>@campaign.CreateDate</tr>*@
+        }
+    </tbody>
+</table>
+
+@*<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>*@
+
+@code {
+    private List<Campaigns> campaigns;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //campaigns = await Http.GetJsonAsync<List<Campaigns>>("/api/Campaigns");
+    }
+}
