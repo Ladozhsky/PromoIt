@@ -1,0 +1,67 @@
+﻿@page "/campaigns"
+@using PromoItFront.Data
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@inject IHttpClientFactory ClientFactory
+
+<h1>All campaigns</h1>
+
+<table class="table table-hover table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Hashtag</th>
+            <th>Description</th>
+            <th>Date of create</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var campaign in campaigns)
+        {
+            <tr>
+                <td>@campaign.CampaignName</td>
+                <td>@campaign.Hashtag</td>
+                <td>@campaign.Description</td>
+                <td>@campaign.CreateDate.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private IEnumerable<CampaignDto> campaigns = Array.Empty<CampaignDto>();
+    private bool getBranchesError;
+    private bool shouldRender;
+
+    protected override bool ShouldRender() => shouldRender;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get,
+            "http://localhost:15039/api/Campaigns");
+
+        
+            
+            var client = ClientFactory.CreateClient();
+        JsonSerializerOptions jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+
+            campaigns = await JsonSerializer.DeserializeAsync
+                <IEnumerable<CampaignDto>>(responseStream, jsonOptions);
+        }
+        else
+        {
+            getBranchesError = true;
+        }
+
+        shouldRender = true;
+    }
+}
