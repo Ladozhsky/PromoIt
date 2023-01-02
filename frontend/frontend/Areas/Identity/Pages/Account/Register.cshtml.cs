@@ -31,15 +31,13 @@ namespace frontend.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<AppUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly IUserApplicationID<AppUser> _userApplicationID;
 
         public RegisterModel(
             UserManager<AppUser> userManager,
             IUserStore<AppUser> userStore,
             SignInManager<AppUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender,
-            IUserApplicationID<AppUser> userApplicationID
+            IEmailSender emailSender
             )
         {
             _userManager = userManager;
@@ -48,7 +46,6 @@ namespace frontend.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            _userApplicationID = userApplicationID;
         }
 
         /// <summary>
@@ -126,7 +123,7 @@ namespace frontend.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                await _userApplicationID.SetUserApplicationIdAsync(user, Input.ApplicationID, CancellationToken.None);
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
@@ -189,3 +186,4 @@ namespace frontend.Areas.Identity.Pages.Account
         }
     }
 }
+

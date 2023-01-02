@@ -1,0 +1,4 @@
+﻿namespace frontend.Pages.NavMenu
+{
+
+}
