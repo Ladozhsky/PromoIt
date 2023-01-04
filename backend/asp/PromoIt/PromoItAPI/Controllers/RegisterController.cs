@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PromoItAPI.Models;
 using PromoItAPI.ModelsDto;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace PromoItAPI.Controllers
 {
@@ -49,6 +51,16 @@ namespace PromoItAPI.Controllers
                     RoleId = userDto.RoleId,
                     CompanyId = userDto.CompanyId
                 };
+
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(user.Password);
+
+                SHA256 sha256 = SHA256.Create();
+
+                byte[] hash = sha256.ComputeHash(passwordBytes);
+
+                string hashString = Convert.ToBase64String(hash);
+
+                user.Password = hashString;
 
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();

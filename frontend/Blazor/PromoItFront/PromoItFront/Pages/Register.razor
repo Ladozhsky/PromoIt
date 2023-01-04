@@ -38,10 +38,6 @@
         <label for="telnumber">TelNumber</label>
         <input type="telnumber" class="form-control" id="telnumber" @bind="@user.TelNumber" required />
     </div>
-@*    <div class="form-group">
-        <label for="roleid">RoleId</label>
-        <input type="roleid" class="form-control" id="roleid" @bind="@user.RoleId" required />
-    </div>*@
     <div class="form-group">
         <label for="companyid">CompanyId</label>
         <input type="companyid" class="form-control" id="companyid" @bind="@user.CompanyId" />
@@ -86,8 +82,6 @@
             ErrorMessage = ex.Message;
         }
     }
-
-    //private int selectedRole;
 
 
     private List<Role> roles = new List<Role>();
