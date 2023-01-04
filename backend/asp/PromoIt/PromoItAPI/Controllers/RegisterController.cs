@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PromoItAPI.Models;
 using PromoItAPI.ModelsDto;
 
@@ -30,24 +31,34 @@ namespace PromoItAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<UserDto>> Register(UserDto userDto)
+        public async Task<ActionResult<UserDto>> Register(UserDto userDto, string username)
         {
-            var user = new User
+            var existingUser = _context.Users.FirstOrDefault(u => u.UserName == username);
+
+            if (existingUser == null)
             {
-                UserId = userDto.UserId,
-                UserName = userDto.UserName,
-                Password = userDto.Password,
-                Email = userDto.Email,
-                Address = userDto.Address,
-                TelNumber = userDto.TelNumber,
-                RoleId = userDto.RoleId,
-                CompanyId = userDto.CompanyId
-            };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+                User user = new User
+                {
+                    UserId = userDto.UserId,
+                    UserName = userDto.UserName,
+                    Password = userDto.Password,
+                    Email = userDto.Email,
+                    Address = userDto.Address,
+                    TelNumber = userDto.TelNumber,
+                    RoleId = userDto.RoleId,
+                    CompanyId = userDto.CompanyId
+                };
 
-            return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, UserToDTO(user));
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, UserToDTO(user));
+            }
+            else
+            {
+                return BadRequest("User with this username is already exists");
+            }
         }
 
         private static UserDto UserToDTO(User user) =>
