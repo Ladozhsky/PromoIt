@@ -9,7 +9,7 @@
 
 <h3>Choose your role</h3>
 
-<select class="form-select form-select-lg mb-3" @bind="@selectedRole">
+<select class="form-select form-select-lg mb-3" @bind="@user.RoleId">
     @foreach (var role in roles) 
     {
         if (role.RoleId == 1) continue;
@@ -38,10 +38,10 @@
         <label for="telnumber">TelNumber</label>
         <input type="telnumber" class="form-control" id="telnumber" @bind="@user.TelNumber" required />
     </div>
-    <div class="form-group">
+@*    <div class="form-group">
         <label for="roleid">RoleId</label>
         <input type="roleid" class="form-control" id="roleid" @bind="@user.RoleId" required />
-    </div>
+    </div>*@
     <div class="form-group">
         <label for="companyid">CompanyId</label>
         <input type="companyid" class="form-control" id="companyid" @bind="@user.CompanyId" />
@@ -87,7 +87,8 @@
         }
     }
 
-    int selectedRole;
+    //private int selectedRole;
+
 
     private List<Role> roles = new List<Role>();
 
@@ -96,6 +97,7 @@
         HttpClient http = new HttpClient();
 
         roles = await http.GetFromJsonAsync<List<Role>>("http://localhost:15039/api/Roles");
+
     }
 }
 
