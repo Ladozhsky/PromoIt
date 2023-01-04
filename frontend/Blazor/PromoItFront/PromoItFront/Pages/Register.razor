@@ -7,6 +7,16 @@
 
 <h1>Register</h1>
 
+<h3>Choose your role</h3>
+
+<select class="form-select form-select-lg mb-3" @bind="@selectedRole">
+    @foreach (var role in roles) 
+    {
+        if (role.RoleId == 1) continue;
+        <option value="@role.RoleId">@role.RoleName</option>
+    }
+</select>
+
 <form method="post" @onsubmit="@SubmitForm">
     <div class="form-group">
         <label for="username">Username</label>
@@ -75,6 +85,17 @@
         {
             ErrorMessage = ex.Message;
         }
+    }
+
+    int selectedRole;
+
+    private List<Role> roles = new List<Role>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        HttpClient http = new HttpClient();
+
+        roles = await http.GetFromJsonAsync<List<Role>>("http://localhost:15039/api/Roles");
     }
 }
 
