@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using PromoItAPI.Models;
 using PromoItAPI.ModelsDto;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace PromoItAPI.Controllers
 {
@@ -28,7 +30,7 @@ namespace PromoItAPI.Controllers
 
             if (existingUser == null)
             {
-                CreatePasswordHash(request.Password, out string passwordHash, out string passwordSalt);
+                CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
                 user.UserName = request.UserName;
                 user.PasswordHash = passwordHash;
@@ -53,30 +55,38 @@ namespace PromoItAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
-            var users = _context.Users;
             var existingUser = _context.Users.FirstOrDefault(u => u.UserName == request.userName);
 
             if (existingUser == null)
             {
                 return BadRequest("User not found");
             }
+            if (!VerifyPasswordHash(request.password, user.PasswordHash, user.PasswordSalt))
+            {
+                return BadRequest("Wrong password");
+            }
+
             return Ok("Token");
         }
 
-        private void CreatePasswordHash(string password, out string passwordHash, out string passwordSalt)
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
             {
-                passwordSalt = Convert.ToBase64String(hmac.Key);
-                passwordHash = Convert.ToBase64String(hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password)));
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
         }
 
-        private static LoginDto UserDTOtoLoginDTO(UserDto login) =>
-        new LoginDto
+        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
-            userName = login.UserName,
-            password = login.Password
-        };
+            using (var hmac = new HMACSHA512(passwordSalt))
+            {
+
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+
+                return computedHash.SequenceEqual(passwordHash);
+            }
+        }
     }
 }
