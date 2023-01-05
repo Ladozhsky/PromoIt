@@ -198,11 +198,11 @@ namespace PromoItAPI.Models
                     .HasColumnName("email");
 
                 entity.Property(e => e.PasswordHash)
-                    .HasMaxLength(200)
+                    .HasMaxLength(500)
                     .HasColumnName("passwordHash");
 
                 entity.Property(e => e.PasswordSalt)
-                    .HasMaxLength(400)
+                    .HasMaxLength(500)
                     .HasColumnName("passwordSalt");
 
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
