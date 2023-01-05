@@ -22,7 +22,7 @@ namespace PromoItAPI.Models
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Tweet> Tweets { get; set; } = null!;
-        public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<User> Users { get; set; }
 
 		public virtual DbSet<UserBalance> UserBalances { get; set; } = null!;
 
@@ -197,9 +197,13 @@ namespace PromoItAPI.Models
                     .HasMaxLength(50)
                     .HasColumnName("email");
 
-                entity.Property(e => e.Password)
-                    .HasMaxLength(50)
-                    .HasColumnName("password");
+                entity.Property(e => e.PasswordHash)
+                    .HasMaxLength(200)
+                    .HasColumnName("passwordHash");
+
+                entity.Property(e => e.PasswordSalt)
+                    .HasMaxLength(400)
+                    .HasColumnName("passwordSalt");
 
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
 
