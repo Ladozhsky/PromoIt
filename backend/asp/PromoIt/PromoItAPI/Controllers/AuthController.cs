@@ -35,11 +35,10 @@ namespace PromoItAPI.Controllers
 
             if (existingUser == null)
             {
-                CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+                CreatePasswordHash(request.Password);
 
                 user.UserName = request.UserName;
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
+                //user.PasswordHash = passwordHash;
                 user.Email = request.Email;
                 user.Address = request.Address;
                 user.TelNumber = request.TelNumber;
@@ -60,16 +59,20 @@ namespace PromoItAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
-            var existingUser = _context.Users.FirstOrDefault(u => u.UserName == request.userName);
+            var existingUser = _context.Users.SingleOrDefault(u => u.UserName == request.userName && u.PasswordHash == CreatePasswordHash(request.password));
 
             if (existingUser == null)
             {
-                return BadRequest("User not found");
+                return BadRequest("User not found or wrong password");
             }
-            if (!VerifyPasswordHash(request.password, user.PasswordHash, user.PasswordSalt))
-            {
-                return BadRequest("Wrong password");
-            }
+            //if (!VerifyPasswordHash(request.password, user.PasswordHash))
+            //{
+            //    if (user.PasswordHash == null)
+            //    {
+            //        return BadRequest("password hash is null");
+            //    }
+            //    return BadRequest("Wrong password");
+            //}
             //string token = CreateToken(user);
             return Ok("token");
         }
@@ -98,29 +101,40 @@ namespace PromoItAPI.Controllers
         //    return jwt;
         //}
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        private string CreatePasswordHash(string password)
         {
             using (var hmac = new HMACSHA512())
             {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                string passwordHash;
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+
+                SHA256 sha256 = SHA256.Create();
+
+                byte[] hash = sha256.ComputeHash(passwordBytes);
+
+                return passwordHash = Convert.ToBase64String(hash);
             }
         }
 
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        private bool VerifyPasswordHash(string password, string passwordHash)
         {
-            if (passwordSalt == null)
+            if (passwordHash == null)
             {
                 return false;
-                Console.WriteLine("salt is null");
             }
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
 
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            string computedHash;
 
-                return computedHash.SequenceEqual(passwordHash);
-            }
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+
+            SHA256 sha256 = SHA256.Create();
+
+            byte[] hash = sha256.ComputeHash(passwordBytes);
+
+            computedHash = Convert.ToBase64String(hash);
+
+            return computedHash.SequenceEqual(passwordHash);
+      
         }
     }
 }
