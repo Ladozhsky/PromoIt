@@ -35,11 +35,10 @@ namespace PromoItAPI.Controllers
 
             if (existingUser == null)
             {
-                CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+                CreatePasswordHash(request.Password, out string passwordHash);
 
                 user.UserName = request.UserName;
                 user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
                 user.Email = request.Email;
                 user.Address = request.Address;
                 user.TelNumber = request.TelNumber;
@@ -66,61 +65,71 @@ namespace PromoItAPI.Controllers
             {
                 return BadRequest("User not found");
             }
-            if (!VerifyPasswordHash(request.password, existingUser.PasswordHash, existingUser.PasswordSalt))
+            if (!VerifyPasswordHash(request.password, existingUser.PasswordHash))
             {
                 return BadRequest("Wrong password");
             }
-            //string token = CreateToken(user);
-            return Ok("token");
+            string token = CreateToken(existingUser);
+            return Ok(token);
         }
 
-        //private string CreateToken(User user)
-        //{
-        //    List<Claim> claims = new List<Claim>
-        //    {
-        //        new Claim(ClaimTypes.Name, user.UserName),
-        //        new Claim(ClaimTypes.Email, user.Email),
-        //        new Claim("RoleId", user.RoleId.ToString())
-        //    };
+        private string CreateToken(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim("RoleId", user.RoleId.ToString())
+            };
 
-        //    var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-        //        _configuration.GetSection("AppSettings:Token").Value));
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+                _configuration.GetSection("AppSettings:Token").Value));
 
-        //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-        //    var token = new JwtSecurityToken(
-        //        claims: claims,
-        //        expires: DateTime.Now.AddDays(1),
-        //        signingCredentials: creds);
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds);
 
-        //    var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
-        //    return jwt;
-        //}
+            return jwt;
+        }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        private void CreatePasswordHash(string password, out string passwordHash)
         {
             using (var hmac = new HMACSHA512())
             {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+
+                SHA256 sha256 = SHA256.Create();
+
+                byte[] hash = sha256.ComputeHash(passwordBytes);
+
+                passwordHash = Convert.ToBase64String(hash);
             }
         }
 
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        private bool VerifyPasswordHash(string password, string passwordHash)
         {
-            //if (passwordSalt == null)
-            //{
-            //    return false;
-            //    Console.WriteLine("salt is null");
-            //}
-            using (var hmac = new HMACSHA512(passwordSalt))
+            if (passwordHash == null)
             {
-
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-
-                return computedHash.SequenceEqual(passwordHash);
+                return false;
             }
+
+            string computedHash;
+
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+
+            SHA256 sha256 = SHA256.Create();
+
+            byte[] hash = sha256.ComputeHash(passwordBytes);
+
+            computedHash = Convert.ToBase64String(hash);
+
+            return computedHash.SequenceEqual(passwordHash);
+      
         }
     }
 }
