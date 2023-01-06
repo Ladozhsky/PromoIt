@@ -35,10 +35,10 @@ namespace PromoItAPI.Controllers
 
             if (existingUser == null)
             {
-                CreatePasswordHash(request.Password);
+                CreatePasswordHash(request.Password, out string passwordHash);
 
                 user.UserName = request.UserName;
-                //user.PasswordHash = request.passwordHash;
+                user.PasswordHash = passwordHash;
                 user.Email = request.Email;
                 user.Address = request.Address;
                 user.TelNumber = request.TelNumber;
@@ -59,60 +59,55 @@ namespace PromoItAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
-            var existingUser = _context.Users.SingleOrDefault(u => u.UserName == request.userName && u.PasswordHash == CreatePasswordHash(request.password));
+            var existingUser = _context.Users.FirstOrDefault(u => u.UserName == request.userName);
 
             if (existingUser == null)
             {
-                return BadRequest("User not found or wrong password");
+                return BadRequest("User not found");
             }
-            //if (!VerifyPasswordHash(request.password, user.PasswordHash))
-            //{
-            //    if (user.PasswordHash == null)
-            //    {
-            //        return BadRequest("password hash is null");
-            //    }
-            //    return BadRequest("Wrong password");
-            //}
-            //string token = CreateToken(user);
-            return Ok("token");
+            if (!VerifyPasswordHash(request.password, existingUser.PasswordHash))
+            {
+                return BadRequest("Wrong password");
+            }
+            string token = CreateToken(existingUser);
+            return Ok(token);
         }
 
-        //private string CreateToken(User user)
-        //{
-        //    List<Claim> claims = new List<Claim>
-        //    {
-        //        new Claim(ClaimTypes.Name, user.UserName),
-        //        new Claim(ClaimTypes.Email, user.Email),
-        //        new Claim("RoleId", user.RoleId.ToString())
-        //    };
+        private string CreateToken(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim("RoleId", user.RoleId.ToString())
+            };
 
-        //    var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-        //        _configuration.GetSection("AppSettings:Token").Value));
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+                _configuration.GetSection("AppSettings:Token").Value));
 
-        //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-        //    var token = new JwtSecurityToken(
-        //        claims: claims,
-        //        expires: DateTime.Now.AddDays(1),
-        //        signingCredentials: creds);
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds);
 
-        //    var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
-        //    return jwt;
-        //}
+            return jwt;
+        }
 
-        private string CreatePasswordHash(string password)
+        private void CreatePasswordHash(string password, out string passwordHash)
         {
             using (var hmac = new HMACSHA512())
             {
-                string passwordHash;
                 byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
 
                 SHA256 sha256 = SHA256.Create();
 
                 byte[] hash = sha256.ComputeHash(passwordBytes);
 
-                return passwordHash = Convert.ToBase64String(hash);
+                passwordHash = Convert.ToBase64String(hash);
             }
         }
 

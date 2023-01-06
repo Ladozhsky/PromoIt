@@ -16,7 +16,6 @@ namespace PromoItAPI.Models
         public int UserId { get; set; }
         public string UserName { get; set; } = string.Empty;
         public string PasswordHash { get; set; }
-        //public byte[] PasswordSalt { get; set; }
         public string Email { get; set; } = null!;
         public string? Address { get; set; }
         public string TelNumber { get; set; }
