@@ -38,7 +38,7 @@ namespace PromoItAPI.Controllers
                 CreatePasswordHash(request.Password);
 
                 user.UserName = request.UserName;
-                //user.PasswordHash = passwordHash;
+                //user.PasswordHash = request.passwordHash;
                 user.Email = request.Email;
                 user.Address = request.Address;
                 user.TelNumber = request.TelNumber;
