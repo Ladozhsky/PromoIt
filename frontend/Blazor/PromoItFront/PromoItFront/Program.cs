@@ -7,6 +7,7 @@ using PromoItFront.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAuthentication("PromoIt").AddCookie();
 builder.Services.AddAuthenticationCore();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
@@ -26,7 +27,8 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
