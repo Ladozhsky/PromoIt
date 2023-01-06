@@ -60,13 +60,13 @@ namespace PromoItAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
-            var existingUser = _context.Users.FirstOrDefault(u => u.UserName == request.userName);
+            User existingUser = _context.Users.FirstOrDefault(u => u.UserName == request.userName);
 
             if (existingUser == null)
             {
                 return BadRequest("User not found");
             }
-            if (!VerifyPasswordHash(request.password, user.PasswordHash, user.PasswordSalt))
+            if (!VerifyPasswordHash(request.password, existingUser.PasswordHash, existingUser.PasswordSalt))
             {
                 return BadRequest("Wrong password");
             }
@@ -109,11 +109,11 @@ namespace PromoItAPI.Controllers
 
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
-            if (passwordSalt == null)
-            {
-                return false;
-                Console.WriteLine("salt is null");
-            }
+            //if (passwordSalt == null)
+            //{
+            //    return false;
+            //    Console.WriteLine("salt is null");
+            //}
             using (var hmac = new HMACSHA512(passwordSalt))
             {
 
