@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PromoItAPI.Models;
@@ -59,13 +59,15 @@ namespace PromoItAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
-            var existingUser = _context.Users.FirstOrDefault(u => u.UserName == request.userName);
+            User existingUser = _context.Users.FirstOrDefault(u => u.UserName == request.userName);
 
             if (existingUser == null)
             {
                 return BadRequest("User not found");
             }
+
             if (!VerifyPasswordHash(request.password, existingUser.PasswordHash))
+
             {
                 return BadRequest("Wrong password");
             }
@@ -113,10 +115,12 @@ namespace PromoItAPI.Controllers
 
         private bool VerifyPasswordHash(string password, string passwordHash)
         {
+
             if (passwordHash == null)
             {
                 return false;
             }
+
 
             string computedHash;
 
