@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using PromoItAPI.Models;
 using PromoItAPI.ModelsDto;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -13,10 +16,12 @@ namespace PromoItAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly promoitContext _context;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(promoitContext context)
+        public AuthController(promoitContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         public static User user = new User();
@@ -65,9 +70,33 @@ namespace PromoItAPI.Controllers
             {
                 return BadRequest("Wrong password");
             }
-
-            return Ok("Token");
+            //string token = CreateToken(user);
+            return Ok("token");
         }
+
+        //private string CreateToken(User user)
+        //{
+        //    List<Claim> claims = new List<Claim>
+        //    {
+        //        new Claim(ClaimTypes.Name, user.UserName),
+        //        new Claim(ClaimTypes.Email, user.Email),
+        //        new Claim("RoleId", user.RoleId.ToString())
+        //    };
+
+        //    var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+        //        _configuration.GetSection("AppSettings:Token").Value));
+
+        //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+        //    var token = new JwtSecurityToken(
+        //        claims: claims,
+        //        expires: DateTime.Now.AddDays(1),
+        //        signingCredentials: creds);
+
+        //    var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+        //    return jwt;
+        //}
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
@@ -80,6 +109,11 @@ namespace PromoItAPI.Controllers
 
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
+            if (passwordSalt == null)
+            {
+                return false;
+                Console.WriteLine("salt is null");
+            }
             using (var hmac = new HMACSHA512(passwordSalt))
             {
 
