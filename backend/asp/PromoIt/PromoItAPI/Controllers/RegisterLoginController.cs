@@ -41,7 +41,7 @@ namespace PromoItAPI.Controllers
                 Address = model.Address,
                 TelNumber = model.TelNumber,
                 RoleId = model.RoleId,
-                CompanyId = model.CompanyId
+                //CompanyId = model.CompanyId
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
