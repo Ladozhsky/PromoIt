@@ -38,10 +38,6 @@
         <label for="telnumber">TelNumber</label>
         <input type="tel" class="form-control" id="telnumber" placeholder="+972-XXX-XXXX" pattern="+[0-9]{3}-[0-9]{3}-[0-9]{4}" @bind="@user.TelNumber" required />
     </div>
-    <div class="form-group">
-        <label for="companyid">CompanyId</label>
-        <input type="companyid" class="form-control" id="companyid" @bind="@user.CompanyId" />
-    </div>
     <button type="submit" class="btn btn-primary">Register</button>
 </form>
 
@@ -63,7 +59,7 @@
 
             HttpClient client = new HttpClient();
 
-            HttpResponseMessage response = await client.PostAsJsonAsync($"http://localhost:15039/api/Register?username={user.UserName}", user);
+            HttpResponseMessage response = await client.PostAsJsonAsync("http://localhost:15039/api/Auth/register", user);
             if (response.IsSuccessStatusCode)
             {
                 response.EnsureSuccessStatusCode();
