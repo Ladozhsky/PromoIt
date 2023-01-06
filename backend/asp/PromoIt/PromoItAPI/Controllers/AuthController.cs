@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PromoItAPI.Models;
@@ -29,9 +29,9 @@ namespace PromoItAPI.Controllers
 
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(UserDto request, string username)
+        public async Task<ActionResult<UserDto>> Register(UserDto request)
         {
-            var existingUser = _context.Users.FirstOrDefault(u => u.UserName == username);
+            var existingUser = _context.Users.FirstOrDefault(u => u.UserName == request.UserName);
 
             if (existingUser == null)
             {
@@ -43,7 +43,6 @@ namespace PromoItAPI.Controllers
                 user.Address = request.Address;
                 user.TelNumber = request.TelNumber;
                 user.RoleId = request.RoleId;
-                user.CompanyId = request.CompanyId;
 
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
@@ -59,7 +58,7 @@ namespace PromoItAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
-            var existingUser = _context.Users.FirstOrDefault(u => u.UserName == request.userName);
+            User existingUser = _context.Users.FirstOrDefault(u => u.UserName == request.userName);
 
             if (existingUser == null)
             {
