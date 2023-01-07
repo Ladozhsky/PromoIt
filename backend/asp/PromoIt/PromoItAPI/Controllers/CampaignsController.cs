@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,13 +22,14 @@ namespace PromoItAPI.Controllers
             _context = context;
         }
 
-        // GET: api/Campaigns
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<Campaign>>> GetCampaigns()
-        //{
-        //    return await _context.Campaigns.ToListAsync();
-        //}
+		// GET: api/Campaigns
+		//[HttpGet]
+		//public async Task<ActionResult<IEnumerable<Campaign>>> GetCampaigns()
+		//{
+		//    return await _context.Campaigns.ToListAsync();
+		//}
 
+		[Authorize]
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<CampaignDto>>> GetCampaigns()
 		{
