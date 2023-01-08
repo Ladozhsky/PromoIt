@@ -18,10 +18,8 @@ let twitterQuery = `#PromoIt`
 
 async function consumeTweets() {
     const jsTweets = await client.v2.search(
-        `id: 1497659734115057666`, {
+        `#PromoIt from:1606972070222565382`, {
         'tweet.fields': 'public_metrics,author_id',
-        expansions: 'author_id',
-        'user.fields': 'username'
       })
   
     // Consume every possible tweet of jsTweets (until rate limit is hit)
@@ -30,15 +28,4 @@ async function consumeTweets() {
     }
   }
 
-  // async function singleTweet() {
-  //   const single = await client.v2.singleTweet(
-  //       "1610712553553903621", {
-  //       'tweet.fields': 'public_metrics,author_id,entities',
-  //     })
-  
-  //     console.log(single.data.entities?.hashtags[0].tag)
-  //   }
-
-
-    
-  //   singleTweet()
+  consumeTweets()
