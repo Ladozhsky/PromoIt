@@ -46,6 +46,6 @@
     {
         HttpClient http = new HttpClient();
 
-        campaigns = await http.GetFromJsonAsync<List<CampaignDto>>("http://localhost:15039/api/Campaigns");
+        campaigns = await http.GetFromJsonAsync<List<CampaignDto>>("https://localhost:7096/api/Campaigns");
     }
 }
