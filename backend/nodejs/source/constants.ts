@@ -14,5 +14,5 @@ export class Queries {
 
 }
 
-export const DB_CONNECTION_STRING: string = "server=.;Database=promoit;Trusted_Connection=Yes;Driver={ODBC Driver 17 for SQL Server}";
+export const DB_CONNECTION_STRING: string = "server=DESKTOP-MRQ963D\\MSSQLSERVER4;Database=promoit;Trusted_Connection=Yes;Driver={ODBC Driver 17 for SQL Server}";
 export const NON_EXISTENT_ID: number = -1;
