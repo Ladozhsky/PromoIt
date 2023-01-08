@@ -31,5 +31,7 @@ export interface retweet {
 }
 
 export interface twitterUserId {
-    twitterUserId: string;
+    user_id: number;
+    twitter_username: string;
+    twitter_user_id: string;
 }
