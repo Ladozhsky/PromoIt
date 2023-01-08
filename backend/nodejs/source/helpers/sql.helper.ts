@@ -7,7 +7,7 @@ import { ErrorService } from "../services/error.service";
 export class SqlHelper {
     static sql: SqlClient = require("msnodesqlv8");
 
-    public static executeQueryArrayResult<T>(errorService: ErrorService, query: string, ...params: (string | number)[]): Promise<T[]> {
+    public static executeQueryArrayResult<T>(errorService: ErrorService, query: string, ...params: (string | number| Date)[]): Promise<T[]> {
         return new Promise<T[]>((resolve, reject) => {
 
             SqlHelper.openConnection(errorService)
@@ -32,7 +32,7 @@ export class SqlHelper {
         });
     }
 
-    public static createNew<T>(errorService: ErrorService, query: string, original: T, ...params: (string | number)[]): Promise<T> {
+    public static createNew<T>(errorService: ErrorService, query: string, original: T, ...params: (string | number | Date)[]): Promise<T> {
         return new Promise<T>((resolve, reject) => {
             SqlHelper.openConnection(errorService)
                 .then((connection: Connection) => {
