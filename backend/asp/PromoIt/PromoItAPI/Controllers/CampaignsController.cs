@@ -30,6 +30,7 @@ namespace PromoItAPI.Controllers
 		//}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<ActionResult<IEnumerable<CampaignDto>>> GetCampaigns()
 		{
 			return await _context.Campaigns.Select(c => CampaignToTDO(c)).ToListAsync();
