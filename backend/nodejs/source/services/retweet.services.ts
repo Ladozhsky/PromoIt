@@ -8,7 +8,7 @@ interface localRetweet {
   twitt_id: string;
   twitter_user_id: string;
   retweets: number;
-  campaign: number;
+  campaign: string;
   parsing_date: Date;
 }
 

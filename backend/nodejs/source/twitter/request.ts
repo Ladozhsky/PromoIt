@@ -1,22 +1,29 @@
 
 import {TwitterUserIdService, ITwitterUserIds, ICanpaignHashtag} from '../services/twitterParsing.services';
 import { ErrorService } from '../services/error.service';
-import { twitterUserId } from '../entities';
-import { client } from "./twitterClient"
+import { systemError, retweet } from '../entities';
+import { client} from "./twitterClient"
+import { TweetV2 } from "twitter-api-v2";
 
 const errorService: ErrorService = new ErrorService();
 const retweetService: TwitterUserIdService = new TwitterUserIdService(errorService);
 
 async function processTwitterData() {
 
+      //get Ids and Hashtags for parsing
       const userIds : ITwitterUserIds[] = await retweetService.getTwitterUserIds();
       const hashtag : ICanpaignHashtag[] = await retweetService.getCanpaignHashtag();
-      
+       
+      //Check list of Ids and Hashtags
+      for (let i = 0; i < userIds.length; i++) {
+        for (let j = 0; j < hashtag.length; j++) {
+            console.log(`${hashtag[j].hashtag} from:${userIds[i].twitter_user_id}`);
+        }}
+      //
 
-      
-      console.log(`${hashtag[0].hashtag} from:${userIds[0].twitter_user_id}`);
-      
-      async function consumeTweets(userId : string , hashtag : string) {
+      let retweetArray : retweet[] = []
+      // Search Tweets using Ids and Hashtags Metod and convertion to retweet type
+      async function searchTweetsByIdHash(userId : string , hashtag : string)  {
         let twitterQuery = `${hashtag} from:${userId}`;
         const jsTweets = await client.v2.search(
             twitterQuery, {
@@ -25,39 +32,32 @@ async function processTwitterData() {
       
         for await (const tweet of jsTweets) {
           console.log(tweet);
+          retweetArray.push(await parselocalRetweet(tweet, "23"))
+          console.log(retweetArray)
         
         }
       }
-    
-      for (let i = 0; i < userIds.length; i++) {
+  
+      // Use created list of Ids and Hashtags to create list of retweets
+      async function consumeTweets2 () {
+        for (let i = 0; i < userIds.length; i++) {
         for (let j = 0; j < hashtag.length; j++) {
-          await consumeTweets(userIds[i].twitter_user_id, hashtag[j].hashtag);
+          await searchTweetsByIdHash(userIds[i].twitter_user_id, hashtag[j].hashtag);
+
         }
-      }
-    }
-    
- 
+        }  
+      }    
+      consumeTweets2()
+}
+
   processTwitterData()
 
-// async function twitterParsing() {
-//     const jsTweets = await 
-//         for (let i = 0; i < twitterUserIds.length; index++) {
-//         const element = array[index];
-
-//     } client.v2.search(
-//         `id: 1497659734115057666`, {
-//         'tweet.fields': 'public_metrics,author_id',
-//         expansions: 'author_id',
-//         'user.fields': 'username'
-//       })
-  
-//     // Consume every possible tweet of jsTweets (until rate limit is hit)
-//     for await (const tweet of jsTweets) {
-//       console.log(tweet);
-//     }
-// }
-
-
-// dbParsing()
-
-    
+async function parselocalRetweet(local: TweetV2, hashtag : string): Promise<retweet> {
+      return {
+        twitt_id: local.id,
+        twitter_user_id: local.author_id as string,
+        retweets: local.public_metrics?.retweet_count as number,
+        campaign: hashtag,
+        parsing_date: new Date(2023.01),
+      };
+    }
