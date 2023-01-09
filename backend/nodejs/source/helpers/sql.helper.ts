@@ -32,7 +32,7 @@ export class SqlHelper {
         });
     }
 
-    public static createNew<T>(errorService: ErrorService, query: string, original: T, ...params: (string | number | Date)[]): Promise<T> {
+    public static createNew<T>(errorService: ErrorService, query: string, original: T, ...params: (string | number | Date )[]): Promise<T> {
         return new Promise<T>((resolve, reject) => {
             SqlHelper.openConnection(errorService)
                 .then((connection: Connection) => {
