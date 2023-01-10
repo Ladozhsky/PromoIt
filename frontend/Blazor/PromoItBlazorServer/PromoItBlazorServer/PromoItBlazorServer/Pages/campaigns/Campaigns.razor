@@ -47,13 +47,10 @@
     protected override async Task OnInitializedAsync()
     {
         string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
-        //var id_claim = HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(e => e.Type == "id").Value;
-
 
         HttpClient http = new HttpClient();
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
 
         campaigns = await http.GetFromJsonAsync<List<CampaignDto>>("https://localhost:7096/api/Campaigns");
     }

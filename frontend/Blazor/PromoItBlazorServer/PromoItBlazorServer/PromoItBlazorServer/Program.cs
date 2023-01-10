@@ -22,6 +22,7 @@ builder.Services
                 var claims = new List<Claim>
                     {
                         new Claim("jwt_token", token)
+                        //new Claim("user_id", context.Principal.FindFirst("sub").Value)
                     };
                 var appIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 context.Principal.AddIdentity(appIdentity);

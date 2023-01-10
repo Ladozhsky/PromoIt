@@ -49,6 +49,11 @@ builder.Services.AddAuthentication(options =>
     options.Audience = "dgwNLi968wdHkRnMzI6oLo2wo1KoDxve";
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.RequireClaim("https://promoteit.co.il/claims/role", "Admin"));
+});
+
 builder.Services.AddDbContext<APIPRromoIt.Models.promoitContext>(
     options =>
     {
