@@ -1,26 +1,25 @@
 
-import {TwitterUserIdService, ITwitterUserIds, ICanpaignHashtag} from '../services/twitterParsing.services';
+import {DbGetService, ITwitterUserIds, ICanpaignHashtag} from '../services/twitterParsing.services';
 import { ErrorService } from '../services/error.service';
 import { systemError, retweet } from '../entities';
 import { client} from "./twitterClient"
 import { TweetV2, TweetSearchRecentV2Paginator} from "twitter-api-v2";
-import { SqlHelper } from "../helpers/sql.helper";
-import { Queries} from "../constants"
+import { RetweetService } from '../services/retweet.services';
+import { Request, Response, NextFunction } from 'express';
+import { ResponseHelper } from '../helpers/response.helper';
 
 const errorService: ErrorService = new ErrorService();
-const retweetService: TwitterUserIdService = new TwitterUserIdService(errorService);
+const retweetService: RetweetService = new RetweetService(errorService);
+const dbGetService: DbGetService = new DbGetService(errorService);
 
 async function processTwitterData() {
 
             
       //get Ids and Hashtags for parsing
-      const userIds : ITwitterUserIds[] = await retweetService.getTwitterUserIds();
-      const hashtag : ICanpaignHashtag[] = await retweetService.getCanpaignHashtag();
+      const userIds : ITwitterUserIds[] = await dbGetService.getTwitterUserIds();
+      const hashtag : ICanpaignHashtag[] = await dbGetService.getCanpaignHashtag();
 
       let retweetArray : retweet[] = [];
-      let completetRetweetArray : retweet[] = [];
-  
-      createListOfRetweets ()
 
       // Use created list of Ids and Hashtags to create list of retweets
       async function createListOfRetweets () {
@@ -29,7 +28,7 @@ async function processTwitterData() {
             await searchTweetsByIdHash(userIds[i].twitter_user_id, hashtag[j].hashtag)
             }
         }
-        return console.log(retweetArray)
+        return retweetArray
       }
 
       // Search Tweets using Ids and Hashtags Metod and convertion to retweet type
@@ -56,34 +55,35 @@ async function processTwitterData() {
           }
           else retweetArray.push(await parselocalRetweet(tweet, hashtag))
         }
-        
-        return Promise.resolve(retweetArray)
+
+        return retweetArray
       }
   
       
- 
-//       async function addRetweetsFromTwitter(){
-//       let retweetList = createListOfRetweets()
-//       return new Promise<retweet>((resolve, reject) => {
-//         SqlHelper.createNew(
-//           errorService,
-//           Queries.AddRetweet,
-//           retwretweetListeet,
-//           retweet.twitt_id,
-//           retweet.twitter_user_id,
-//           retweet.retweets,
-//           retweet.campaign,
-//           retweet.parsing_date
-//         )
-//         .then((result: retweet) => {
-//           resolve(result);
-//           })
-//           .catch((error: systemError) => {
-//             reject(error);
-//           });
-//         });
-// }
+      
+      const addRetweets = async (retweetList: retweet[]) => {
+        for (let i = 0; i < retweetList.length; i++) {
+          retweetService.addRetweet({
+            twitt_id: retweetList[i].twitt_id,
+            twitter_user_id: retweetList[i].twitter_user_id,
+            retweets: retweetList[i].retweets,
+            campaign: retweetList[i].campaign,
+            parsing_date: retweetList[i].parsing_date})
+
+            .then(() => {
+              return console.log(retweetList[i]);
+          })
+            .catch((error: systemError) => {
+              return console.log(error);
+          });
+        }
+      }
+
+      const retweetList : retweet[] = await createListOfRetweets()
+      
+      addRetweets(retweetList)
 }
+
 
   processTwitterData()
 
