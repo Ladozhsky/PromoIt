@@ -12,12 +12,12 @@ export interface ICanpaignHashtag {
   hashtag: string;
 }
 
-interface ITwitterUserIdService {
+interface IDbGetService {
   getTwitterUserIds(): Promise<ITwitterUserIds[]>;
   getCanpaignHashtag(): Promise<ICanpaignHashtag[]>;
 }
 
-export class TwitterUserIdService implements ITwitterUserIdService {
+export class DbGetService implements IDbGetService {
   private _errorService: ErrorService;
 
   constructor(private errorService: ErrorService) {

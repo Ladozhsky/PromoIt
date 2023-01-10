@@ -1,5 +1,5 @@
 
-import {TwitterUserIdService, ITwitterUserIds, ICanpaignHashtag} from '../services/twitterParsing.services';
+import {DbGetService, ITwitterUserIds, ICanpaignHashtag} from '../services/twitterParsing.services';
 import { ErrorService } from '../services/error.service';
 import { systemError, retweet } from '../entities';
 import { client} from "./twitterClient"
@@ -8,7 +8,7 @@ import { SqlHelper } from "../helpers/sql.helper";
 import { Queries} from "../constants"
 
 const errorService: ErrorService = new ErrorService();
-const retweetService: TwitterUserIdService = new TwitterUserIdService(errorService);
+const retweetService: DbGetService = new DbGetService(errorService);
 
 async function processTwitterData() {
 
