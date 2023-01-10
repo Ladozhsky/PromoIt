@@ -59,6 +59,14 @@ builder.Services
         options.UseRefreshTokens = true;
     });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.RequireClaim("https://promoteit.co.il/claims/role", "Admin"));
+    options.AddPolicy("NPO Representative", policy => policy.RequireClaim("https://promoteit.co.il/claims/role", "NPO Representative"));
+    options.AddPolicy("Business representative", policy => policy.RequireClaim("https://promoteit.co.il/claims/role", "Business representative"));
+
+});
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
