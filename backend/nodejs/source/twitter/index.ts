@@ -1,5 +1,5 @@
 import { client } from "./twitterClient"
-import { TweetEntityHashtagV2 } from "twitter-api-v2";
+import { TweetEntityHashtagV2, ReferencedTweetV2, TweetV2 } from "twitter-api-v2";
 
 async function tweet(): Promise<void> {
   try {
@@ -18,14 +18,28 @@ let twitterQuery = `#PromoIt`
 
 async function consumeTweets() {
     const jsTweets = await client.v2.search(
-        `#PromoIt from:1606972070222565382`, {
-        'tweet.fields': 'public_metrics,author_id',
+        `from:1606972070222565382`, {
+        'tweet.fields': 'public_metrics,author_id,referenced_tweets',
       })
   
     // Consume every possible tweet of jsTweets (until rate limit is hit)
-    for await (const tweet of jsTweets) {
-      console.log(tweet);
-    }
+    for (const tweet of jsTweets) {
+      if(tweet?.referenced_tweets != undefined) {
+        let retweetedCheck : boolean = false
+        for (const referencedTweet of tweet.referenced_tweets) {
+          if(referencedTweet.type === "retweeted") {
+            retweetedCheck = true
+          }
+        }
+        if (retweetedCheck === false){
+          console.log(tweet)
+        }   
+      }
+      else console.log(tweet)
+    };
   }
 
+
   consumeTweets()
+
+
