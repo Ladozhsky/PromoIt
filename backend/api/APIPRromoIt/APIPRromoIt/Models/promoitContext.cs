@@ -66,11 +66,11 @@ namespace APIPRromoIt.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_campaign_company");
 
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.Campaigns)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_campaign_user");
+                //entity.HasOne(d => d.User)
+                //    .WithMany(p => p.Campaigns)
+                //    .HasForeignKey(d => d.UserId)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK_campaign_user");
             });
 
             modelBuilder.Entity<Company>(entity =>
@@ -184,7 +184,9 @@ namespace APIPRromoIt.Models
             {
                 entity.ToTable("user");
 
-                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(100)
+                    .HasColumnName("user_id");
 
                 entity.Property(e => e.Address)
                     .HasMaxLength(50)
@@ -196,11 +198,11 @@ namespace APIPRromoIt.Models
                     .HasMaxLength(50)
                     .HasColumnName("email");
 
-                entity.Property(e => e.PasswordHash)
-                    .HasMaxLength(500)
-                    .HasColumnName("passwordHash");
+                //entity.Property(e => e.PasswordHash)
+                //    .HasMaxLength(500)
+                //    .HasColumnName("passwordHash");
 
-                entity.Property(e => e.RoleId).HasColumnName("role_id");
+                entity.Property(e => e.Role).HasColumnName("role");
 
                 entity.Property(e => e.TelNumber)
                     .HasMaxLength(50)
@@ -210,11 +212,11 @@ namespace APIPRromoIt.Models
                     .HasMaxLength(50)
                     .HasColumnName("user_name");
 
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.Users)
-                    .HasForeignKey(d => d.RoleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_user_role");
+                //entity.HasOne(d => d.Role)
+                //    .WithMany(p => p.Users)
+                //    .HasForeignKey(d => d.RoleId)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK_user_role");
             });
 
             modelBuilder.Entity<UserBalance>(entity =>
