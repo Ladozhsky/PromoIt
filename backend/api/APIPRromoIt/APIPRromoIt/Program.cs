@@ -52,6 +52,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy => policy.RequireClaim("https://promoteit.co.il/claims/role", "Admin"));
+    options.AddPolicy("NPO Representative", policy => policy.RequireClaim("https://promoteit.co.il/claims/role", "NPO Representative"));
+    options.AddPolicy("Business representative", policy => policy.RequireClaim("https://promoteit.co.il/claims/role", "Business representative"));
 });
 
 builder.Services.AddDbContext<APIPRromoIt.Models.promoitContext>(
