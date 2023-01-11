@@ -10,7 +10,7 @@ namespace APIPRromoIt.Models
         public int CompanyId { get; set; }
         public int Amount { get; set; }
         public int ProductId { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; } = null!;
 
         public virtual Campaign Campaign { get; set; } = null!;
         public virtual Company Company { get; set; } = null!;
