@@ -1,4 +1,4 @@
-﻿@*@page "/register"
+﻿@page "/register"
 @attribute [Authorize]
 @using System.Net.Http;
 @using System.Net.Http.Json;
@@ -15,18 +15,22 @@
 <form method="post" @onsubmit="@SubmitForm">
     <div class="form-group">
         <label for="username">Your name</label>
-        <input type="text" class="form-control" id="username" @bind="@campaign.CampaignName" required />
+        <input type="text" class="form-control" id="username" @bind="@user.UserName" required />
     </div>
     <div class="form-group">
         <label for="address">Address</label>
-        <input type="address" class="form-control" id="address" @bind="@campaign.Hashtag" required />
+        <input type="address" class="form-control" id="address" @bind="@user.Address" required />
     </div>
     <div class="form-group">
         <label for="telnumber">Phone number</label>
-        <input type="telnumber" class="form-control" id="telnumber" @bind="@campaign.Description" required />
+        <input type="telnumber" class="form-control" id="telnumber" @bind="@user.TelNumber" required />
+    </div>
+    <div class="form-group">
+        <label for="Company">Company</label>
+        <input type="Company" class="form-control" id="Company" @bind="@user.CompanyId" required />
     </div>
 
-    <select class="form-select form-select-lg mb-3" @bind="@">
+    @*<select class="form-select form-select-lg mb-3" @bind="@">
     @foreach (var company in companies)
         {
             if (role.RoleId == 1) continue;
@@ -62,7 +66,7 @@
          <option value="Non-profit organisation">Non-profit organisation</option>
     </select>
     <button type="submit" class="btn btn-primary">Create company</button>
-    </form>
+    </form>*@
     <button type="submit" class="btn btn-primary">End register</button>
     </form>
 
@@ -74,7 +78,7 @@
 @code {
     private string ErrorMessage { get; set; }
 
-    CampaignDto campaign = new CampaignDto();
+    Register user = new Register();
 
     private async Task SubmitForm()
     {
@@ -83,10 +87,10 @@
             string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
             HttpClient client = new HttpClient();
+
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-
-            HttpResponseMessage response = await client.PostAsJsonAsync("https://localhost:7096/api/Campaigns", campaign);
+            HttpResponseMessage response = await client.PostAsJsonAsync("https://localhost:7096/api/Users", user);
             if (response.IsSuccessStatusCode)
             {
                 response.EnsureSuccessStatusCode();
@@ -106,4 +110,3 @@
         }
     }
 }
-*@

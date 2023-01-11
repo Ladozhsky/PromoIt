@@ -1,6 +1,6 @@
-﻿namespace APIPRromoIt.ModelsDto
+﻿namespace PromoItBlazorServer.Data
 {
-    public partial class UserDto
+    public partial class Register
     {
         public string UserName { get; set; } = null!;
         public string? Address { get; set; }
