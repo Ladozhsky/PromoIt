@@ -20,7 +20,7 @@ namespace APIPRromoIt.Controllers
 
         // Get all campaigns
         [HttpGet]
-        [Authorize(Policy = "Admin, NPO Representative")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<CampaignDto>>> GetCampaigns()
         {
             return await _context.Campaigns.Select(c => CampaignToTDO(c)).ToListAsync();
@@ -56,7 +56,7 @@ namespace APIPRromoIt.Controllers
 
         // Add campaign
         [HttpPost]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<CampaignDto>> PostCampaign(CampaignDto campaignDto)
         {
             var campaign = new Campaign
@@ -73,7 +73,8 @@ namespace APIPRromoIt.Controllers
             _context.Campaigns.Add(campaign);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetCampaign), new { id = campaign.CampaignId }, CampaignToTDO(campaign));
+            return Ok(campaign);
+            //return CreatedAtAction(nameof(GetCampaign), new { id = campaign.CampaignId }, CampaignToTDO(campaign));
         }
 
         // Update campaign
