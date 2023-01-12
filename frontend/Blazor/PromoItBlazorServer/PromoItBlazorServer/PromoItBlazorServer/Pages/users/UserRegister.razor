@@ -12,7 +12,7 @@
 
 <img src="https://d3mvlb3hz2g78.cloudfront.net/wp-content/uploads/2020/11/thumb_720_450_dreamstime_m_44810592_(1).jpg"/>
 
-<form method="post" @onsubmit="@SubmitForm">
+<form method="post" @onsubmit="@SubmitUserForm">
     <div class="form-group">
         <label for="username">Your name</label>
         <input type="text" class="form-control" id="username" @bind="@user.UserName" required />
@@ -25,48 +25,45 @@
         <label for="telnumber">Phone number</label>
         <input type="telnumber" class="form-control" id="telnumber" @bind="@user.TelNumber" required />
     </div>
-    <div class="form-group">
-        <label for="Company">Company</label>
-        <input type="Company" class="form-control" id="Company" @bind="@user.CompanyId" required />
-    </div>
-
-    @*<select class="form-select form-select-lg mb-3" @bind="@">
-    @foreach (var company in companies)
-        {
-            if (role.RoleId == 1) continue;
-            <option value="@role.RoleId">@role.RoleName</option>
-        }
-    </select>
-
     <div>
-    <input type="radio" id="showCompanyForm" @bind="showForm" @onchange="ToggleFormVisibility" />
+    <label for="company">Choose your company or create new</label>
+    <select id="company" class="form-select form-select-lg mb-3" @bind="@user.CompanyId">
+    @foreach (var company in companies)
+    {
+        <option value="@company.CompanyId">@company.CompanyName</option>
+    }
+    </select>
+    </div>
+    <div>
         <label for="showCompanyForm">Create new company</label>
+        <button class="btn btn-info btn-sm" @onclick="ToggleFormVisibility">@(showForm ? "Close Form" : "Open Form")</button>
     </div>
 
-    <form id="hiddenForm" style="display: none;">
+    <form id="hiddenForm" style="display: @(showForm ? "block" : "none");" method="post" @onsubmit="@SubmitCompanyForm">
+
     <div class="form-group">
         <label for="companyname">Company name</label>
-        <input type="text" class="form-control" id="companyname" @bind="@campaign.CampaignName" required />
+        <input type="text" class="form-control" id="companyname" @bind="@company.CompanyName" required />
     </div>
     <div class="form-group">
         <label for="site">Website</label>
-    <input type="text" class="form-control" id="site" @bind="@campaign.CampaignName" required />
+    <input type="text" class="form-control" id="site" @bind="@company.Site" required />
     </div>
     <div class="form-group">
         <label for="email">Email</label>
-    <input type="text" class="form-control" id="email" @bind="@campaign.CampaignName" required />
+    <input type="text" class="form-control" id="email" @bind="@company.Email" required />
     </div>
-    <div class="form-group">
-        <label for="email">Email</label>
-    <input type="text" class="form-control" id="email" @bind="@campaign.CampaignName" required />
-    </div>
-
-    <select class="form-select form-select-lg mb-3" @bind="@">
-         <option value="Business organisation">Business organisation</option>
-         <option value="Non-profit organisation">Non-profit organisation</option>
+    <div>
+    <label for="companytype">Choose your company type</label>
+    <select id="companytype" class="form-select form-select-lg mb-3" @bind="@company.CompanyType">
+           @foreach (var companyType in companyTypes)
+           {
+               <option value="@company.CompanyType">@companyType</option>
+           }
     </select>
+    </div>
     <button type="submit" class="btn btn-primary">Create company</button>
-    </form>*@
+    </form>
     <button type="submit" class="btn btn-primary">End register</button>
     </form>
 
@@ -76,17 +73,31 @@
     }
 
 @code {
+    private List<string> companyTypes = new List<string> { "Business", "NPO" };
+
     private string ErrorMessage { get; set; }
+
+    private bool showForm = false;
+
+    private void ToggleFormVisibility()
+    {
+        showForm = !showForm;
+    }
 
     Register user = new Register();
 
-    private async Task SubmitForm()
+    CompanyDto company = new CompanyDto();
+
+    private List<CompanyDto> companies = new List<CompanyDto>();
+
+    HttpClient client = new HttpClient();
+
+
+    private async Task SubmitUserForm()
     {
         try
         {
             string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
-
-            HttpClient client = new HttpClient();
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -108,5 +119,41 @@
         {
             ErrorMessage = ex.Message;
         }
+    }
+
+    private async Task SubmitCompanyForm()
+    {
+        try
+        {
+            string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            HttpResponseMessage response = await client.PostAsJsonAsync("https://localhost:7096/api/Companies", company);
+            if (response.IsSuccessStatusCode)
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            else
+            {
+                object error = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(error);
+                await JSRuntime.InvokeAsync<object>("alert", error);
+            }
+            
+        }
+        catch (HttpRequestException ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        companies = await client.GetFromJsonAsync<List<CompanyDto>>("https://localhost:7096/api/Companies");
     }
 }
