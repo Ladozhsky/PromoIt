@@ -8,9 +8,22 @@
 @inject IJSRuntime JSRuntime
 @inject IHttpContextAccessor HttpContextAccessor
 
-<h2>Finish your registration</h2>
+<h1>Finish your registration</h1>
 
 <img src="https://d3mvlb3hz2g78.cloudfront.net/wp-content/uploads/2020/11/thumb_720_450_dreamstime_m_44810592_(1).jpg"/>
+
+<h3>Choose your company</h3>
+<div>
+    <select id="company" class="form-select form-select-lg mb-3" @bind="@user.CompanyId">
+    @foreach (var company in companies)
+        {
+            <option value="@company.CompanyId">@company.CompanyName</option>
+        }
+    </select>
+</div>
+<div>
+    <button type="button" class="btn btn-primary" @onclick="NavigateToAddCompany">Create New Company</button>
+</div>
 
 <form method="post" @onsubmit="@SubmitUserForm">
     <div class="form-group">
@@ -25,45 +38,7 @@
         <label for="telnumber">Phone number</label>
         <input type="telnumber" class="form-control" id="telnumber" @bind="@user.TelNumber" required />
     </div>
-    <div>
-    <label for="company">Choose your company or create new</label>
-    <select id="company" class="form-select form-select-lg mb-3" @bind="@user.CompanyId">
-    @foreach (var company in companies)
-    {
-        <option value="@company.CompanyId">@company.CompanyName</option>
-    }
-    </select>
-    </div>
-    <div>
-        <label for="showCompanyForm">Create new company</label>
-        <button class="btn btn-info btn-sm" @onclick="ToggleFormVisibility">@(showForm ? "Close Form" : "Open Form")</button>
-    </div>
-
-    <form id="hiddenForm" style="display: @(showForm ? "block" : "none");" method="post" @onsubmit="@SubmitCompanyForm">
-
-    <div class="form-group">
-        <label for="companyname">Company name</label>
-        <input type="text" class="form-control" id="companyname" @bind="@company.CompanyName" required />
-    </div>
-    <div class="form-group">
-        <label for="site">Website</label>
-    <input type="text" class="form-control" id="site" @bind="@company.Site" required />
-    </div>
-    <div class="form-group">
-        <label for="email">Email</label>
-    <input type="text" class="form-control" id="email" @bind="@company.Email" required />
-    </div>
-    <div>
-    <label for="companytype">Choose your company type</label>
-    <select id="companytype" class="form-select form-select-lg mb-3" @bind="@company.CompanyType">
-           @foreach (var companyType in companyTypes)
-           {
-               <option value="@company.CompanyType">@companyType</option>
-           }
-    </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Create company</button>
-    </form>
+    
     <button type="submit" class="btn btn-primary">End register</button>
     </form>
 
@@ -82,6 +57,11 @@
     private void ToggleFormVisibility()
     {
         showForm = !showForm;
+    }
+
+    public void NavigateToAddCompany()
+    {
+        NavigationManager.NavigateTo("/add-company");
     }
 
     Register user = new Register();
