@@ -1,5 +1,4 @@
-﻿@page "/add-company"
-@attribute [Authorize]
+﻿@attribute [Authorize]
 @using System.Net.Http;
 @using System.Net.Http.Json;
 @using PromoItBlazorServer.Data;
@@ -7,8 +6,6 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 @inject IHttpContextAccessor HttpContextAccessor
-
-
 <form method="post" @onsubmit="@SubmitCompanyForm">
 
     <div class="form-group">
@@ -28,22 +25,17 @@
     <select id="companytype" class="form-select form-select-lg mb-3" @bind="@company.CompanyType">
             @foreach (var companyType in companyTypes)
             {
-                 <option value="@companyType">@companyType</option>
+                   <option value="@company.CompanyType">@companyType</option>
             }
     </select>
     </div>
-    <button type="submit" class="btn btn-primary" @onclick="NavigateToRegister">Create company</button>
+    <button type="submit" class="btn btn-primary">Create company</button>
     </form>
 
 @code {
     private List<string> companyTypes = new List<string> { "", "Business", "NPO" };
 
     private string ErrorMessage { get; set; }
-
-    public void NavigateToRegister()
-    {
-        NavigationManager.NavigateTo("/register", true);
-    }
 
     CompanyDto company = new CompanyDto();
 
