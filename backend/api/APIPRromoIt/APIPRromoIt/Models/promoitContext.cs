@@ -205,6 +205,11 @@ namespace APIPRromoIt.Models
                 entity.Property(e => e.UserName)
                     .HasMaxLength(50)
                     .HasColumnName("user_name");
+
+                entity.HasOne(d => d.Company)
+                    .WithMany(p => p.Users)
+                    .HasForeignKey(d => d.CompanyId)
+                    .HasConstraintName("FK_user_company");
             });
 
             modelBuilder.Entity<UserBalance>(entity =>

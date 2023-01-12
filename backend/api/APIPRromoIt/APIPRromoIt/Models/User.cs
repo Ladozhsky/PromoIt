@@ -19,6 +19,7 @@ namespace APIPRromoIt.Models
         public string Role { get; set; } = null!;
         public int? CompanyId { get; set; }
 
+        public virtual Company? Company { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<UserBalance> UserBalances { get; set; }
     }
