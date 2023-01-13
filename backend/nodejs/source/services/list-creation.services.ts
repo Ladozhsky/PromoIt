@@ -3,6 +3,7 @@ import { ErrorService } from '../services/error.service';
 import {  retweet } from '../entities';
 import { TwitterService } from "./twitter.services";
 import { resolve } from 'path';
+import { Queries } from "../constants";
 
 const errorService: ErrorService = new ErrorService();
 const dbGetService: DbGetService = new DbGetService(errorService);
@@ -15,8 +16,8 @@ interface IListCreation {
 export class ListCreation implements IListCreation {
     // Use created list of Ids and Hashtags to create list of retweets
     public  async createListOfRetweets () : Promise<retweet[]> {
-        const userIds : ITwitterUserIds[] = await dbGetService.getTwitterUserIds();
-        const hashtag : ICanpaignHashtag[] = await dbGetService.getCanpaignHashtag();
+        const userIds : ITwitterUserIds[] = await dbGetService.getAllCollumnData(Queries.TwitterUserIds);
+        const hashtag : ICanpaignHashtag[] = await dbGetService.getAllCollumnData(Queries.CampainHashtag);
         const retweetArray : retweet[] = [];
             for (let i = 0; i < userIds.length; i++) {
                 for (let j = 0; j < hashtag.length; j++) {

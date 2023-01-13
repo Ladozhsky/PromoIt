@@ -13,7 +13,8 @@ export class TwitterService implements ITwitterService {
         let retweetArray : retweet[] = [];
 
         const jsTweets : TweetSearchRecentV2Paginator = await client.v2.search(
-            twitterQuery, {
+            twitterQuery, 
+            {
                 'tweet.fields': 'public_metrics,author_id,referenced_tweets',
             })
         {
@@ -37,6 +38,8 @@ export class TwitterService implements ITwitterService {
       }
 
     }
+
+    
 
 
     private parselocalRetweet(local: TweetV2, hashtag : string): retweet {
