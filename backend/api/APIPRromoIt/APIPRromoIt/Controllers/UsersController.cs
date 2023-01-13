@@ -45,5 +45,19 @@ namespace APIPRromoIt.Controllers
 
             return Ok(user);
         }
+
+        [HttpGet]
+        public async Task<ActionResult<bool>> UserExisting()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            string userId = identity?.FindFirst("user_id")?.Value;
+
+            User existingUser = _context.Users.FirstOrDefault(u => u.UserId == userId);
+            if (existingUser != null)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
