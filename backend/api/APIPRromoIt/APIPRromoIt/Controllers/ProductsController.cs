@@ -44,5 +44,24 @@ namespace APIPRromoIt.Controllers
 
             return Ok(product);
         }
+
+        [HttpGet("/api/Products/byCompany")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCompanyId()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            string userId = identity?.FindFirst("user_id")?.Value;
+
+            var companyId = await _context.Users.Where(x => x.UserId == userId)
+                                            .Select(x => x.CompanyId)
+                                            .FirstOrDefaultAsync();
+
+            var products = await (from p in _context.Products
+                            join c in _context.Companies on p.CompanyId equals c.CompanyId
+                            where c.CompanyId == companyId
+                            select new { p.ProductName, p.Price, p.Image, c.CompanyName }).ToListAsync();
+
+            return Ok(products);
+        }
     }
 }
