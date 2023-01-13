@@ -14,11 +14,12 @@ namespace APIPRromoIt.Models
         public string CampaignName { get; set; } = null!;
         public string Hashtag { get; set; } = null!;
         public string Description { get; set; } = null!;
-        public int UserId { get; set; }
+        public string UserId { get; set; } = null!;
         public DateTime CreateDate { get; set; }
         public int CompanyId { get; set; }
 
         public virtual Company Company { get; set; } = null!;
+        public virtual User User { get; set; } = null!;
         public virtual ICollection<Order> Orders { get; set; }
     }
 }

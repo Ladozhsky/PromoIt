@@ -17,7 +17,7 @@ namespace APIPRromoIt.Models
         public string CompanyName { get; set; } = null!;
         public string Site { get; set; } = null!;
         public string Email { get; set; } = null!;
-        public string CompanyType { get; set; }
+        public string CompanyType { get; set; } = null!;
 
         public virtual ICollection<Campaign> Campaigns { get; set; }
         public virtual ICollection<Order> Orders { get; set; }

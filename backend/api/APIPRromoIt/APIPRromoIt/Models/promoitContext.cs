@@ -58,13 +58,21 @@ namespace APIPRromoIt.Models
                     .HasMaxLength(50)
                     .HasColumnName("hashtag");
 
-                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(100)
+                    .HasColumnName("user_id");
 
                 entity.HasOne(d => d.Company)
                     .WithMany(p => p.Campaigns)
                     .HasForeignKey(d => d.CompanyId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_campaign_company");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Campaigns)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_campaign_user");
             });
 
             modelBuilder.Entity<Company>(entity =>

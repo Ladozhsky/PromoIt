@@ -101,33 +101,6 @@
         }
     }
 
-    private async Task SubmitCompanyForm()
-    {
-        try
-        {
-            string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            HttpResponseMessage response = await client.PostAsJsonAsync("https://localhost:7096/api/Companies", company);
-            if (response.IsSuccessStatusCode)
-            {
-                response.EnsureSuccessStatusCode();
-            }
-            else
-            {
-                object error = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(error);
-                await JSRuntime.InvokeAsync<object>("alert", error);
-            }
-            
-        }
-        catch (HttpRequestException ex)
-        {
-            ErrorMessage = ex.Message;
-        }
-    }
-
     protected override async Task OnInitializedAsync()
     {
         string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
