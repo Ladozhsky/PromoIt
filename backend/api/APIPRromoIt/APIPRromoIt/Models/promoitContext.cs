@@ -149,9 +149,9 @@ namespace APIPRromoIt.Models
 
                 entity.Property(e => e.CompanyId).HasColumnName("company_id");
 
-                entity.Property(e => e.Price)
-                    .HasColumnType("decimal(18, 0)")
-                    .HasColumnName("price");
+                entity.Property(e => e.Image).HasColumnName("image");
+
+                entity.Property(e => e.Price).HasColumnName("price");
 
                 entity.Property(e => e.ProductName)
                     .HasMaxLength(50)
