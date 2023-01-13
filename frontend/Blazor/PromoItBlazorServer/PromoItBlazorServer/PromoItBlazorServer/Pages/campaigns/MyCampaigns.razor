@@ -1,0 +1,54 @@
+﻿@page "/my-campaigns"
+@attribute [Authorize]
+@using PromoItBlazorServer.Data
+@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Collections.Generic
+@using System.Net.Http.Headers;
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+<PageTitle>My Campaigns</PageTitle>
+
+<h1>My campaigns</h1>
+
+<table class="table table-hover table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Hashtag</th>
+            <th>Description</th>
+            <th>Date of create</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var campaign in campaigns)
+        {
+                        <tr>
+                            <td>@campaign.CampaignName</td>
+                            <td>@campaign.Hashtag</td>
+                            <td>@campaign.Description</td>
+                            <td>@campaign.CreateDate.ToShortDateString()</td>
+                        </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+
+    private List<CampaignDto> campaigns = new List<CampaignDto>();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+
+        HttpClient http = new HttpClient();
+
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        campaigns = await http.GetFromJsonAsync<List<CampaignDto>>("https://localhost:7096/api/Campaigns/byUser");
+    }
+}
+

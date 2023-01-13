@@ -27,10 +27,13 @@ namespace APIPRromoIt.Controllers
         }
 
         // Get campaign by user id
-        [HttpGet("/api/Campaigns/byUser/{userId}")]
-        [Authorize (Policy="Admin, NPO Representative")]
-        public async Task<ActionResult<IEnumerable<CampaignDto>>> GetCampaignsByUserId(string userId)
+        [HttpGet("/api/Campaigns/byUser")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<CampaignDto>>> GetCampaignsByUserId()
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            string userId = identity?.FindFirst("user_id")?.Value;
+
             var campaigns = await _context.Campaigns
             .Where(c => c.UserId == userId)
             .ToListAsync();
