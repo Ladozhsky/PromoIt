@@ -29,7 +29,7 @@ namespace APIPRromoIt.Controllers
         // Get campaign by user id
         [HttpGet("/api/Campaigns/byUser/{userId}")]
         [Authorize (Policy="Admin, NPO Representative")]
-        public async Task<ActionResult<IEnumerable<CampaignDto>>> GetCampaignsByUserId(int userId)
+        public async Task<ActionResult<IEnumerable<CampaignDto>>> GetCampaignsByUserId(string userId)
         {
             var campaigns = await _context.Campaigns
             .Where(c => c.UserId == userId)
@@ -56,25 +56,31 @@ namespace APIPRromoIt.Controllers
 
         // Add campaign
         [HttpPost]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<CampaignDto>> PostCampaign(CampaignDto campaignDto)
         {
-            var campaign = new Campaign
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            string userId = identity?.FindFirst("user_id")?.Value;
+
+            var companyId = await _context.Users.Where(x => x.UserId == userId)
+                                            .Select(x => x.CompanyId)
+                                            .FirstOrDefaultAsync();
+
+            Campaign campaign = new Campaign
             {
                 CampaignId = campaignDto.CampaignId,
                 CampaignName = campaignDto.CampaignName,
                 Hashtag = campaignDto.Hashtag,
                 Description = campaignDto.Description,
-                UserId = campaignDto.UserId,
-                CreateDate = DateTime.Now.Date,
-                CompanyId = campaignDto.CompanyId
+                UserId = userId,
+                CreateDate = DateTime.Now,
+                CompanyId = (int)companyId
             };
 
             _context.Campaigns.Add(campaign);
             await _context.SaveChangesAsync();
 
             return Ok(campaign);
-            //return CreatedAtAction(nameof(GetCampaign), new { id = campaign.CampaignId }, CampaignToTDO(campaign));
         }
 
         // Update campaign
@@ -96,9 +102,9 @@ namespace APIPRromoIt.Controllers
             campaign.CampaignName = campaignDto.CampaignName;
             campaign.Hashtag = campaignDto.Hashtag;
             campaign.Description = campaignDto.Description;
-            campaign.UserId = campaignDto.UserId;
-            campaign.CreateDate = campaignDto.CreateDate;
-            campaign.CompanyId = campaignDto.CompanyId;
+            //campaign.UserId = campaignDto.UserId;
+            //campaign.CreateDate = campaignDto.CreateDate;
+            //campaign.CompanyId = campaignDto.CompanyId;
 
             try
             {
@@ -141,9 +147,7 @@ namespace APIPRromoIt.Controllers
            CampaignName = campaign.CampaignName,
            Hashtag = campaign.Hashtag,
            Description = campaign.Description,
-           UserId = campaign.UserId,
-           CreateDate = campaign.CreateDate,
-           CompanyId = campaign.CompanyId
+           CreateDate = DateTime.Now.Date
        };
     }
 }
