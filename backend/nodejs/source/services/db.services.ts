@@ -12,50 +12,28 @@ export interface ICanpaignHashtag {
   hashtag: string;
 }
 
-interface IDbGetService {
-  getTwitterUserIds(): Promise<ITwitterUserIds[]>;
-  getCanpaignHashtag(): Promise<ICanpaignHashtag[]>;
+interface IDbService {
+  getAllCollumnData<T>(query : string) : Promise<T[]>;
 }
 
-export class DbGetService implements IDbGetService {
+export class DbGetService implements IDbService {
   private _errorService: ErrorService;
 
   constructor(private errorService: ErrorService) {
     this._errorService = errorService;
   }
+  
+  public getAllCollumnData<T>(query : string) : Promise<T[]> {
+    return new Promise<T[]>((resolve, reject) => {
+      const result: T[] = [];
 
-  public getTwitterUserIds(): Promise<ITwitterUserIds[]> {
-    return new Promise<ITwitterUserIds[]>((resolve, reject) => {
-      const result: ITwitterUserIds[] = [];
-
-      SqlHelper.executeQueryArrayResult<ITwitterUserIds>(
+      SqlHelper.executeQueryArrayResult<T>(
         this._errorService,
-        Queries.TwitterUserIds
+        query
       )
-        .then((queryResult: ITwitterUserIds[]) => {
-          queryResult.forEach((twitterUserId: ITwitterUserIds) => {
-            result.push(twitterUserId);
-          });
-
-          resolve(result);
-        })
-        .catch((error: systemError) => {
-          reject(error);
-        });
-    });
-  }
-
-  public getCanpaignHashtag(): Promise<ICanpaignHashtag[]> {
-    return new Promise<ICanpaignHashtag[]>((resolve, reject) => {
-      const result: ICanpaignHashtag[] = [];
-
-      SqlHelper.executeQueryArrayResult<ICanpaignHashtag>(
-        this._errorService,
-        Queries.CampainHashtag
-      )
-        .then((queryResult: ICanpaignHashtag[]) => {
-          queryResult.forEach((campainHashtag: ICanpaignHashtag) => {
-            result.push(campainHashtag);
+        .then((queryResult: T[]) => {
+          queryResult.forEach((aray: T) => {
+            result.push(aray);
           });
 
           resolve(result);
