@@ -1,6 +1,10 @@
 ﻿@page "/"
+@using System.Net.Http.Headers;
 @inject AuthenticationStateProvider AuthState
 @attribute [Authorize]
+@inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager NavigationManager
+
 
 <PageTitle>PromoIt</PageTitle>
 
@@ -9,13 +13,29 @@ You can only see this content if you're authenticated.
 <br />
 <img src="@Picture">
 
-@code { 
+
+
+@code {
     private string Username = "Anonymous User";
     private string Picture = "";
+
+    private async Task UserExists()
+    {
+        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+        HttpClient http = new HttpClient();
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        bool userExists = await http.GetFromJsonAsync<bool>("https://localhost:7096/api/Users");
+        if (!userExists)
+        {
+            NavigationManager.NavigateTo("/register");
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         var state = await AuthState.GetAuthenticationStateAsync();
+
+        UserExists();
 
         Username = state.User.Identity.Name ?? string.Empty;
 
