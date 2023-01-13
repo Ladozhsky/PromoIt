@@ -7,6 +7,7 @@ namespace APIPRromoIt.ModelsDto
         public int ProductId { get; set; }
         public string ProductName { get; set; } = null!;
         public int Price { get; set; }
+        public int CompanyId { get; set; }
         public string? Image { get; set; }
     }
 }
