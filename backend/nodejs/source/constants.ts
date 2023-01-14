@@ -15,11 +15,11 @@ export class Queries {
 
     public static Retweets: string = "SELECT * FROM retweet";
     public static RetweetsByUserId: string = "SELECT * FROM retweet WHERE user_id = ?";
-    public static AddRetweet: string = "INSERT retweet (twitt_id, twitter_user_id, retweets, campaign, parsing_date) VALUES (?, ?, ?, ?, ?)";
+    public static AddRetweet: string = "INSERT retweet (twitt_id, twitter_user_id, campaign, retweets, parsing_date, creation_date, update_date, create_by_user, update_by_user, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     //requests for twitter parsing and ingection
     public static TwitterUserIds: string = "SELECT twitter_user_id FROM twitter_accounts";
-    public static CampainHashtag: string = "SELECT hashtag FROM campaign";
+    public static CampainHashtag: string = "SELECT hashtag, campaign_name FROM campaign";
 
 }
 

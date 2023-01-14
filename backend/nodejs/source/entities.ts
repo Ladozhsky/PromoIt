@@ -25,9 +25,20 @@ export interface company {
 export interface retweet {
     twitt_id: string;
     twitter_user_id: string ;
+    campaign: string;    
     retweets: number;
-    campaign: string;
     parsing_date: Date;
+    creation_date: Date;
+    update_date: Date;
+    create_by_user: string;   
+    update_by_user: string;   
+    status: number;   
+}
+
+export interface twitterUserId {
+    user_id: number;
+    twitter_username: string;
+    twitter_user_id: string;
 }
 
 export interface twitterUserId {
