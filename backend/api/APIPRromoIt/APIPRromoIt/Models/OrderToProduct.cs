@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace APIPRromoIt.Models
 {
+    [NotMapped]
     public partial class OrderToProduct
     {
         public int OrderId { get; set; }
