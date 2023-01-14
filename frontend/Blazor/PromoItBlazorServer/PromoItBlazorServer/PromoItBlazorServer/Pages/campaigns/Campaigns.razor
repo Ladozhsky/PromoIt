@@ -5,6 +5,7 @@
 @using System.Net.Http.Json
 @using System.Collections.Generic
 @using System.Net.Http.Headers;
+@inject NavigationManager NavigationManager
 @inject IHttpContextAccessor HttpContextAccessor
 
 
@@ -20,6 +21,7 @@
             <th>Description</th>
             <th>Company</th>
             <th>Date of create</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -31,6 +33,7 @@
                         <td>@campaign.Description</td>
                         <td>@campaign.CompanyName</td>
                         <td>@campaign.CreateDate.ToShortDateString()</td>
+                        <td><button class="btn btn-info" @onclick="() => NavigateToCampaign(campaign.CampaignId)">View more</button></td>
                     </tr>
         }
     </tbody>
@@ -40,7 +43,10 @@
 
     private List<CampaignDto> campaigns = new List<CampaignDto>();
 
-
+    public void NavigateToCampaign(int campaignId)
+    {
+        NavigationManager.NavigateTo($"/campaign/{campaignId}");
+    }
 
     protected override async Task OnInitializedAsync()
     {
