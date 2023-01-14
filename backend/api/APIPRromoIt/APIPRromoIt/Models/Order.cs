@@ -8,13 +8,10 @@ namespace APIPRromoIt.Models
         public int OrderId { get; set; }
         public int CampaignId { get; set; }
         public int CompanyId { get; set; }
-        public int Amount { get; set; }
-        public int ProductId { get; set; }
         public string UserId { get; set; } = null!;
 
         public virtual Campaign Campaign { get; set; } = null!;
         public virtual Company Company { get; set; } = null!;
-        public virtual Product Product { get; set; } = null!;
         public virtual User User { get; set; } = null!;
     }
 }
