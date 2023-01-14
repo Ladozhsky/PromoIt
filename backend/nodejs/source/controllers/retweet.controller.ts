@@ -48,9 +48,15 @@ const addRetweet = async (req: Request, res: Response, next: NextFunction) => {
     retweetService.addRetweet({
         twitt_id: body.twitt_id,
         twitter_user_id: body.twitter_user_id,
-        retweets: body.retweets,
         campaign: body.campaign,
-        parsing_date: body.parsing_date
+        retweets: body.retweets,
+        parsing_date: body.parsing_date,
+        creation_date: body.creation_date,
+        update_date: body.update_date,
+        create_by_user: body.create_by_user,
+        update_by_user: body.update_by_user,
+        status: body.status
+        
     })
         .then((result: retweet) => {
             return res.status(200).json(result);

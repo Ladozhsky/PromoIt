@@ -5,11 +5,17 @@ import { SqlHelper } from "../helpers/sql.helper";
 import { ErrorService } from "./error.service";
 
 interface localRetweet {
+  retweet_id: number;
   twitt_id: string;
-  twitter_user_id: string;
+  twitter_user_id: string ;
+  campaign: string;    
   retweets: number;
-  campaign: string;
   parsing_date: Date;
+  creation_date: Date;
+  update_date: Date;
+  create_by_user: string;   
+  update_by_user: string;   
+  status: number;   
 }
 
 interface IRetweetService {
@@ -76,9 +82,14 @@ export class RetweetService implements IRetweetService {
         retweet,
         retweet.twitt_id,
         retweet.twitter_user_id,
-        retweet.retweets,
         retweet.campaign,
-        retweet.parsing_date
+        retweet.retweets,
+        retweet.parsing_date,
+        retweet.creation_date,
+        retweet.update_date,
+        retweet.create_by_user,
+        retweet.update_by_user,
+        retweet.status,
       )
       .then((result: retweet) => {
         resolve(result);
@@ -96,6 +107,11 @@ export class RetweetService implements IRetweetService {
       retweets: local.retweets,
       campaign: local.campaign,
       parsing_date: local.parsing_date,
+      creation_date: local.creation_date,
+      update_date: local.update_date,
+      create_by_user: local.create_by_user,
+      update_by_user: local.update_by_user,
+      status: local.status,
     };
   }
 }
