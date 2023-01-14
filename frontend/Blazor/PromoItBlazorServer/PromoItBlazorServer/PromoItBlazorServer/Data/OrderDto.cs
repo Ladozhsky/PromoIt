@@ -1,6 +1,4 @@
-﻿using APIPRromoIt.Models;
-
-namespace APIPRromoIt.ModelsDto
+﻿namespace PromoItBlazorServer.Data
 {
     public partial class OrderDto
     {

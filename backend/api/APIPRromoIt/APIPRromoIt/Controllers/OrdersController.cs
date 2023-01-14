@@ -21,7 +21,7 @@ namespace APIPRromoIt.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<OrderDto>> PostCampaign(OrderDto orderDto)
+        public async Task<ActionResult<OrderDto>> PostOrder(OrderDto orderDto)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("user_id")?.Value;
@@ -32,23 +32,22 @@ namespace APIPRromoIt.Controllers
 
             Order order = new Order
             {
-                OrderId = orderDto.OrderId,
                 CampaignId = orderDto.CampaignId,
-                CompanyId = orderDto.CompanyId,
+                CompanyId = (int)companyId,
                 UserId = userId,
             };
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            OrderToProduct orderToProduct = new OrderToProduct
+            ProductToOrder orderToProduct = new ProductToOrder
             {
                 OrderId = order.OrderId,
                 ProductId = orderDto.ProductId,
                 Amount = orderDto.Amount,
             };
 
-            _context.OrderToProducts.Add(orderToProduct);
+            _context.ProductToOrders.Add(orderToProduct);
             await _context.SaveChangesAsync();
 
             return Ok(orderDto);

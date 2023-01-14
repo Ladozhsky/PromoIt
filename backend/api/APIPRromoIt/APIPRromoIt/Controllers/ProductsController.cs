@@ -59,7 +59,7 @@ namespace APIPRromoIt.Controllers
             var products = await (from p in _context.Products
                             join c in _context.Companies on p.CompanyId equals c.CompanyId
                             where c.CompanyId == companyId
-                            select new { p.ProductName, p.Price, p.Image, c.CompanyName }).ToListAsync();
+                            select new { p.ProductId, p.ProductName, p.Price, p.Image, c.CompanyName }).ToListAsync();
 
             return Ok(products);
         }
