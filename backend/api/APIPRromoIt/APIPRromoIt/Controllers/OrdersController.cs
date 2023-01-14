@@ -19,6 +19,21 @@ namespace APIPRromoIt.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<Donation>>> GetDonations()
+        {
+            var donations = await (from ca in _context.Campaigns
+                                   join o in _context.Orders on ca.CampaignId equals o.CampaignId
+                                   join c in _context.Companies on o.CompanyId equals c.CompanyId
+                                   join po in _context.ProductToOrders on o.OrderId equals po.OrderId
+                                   join p in _context.Products on po.ProductId equals p.ProductId
+                                   select new { ca.CampaignName, c.CompanyName, p.ProductName, po.Amount, ca.Hashtag
+        }).ToListAsync();
+
+            return Ok(donations);
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<OrderDto>> PostOrder(OrderDto orderDto)
