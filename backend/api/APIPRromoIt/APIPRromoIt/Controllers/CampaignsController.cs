@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 using System.Security.Claims;
 
 namespace APIPRromoIt.Controllers
@@ -23,7 +24,12 @@ namespace APIPRromoIt.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<CampaignDto>>> GetCampaigns()
         {
-            return await _context.Campaigns.Select(c => CampaignToTDO(c)).ToListAsync();
+            var campaigns = await (from ca in _context.Campaigns
+                                  join c in _context.Companies on ca.CompanyId equals c.CompanyId
+                                  select new { ca.CampaignName, ca.Hashtag, ca.Description, c.CompanyName, ca.CreateDate }).ToListAsync();
+
+            return Ok(campaigns);
+            //return await _context.Campaigns.Select(c => CampaignToTDO(c)).ToListAsync();
         }
 
         // Get campaign by user id

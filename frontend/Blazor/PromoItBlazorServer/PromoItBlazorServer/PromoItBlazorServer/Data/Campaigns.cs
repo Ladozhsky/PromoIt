@@ -8,6 +8,6 @@
 		public string Description { get; set; } = null!;
 		public int UserId { get; set; }
 		public DateTime CreateDate { get; set; }
-		public int CompanyId { get; set; }
+		public string CompanyName { get; set; }
 	}
 }
