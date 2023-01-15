@@ -1,8 +1,8 @@
 import * as _ from "underscore";
-import { Queries } from "../constants";
-import { systemError, retweet } from "../entities";
-import { SqlHelper } from "../helpers/sql.helper";
-import { ErrorService } from "./error.service";
+import { Queries } from "../../constants";
+import { systemError, retweet } from "../../entities";
+import { SqlHelper } from "../../helpers/sql.helper";
+import { ErrorService } from "../error.service";
 
 interface localRetweet {
   retweet_id: number;
