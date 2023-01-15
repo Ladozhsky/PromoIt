@@ -1,6 +1,6 @@
 import { systemError, retweet } from '../entities';
 import { ErrorService } from '../services/error.service';
-import { RetweetService } from '../services/retweet.services';
+import { RetweetService } from '../services/twitter-related.setvises/retweet.services';
 import {NON_EXISTENT_ID} from "../constants"
 
 const errorService: ErrorService = new ErrorService();
