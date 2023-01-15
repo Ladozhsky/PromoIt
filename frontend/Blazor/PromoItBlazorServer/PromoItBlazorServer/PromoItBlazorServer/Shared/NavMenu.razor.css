@@ -3,8 +3,9 @@
 }
 
 .top-row {
-    height: 3.5rem;
-    background-color: rgb(3, 111, 22, 0,40);
+    height: 4.45rem;
+    /*background-color: rgb(3, 111, 22, 0,40);*/
+    background-image: url("https://ltdfoto.ru/images/2023/01/15/left.png")
 }
 
 .navbar-brand {
