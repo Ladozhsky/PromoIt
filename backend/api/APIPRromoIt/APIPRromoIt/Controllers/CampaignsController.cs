@@ -156,7 +156,7 @@ namespace APIPRromoIt.Controllers
            CampaignName = campaign.CampaignName,
            Hashtag = campaign.Hashtag,
            Description = campaign.Description,
-           CompanyId = campaign.CompanyId,
+           //CompanyId = campaign.CompanyId,
            CreateDate = DateTime.Now.Date
        };
     }

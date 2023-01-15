@@ -4,8 +4,15 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-h1:focus {
+h1 {
     outline: none;
+    color: #5f6b3b;
+    font-family: 'Comic Sans MS';
+    font-weight: 900;
+}
+
+.th {
+    background-color: #5f6b3b
 }
 
 a, .btn-link {

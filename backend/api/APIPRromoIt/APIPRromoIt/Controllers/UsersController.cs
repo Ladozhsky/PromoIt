@@ -28,12 +28,13 @@ namespace APIPRromoIt.Controllers
             string userId = identity?.FindFirst("user_id")?.Value;
             string role = identity?.FindFirst("https://promoit.co.il/claims/role")?.Value;
             string email = identity?.FindFirst("https://promoit.co.il/claims/email")?.Value;
+            string twitterId = userId.Split('|')[1];
 
             User user = new User
             {
                 UserId = userId,
                 UserName = userDto.UserName,
-                Email = email,
+                Email = (email == null) ? twitterId : email,
                 Address = userDto.Address,
                 TelNumber = userDto.TelNumber,
                 Role = role,
