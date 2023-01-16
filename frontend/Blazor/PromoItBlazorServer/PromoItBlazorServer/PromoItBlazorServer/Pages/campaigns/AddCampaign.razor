@@ -45,11 +45,11 @@
         {
             string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
-            HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            HttpClient http = new HttpClient();
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 
-            HttpResponseMessage response = await client.PostAsJsonAsync("https://localhost:7096/api/Campaigns", campaign);
+            HttpResponseMessage response = await http.PostAsJsonAsync("https://localhost:7096/api/Campaigns", campaign);
             if (response.IsSuccessStatusCode)
             {
                 response.EnsureSuccessStatusCode();

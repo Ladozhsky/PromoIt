@@ -22,10 +22,11 @@
         <h2>Campaign: @donation.CampaignName</h2>
         <h2>Company: @donation.CompanyName</h2>
         <h3>Product: @donation.ProductName</h3> 
+        <h3>Price: @donation.Price</h3>
         <h3>Amount @donation.Amount</h3>
         <h1>Hashtah @donation.Hashtag</h1>
                 <a href="https://twitter.com/?lang=ru" target="_blank"><button class="btn-tweet" width="200px">Tweet</button></a>
-                <button class="btn btn-success" @onclick="() => Purchase(donation.CampaignId)">Purchase</button>
+                <button class="btn btn-success" @onclick="() => Purchase(donation.CampaignId, donation.Price)">Purchase</button>
         </div>
     }
 </div>
@@ -49,7 +50,7 @@
     //    return selectedCampaignId;
     //}
 
-    private async Task Purchase(int campaignId)
+    private async Task Purchase(int campaignId, int price)
     {
         selectedCampaignId = campaignId;
 
@@ -58,6 +59,11 @@
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         int dollarsAmount = await http.GetFromJsonAsync<int>($"https://localhost:7096/api/Purchase/{selectedCampaignId}");
+
+        if (dollarsAmount >= price)
+        {
+            //HttpResponseMessage response = await http.PostAsJsonAsync("https://localhost:7096/api/Companies", company);
+        }
     }
 
     protected override async Task OnInitializedAsync()

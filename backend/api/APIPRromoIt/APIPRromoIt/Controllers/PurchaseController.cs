@@ -1,8 +1,10 @@
 ﻿using APIPRromoIt.Models;
+using APIPRromoIt.ModelsDto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 using System.Security.Claims;
 
 namespace APIPRromoIt.Controllers
@@ -32,6 +34,32 @@ namespace APIPRromoIt.Controllers
                                              select bt.Amount).ToArrayAsync();
             int tweetsSumByCampaign = tweetsByCampaign.Sum();
             return tweetsSumByCampaign;
+        }
+
+        // Post new transaction after purchase
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult<BalanceTransactionDto>> PostBalanceTransaction(BalanceTransactionDto balanceTransactionDto)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            string userId = identity?.FindFirst("user_id")?.Value;
+            string twitterId = userId.Split('|')[1];
+
+            BalanceTransaction balanceTransaction = new BalanceTransaction
+            {
+                UserId = twitterId,
+                CampaignId = balanceTransactionDto.CampaignId,
+                Amount = -balanceTransactionDto.Amount,
+                CreateDate = DateTime.Now,
+                UpdateDate = DateTime.Now,
+                CreateByUser = userId,
+                UpdateByUser = userId
+            };
+
+            _context.BalanceTransactions.Add(balanceTransaction);
+            await _context.SaveChangesAsync();
+
+            return Ok(balanceTransaction);
         }
     }
 }
