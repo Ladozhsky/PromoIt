@@ -9,4 +9,11 @@
         public int Amount { get; set; }
 
     }
+
+    public partial class DonatedProductList
+    {
+            public string ProductName { get; set; }
+            public string CampaignName { get; set; }
+            public int Amount { get; set; }
+    }
 }
