@@ -4,8 +4,8 @@ import * as cron from 'node-cron'
 
 const retweetList : ListCreation = new ListCreation
 
-// cron.schedule('18 18 * * *', () => {
-//     addRetweets(retweetList.createListOfRetweets())
-// })
+// cron.schedule('48 19 * * *', () => {
+//      addRetweets(retweetList.createListOfRetweetsTw())
+//  })
 
 addRetweets(retweetList.createListOfRetweetsTw())

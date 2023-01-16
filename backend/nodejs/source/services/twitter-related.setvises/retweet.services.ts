@@ -1,8 +1,10 @@
 import * as _ from "underscore";
 import { Queries } from "../../constants";
-import { systemError, retweet } from "../../entities";
+import { systemError, retweet, transaction } from '../../entities';
 import { SqlHelper } from "../../helpers/sql.helper";
 import { ErrorService } from "../error.service";
+import { DateHelper } from "../../helpers/date.helper";
+
 
 interface localRetweet {
   retweet_id: number;
@@ -74,6 +76,21 @@ export class RetweetService implements IRetweetService {
     });
   }
 
+  public updateRetweetByScript(retweet_id: number): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        const updateDate: Date = new Date();
+        const sucsessfulUpdate: string = `status for retweet ${retweet_id}sucsessfuly changed to 2`;
+        SqlHelper.executeQueryNoResult(this.errorService, Queries.UpdateRetweet, false, 2, retweet_id)
+            .then(() => {
+                resolve(sucsessfulUpdate);
+            })
+            .catch((error: systemError) => {
+                reject(error);
+            });
+    });
+}
+
+
   public addRetweet(retweet: retweet): Promise<retweet> {
     return new Promise<retweet>((resolve, reject) => {
       SqlHelper.createNew(
@@ -99,6 +116,8 @@ export class RetweetService implements IRetweetService {
         });
     });
   }
+
+
 
   private parselocalRetweet(local: localRetweet): retweet {
     return {

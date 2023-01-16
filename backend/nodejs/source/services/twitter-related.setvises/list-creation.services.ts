@@ -4,10 +4,13 @@ import { retweet, transaction } from '../../entities';
 import { TwitterService } from "./twitter.services";
 import { Queries } from "../../constants";
 import {ICanpaignHashtag} from "./twitter.services"
+import { RetweetService } from '../twitter-related.setvises/retweet.services';
 
 const errorService: ErrorService = new ErrorService();
 const dbGetService: DbGetService = new DbGetService(errorService);
 const twitterService: TwitterService = new TwitterService();
+const retweetService: RetweetService = new RetweetService(errorService);
+
 
 export interface ITwitterUserIds {
     twitter_user_id: string;
@@ -47,10 +50,12 @@ export class ListCreation implements IListCreation {
             if(top2Retweet === undefined){
                 transactionArray.push(this.parselocalTransaction(lastRetweetAr[i], lastRetweetAr[i].retweets + 1, "FTP")) // FTP - first tweet posting
             }  
-
-            // if have neew retweets
+            // if have new retweets
             else if (lastRetweetAr[i].retweets - top2Retweet.retweets > 0){
                 transactionArray.push(this.parselocalTransaction(lastRetweetAr[i], lastRetweetAr[i].retweets - top2Retweet.retweets, "RC")) // RC - retweet counting
+            }
+            else {
+                retweetService.updateRetweetByScript(lastRetweetAr[i].retweet_id)
             }
         }
         return transactionArray
