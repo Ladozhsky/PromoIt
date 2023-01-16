@@ -26,7 +26,7 @@
         <h3>Amount @donation.Amount</h3>
         <h1>Hashtah @donation.Hashtag</h1>
                 <a href="https://twitter.com/?lang=ru" target="_blank"><button class="btn-tweet" width="200px">Tweet</button></a>
-                <button class="btn btn-success" @onclick="() => Purchase(donation.CampaignId, donation.Price)">Purchase</button>
+                <button class="btn btn-success" @onclick="() => Purchase(donation.CampaignId, donation.Price, donation.ProductId, donation.Amount)">Purchase</button>
         </div>
     }
 </div>
@@ -34,8 +34,12 @@
 @code {
 
     public List<DonationDto> donations = new List<DonationDto>();
+    public DonatedProductDto donatedProduct = new DonatedProductDto();
+    public BalanceTransactionDto balance = new BalanceTransactionDto();
 
     int selectedCampaignId;
+    int selectedProductId;
+    int selectedAmount;
 
     HttpClient http = new HttpClient();
 
@@ -44,15 +48,15 @@
         NavigationManager.NavigateTo($"/campaign/{campaignId}");
     }
 
-    //public int GetCampignId(int campaignId)
-    //{
-    //    selectedCampaignId = campaignId;
-    //    return selectedCampaignId;
-    //}
-
-    private async Task Purchase(int campaignId, int price)
+    private async Task Purchase(int campaignId, int price, int productId, int amount)
     {
         selectedCampaignId = campaignId;
+        donatedProduct.CampaignId = campaignId;
+        donatedProduct.ProductId = productId;
+        donatedProduct.Amount = amount;
+
+        balance.CampaignId = campaignId;
+        balance.Amount = price;
 
         string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
@@ -62,7 +66,9 @@
 
         if (dollarsAmount >= price)
         {
-            //HttpResponseMessage response = await http.PostAsJsonAsync("https://localhost:7096/api/Companies", company);
+            HttpResponseMessage response = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase", balance);
+            HttpResponseMessage responseNext = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/api/Add-donated-product", donatedProduct);
+
         }
     }
 

@@ -63,19 +63,19 @@ namespace APIPRromoIt.Controllers
         }
 
         //Post donated product by user
-        [HttpPost("{productId}/{campaignId}")]
+        [HttpPost("api/Add-donated-product")]
         [Authorize]
-        public async Task<ActionResult<DonatedProduct>> PostDonatedProduct(int productId, int campaignId, int amount)
+        public async Task<ActionResult<DonatedProduct>> PostDonatedProduct(DonatedProductDto donatedProductDto)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("user_id")?.Value;
 
             DonatedProduct donatedProduct = new DonatedProduct
             {
-                ProductId = productId,
-                CampaignId = campaignId,
+                ProductId = donatedProductDto.ProductId,
+                CampaignId = donatedProductDto.CampaignId,
                 UserId = userId,
-                Amount = amount
+                Amount = donatedProductDto.Amount
             };
 
             _context.DonatedProducts.Add(donatedProduct);
