@@ -11,6 +11,29 @@ h1 {
     font-weight: 900;
 }
 
+.card {
+    margin: 20px;
+}
+
+.btn {
+    margin: 10px;
+    font-weight: bold;
+}
+
+.btn-tweet {
+    margin: 10px;
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: white;
+    background-color: rgb(29, 155, 240);
+    border-radius: 9999px;
+    border: none;
+    padding-left: 72px;
+    padding-right: 72px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
 .th {
     background-color: #5f6b3b
 }

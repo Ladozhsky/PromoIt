@@ -7,6 +7,7 @@ namespace APIPRromoIt.Models
     {
         public Campaign()
         {
+            BalanceTransactions = new HashSet<BalanceTransaction>();
             Orders = new HashSet<Order>();
         }
 
@@ -20,6 +21,7 @@ namespace APIPRromoIt.Models
 
         public virtual Company Company { get; set; } = null!;
         public virtual User User { get; set; } = null!;
+        public virtual ICollection<BalanceTransaction> BalanceTransactions { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
     }
 }

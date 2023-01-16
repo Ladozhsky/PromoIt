@@ -28,7 +28,7 @@ namespace APIPRromoIt.Controllers
                                    join c in _context.Companies on o.CompanyId equals c.CompanyId
                                    join po in _context.ProductToOrders on o.OrderId equals po.OrderId
                                    join p in _context.Products on po.ProductId equals p.ProductId
-                                   select new { ca.CampaignName, c.CompanyName, p.ProductName, po.Amount, ca.Hashtag
+                                   select new { ca.CampaignId, ca.CampaignName, c.CompanyName, p.ProductName, po.Amount, ca.Hashtag
         }).ToListAsync();
 
             return Ok(donations);

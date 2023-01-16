@@ -16,13 +16,16 @@ namespace APIPRromoIt.Models
         {
         }
 
+        public virtual DbSet<BalanceTransaction> BalanceTransactions { get; set; } = null!;
         public virtual DbSet<Campaign> Campaigns { get; set; } = null!;
         public virtual DbSet<Company> Companies { get; set; } = null!;
         public virtual DbSet<Order> Orders { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<ProductToOrder> ProductToOrders { get; set; } = null!;
+        public virtual DbSet<Retweet> Retweets { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Tweet> Tweets { get; set; } = null!;
+        public virtual DbSet<TwitterAccount> TwitterAccounts { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<UserBalance> UserBalances { get; set; } = null!;
 
@@ -37,6 +40,51 @@ namespace APIPRromoIt.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<BalanceTransaction>(entity =>
+            {
+                entity.HasKey(e => e.TransactionId);
+
+                entity.ToTable("balance_transactions");
+
+                entity.Property(e => e.TransactionId).HasColumnName("transaction_id");
+
+                entity.Property(e => e.Amount).HasColumnName("amount");
+
+                entity.Property(e => e.CampaignId).HasColumnName("campaign_id");
+
+                entity.Property(e => e.CreateByUser)
+                    .HasMaxLength(50)
+                    .HasColumnName("create_by_user");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("create_date");
+
+                entity.Property(e => e.Reason)
+                    .HasMaxLength(50)
+                    .HasColumnName("reason");
+
+                entity.Property(e => e.RetweetId).HasColumnName("retweet_id");
+
+                entity.Property(e => e.UpdateByUser)
+                    .HasMaxLength(50)
+                    .HasColumnName("update_by_user");
+
+                entity.Property(e => e.UpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("update_date");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(50)
+                    .HasColumnName("user_id");
+
+                entity.HasOne(d => d.Campaign)
+                    .WithMany(p => p.BalanceTransactions)
+                    .HasForeignKey(d => d.CampaignId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_balance_transactions_campaign");
+            });
+
             modelBuilder.Entity<Campaign>(entity =>
             {
                 entity.ToTable("campaign");
@@ -182,6 +230,55 @@ namespace APIPRromoIt.Models
                     .HasConstraintName("FK_product_to_order_product");
             });
 
+            modelBuilder.Entity<Retweet>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("retweet");
+
+                entity.Property(e => e.Campaign)
+                    .HasMaxLength(50)
+                    .HasColumnName("campaign");
+
+                entity.Property(e => e.CreateByUser)
+                    .HasMaxLength(50)
+                    .HasColumnName("create_by_user");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("creation_date");
+
+                entity.Property(e => e.ParsingDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("parsing_date");
+
+                entity.Property(e => e.RetweetId).HasColumnName("retweet_id");
+
+                entity.Property(e => e.Retweets).HasColumnName("retweets");
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("status")
+                    .IsFixedLength();
+
+                entity.Property(e => e.TwittId)
+                    .HasMaxLength(50)
+                    .HasColumnName("twitt_id");
+
+                entity.Property(e => e.TwitterUserId)
+                    .HasMaxLength(50)
+                    .HasColumnName("twitter_user_id");
+
+                entity.Property(e => e.UpdateByUser)
+                    .HasMaxLength(50)
+                    .HasColumnName("update_by_user");
+
+                entity.Property(e => e.UpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("update_date");
+            });
+
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.ToTable("role");
@@ -198,6 +295,23 @@ namespace APIPRromoIt.Models
                 entity.ToTable("tweet");
 
                 entity.Property(e => e.TweetId).HasColumnName("tweet_id");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+            });
+
+            modelBuilder.Entity<TwitterAccount>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("twitter_accounts");
+
+                entity.Property(e => e.TwitterUserId)
+                    .HasMaxLength(50)
+                    .HasColumnName("twitter_user_id");
+
+                entity.Property(e => e.TwitterUsername)
+                    .HasMaxLength(50)
+                    .HasColumnName("twitter_username");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
             });

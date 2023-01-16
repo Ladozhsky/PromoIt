@@ -24,7 +24,8 @@
         <h3>Product: @donation.ProductName</h3> 
         <h3>Amount @donation.Amount</h3>
         <h1>Hashtah @donation.Hashtag</h1>
-                <a href="https://twitter.com/?lang=ru" target="_blank"><button class="btn btn-primary" width="200px">Tweet</button></a>
+                <a href="https://twitter.com/?lang=ru" target="_blank"><button class="btn-tweet" width="200px">Tweet</button></a>
+                <button class="btn btn-success" @onclick="() => Purchase(donation.CampaignId)">Purchase</button>
         </div>
     }
 </div>
@@ -33,16 +34,35 @@
 
     public List<DonationDto> donations = new List<DonationDto>();
 
+    int selectedCampaignId;
+
+    HttpClient http = new HttpClient();
+
     public void NavigateToCampaign(int campaignId)
     {
         NavigationManager.NavigateTo($"/campaign/{campaignId}");
     }
 
+    //public int GetCampignId(int campaignId)
+    //{
+    //    selectedCampaignId = campaignId;
+    //    return selectedCampaignId;
+    //}
+
+    private async Task Purchase(int campaignId)
+    {
+        selectedCampaignId = campaignId;
+
+        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        int dollarsAmount = await http.GetFromJsonAsync<int>($"https://localhost:7096/api/Purchase/{selectedCampaignId}");
+    }
+
     protected override async Task OnInitializedAsync()
     {
         string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
-
-        HttpClient http = new HttpClient();
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
