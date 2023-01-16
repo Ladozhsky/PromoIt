@@ -10,12 +10,10 @@ export class Queries {
     public static CampaignsByUserId: string = "SELECT * FROM campaign WHERE user_id = ?";
     public static AddCampaign: string = "INSERT campaign (campaign_name, hashtag, description, user_id, company_id) VALUES (?, ?, ?, ?, ?)";
 
-    public static Companies: string = "SELECT * FROM company";
-    public static AddCompany: string = "INSERT company (company_name, site, email, company_type) VALUES (?, ?, ?, ?)";
-
     public static Retweets: string = "SELECT * FROM retweet";
     public static RetweetsByUserId: string = "SELECT * FROM retweet WHERE user_id = ?";
     public static AddRetweet: string = "INSERT retweet (twitt_id, twitter_user_id, campaign, retweets, parsing_date, creation_date, update_date, create_by_user, update_by_user, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static UpdateRetweet: string = "UPDATE retweet SET status = ? WHERE retweet_id = ?";
 
     public static Transactions: string = "SELECT * FROM balance_transactions";
     public static TransactionsByUserId: string = "SELECT * FROM balance_transactions WHERE twitter_user_id = ?";

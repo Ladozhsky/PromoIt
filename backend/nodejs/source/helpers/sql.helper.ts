@@ -84,4 +84,39 @@ export class SqlHelper {
             });
         });
     }
+
+
+    public static executeQueryNoResult(errorService: ErrorService, query: string, ignoreNoRowsAffected: boolean, ...params: (string | number)[]): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            SqlHelper.openConnection(errorService)
+                .then((connection: Connection) => {
+                    const q: Query = connection.query(query, params, (queryError: Error | undefined) => {
+                        if (queryError) {
+                            switch (queryError.code) {
+                                case 547:
+                                    reject(errorService.getError(AppError.DeletionConflict));
+                                    break;
+                                default:
+                                    reject(errorService.getError(AppError.QueryError));
+                                    break;
+                            }
+                        }
+                    });
+
+                    q.on('rowcount', (rowCount: number) => {
+                        // If not ignoring rows affected AND ALSO rows affected equals zero then
+                        if (!ignoreNoRowsAffected && rowCount === 0) {
+                            reject(errorService.getError(AppError.NoData));
+                            return;
+                        }
+                        
+                        resolve();
+                    });
+                })
+                .catch((error: systemError) => {
+                    reject(error);
+                });
+        });
+    }
+
 }

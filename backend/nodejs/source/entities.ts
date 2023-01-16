@@ -35,6 +35,19 @@ export interface retweet {
     status: number;   
 }
 
+export interface retweet {
+    twitt_id: string;
+    twitter_user_id: string ;
+    campaign: string;    
+    retweets: number;
+    parsing_date: Date;
+    creation_date: Date;
+    update_date: Date;
+    create_by_user: string;   
+    update_by_user: string;   
+    status: number;   
+}
+
 export interface transaction {
     user_id: string ;
     campaign: string;    
