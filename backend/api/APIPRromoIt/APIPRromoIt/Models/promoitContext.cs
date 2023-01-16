@@ -19,6 +19,7 @@ namespace APIPRromoIt.Models
         public virtual DbSet<BalanceTransaction> BalanceTransactions { get; set; } = null!;
         public virtual DbSet<Campaign> Campaigns { get; set; } = null!;
         public virtual DbSet<Company> Companies { get; set; } = null!;
+        public virtual DbSet<DonatedProduct> DonatedProducts { get; set; } = null!;
         public virtual DbSet<Order> Orders { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<ProductToOrder> ProductToOrders { get; set; } = null!;
@@ -145,6 +146,41 @@ namespace APIPRromoIt.Models
                 entity.Property(e => e.Site)
                     .HasMaxLength(50)
                     .HasColumnName("site");
+            });
+
+            modelBuilder.Entity<DonatedProduct>(entity =>
+            {
+                entity.ToTable("donated_product");
+
+                entity.Property(e => e.DonatedProductId).HasColumnName("donated_product_id");
+
+                entity.Property(e => e.Amount).HasColumnName("amount");
+
+                entity.Property(e => e.CampaignId).HasColumnName("campaign_id");
+
+                entity.Property(e => e.ProductId).HasColumnName("product_id");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(100)
+                    .HasColumnName("user_id");
+
+                entity.HasOne(d => d.Campaign)
+                    .WithMany(p => p.DonatedProducts)
+                    .HasForeignKey(d => d.CampaignId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_donated_product_campaign");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.DonatedProducts)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_donated_product_product");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.DonatedProducts)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_donated_product_user");
             });
 
             modelBuilder.Entity<Order>(entity =>

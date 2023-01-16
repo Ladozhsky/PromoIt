@@ -61,5 +61,27 @@ namespace APIPRromoIt.Controllers
 
             return Ok(balanceTransaction);
         }
+
+        //Post donated product by user
+        [HttpPost("{productId}/{campaignId}")]
+        [Authorize]
+        public async Task<ActionResult<DonatedProduct>> PostDonatedProduct(int productId, int campaignId, int amount)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            string userId = identity?.FindFirst("user_id")?.Value;
+
+            DonatedProduct donatedProduct = new DonatedProduct
+            {
+                ProductId = productId,
+                CampaignId = campaignId,
+                UserId = userId,
+                Amount = amount
+            };
+
+            _context.DonatedProducts.Add(donatedProduct);
+            await _context.SaveChangesAsync();
+
+            return Ok(donatedProduct);
+        }
     }
 }
