@@ -17,5 +17,6 @@ namespace APIPRromoIt.ModelsDto
         public string ProductName { get; set; }
         public int Amout { get; set; }
         public string Hashtag { get; set; }
+        public int Quantity { get; set; }
     }
 }

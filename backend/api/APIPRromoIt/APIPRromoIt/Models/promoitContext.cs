@@ -193,6 +193,10 @@ namespace APIPRromoIt.Models
 
                 entity.Property(e => e.CompanyId).HasColumnName("company_id");
 
+                entity.Property(e => e.Quantity)
+                    .HasColumnName("quantity")
+                    .HasDefaultValueSql("((1))");
+
                 entity.Property(e => e.UserId)
                     .HasMaxLength(100)
                     .HasColumnName("user_id");

@@ -27,20 +27,19 @@
         <h3>Amount @donation.Amount</h3>
         <h1>Hashtah @donation.Hashtag</h1>
                 <a href="https://twitter.com/?lang=ru" target="_blank"><button class="btn-tweet">Tweet</button></a>
-                <button class="btn btn-id" @onclick="@Increment">+</button>
-                    <input type=number @bind-value="quantity" class="quantity">
-                <button class="btn btn-id" @onclick="@Decrement">-</button>
-                <button class="btn btn-success" @onclick="() => Purchase(donation.CampaignId, donation.Price, donation.ProductId, donation.Amount)">Purchase</button>
+                <button class="btn btn-id" @onclick="() => Increment(donation)">+</button>
+                    <input type=number @bind-value="@donation.Quantity" class="quantity">
+                <button class="btn btn-id" @onclick="() => Decrement(donation)">-</button>
+                <button class="btn btn-success" @onclick="() => Purchase(donation.CampaignId, donation.Price, donation.ProductId, donation.Quantity)">Purchase</button>
         </div>
     }
 </div>
 
 @code {
-
     public List<DonationDto> donations = new List<DonationDto>();
     public DonatedProductDto donatedProduct = new DonatedProductDto();
     public BalanceTransactionDto balance = new BalanceTransactionDto();
-    private int quantity = 1;
+    //public DonationDto donation = new DonationDto();
 
     HttpClient http = new HttpClient();
 
@@ -49,27 +48,27 @@
         NavigationManager.NavigateTo($"/campaign/{campaignId}");
     }
 
-    private void Increment()
+    private void Increment(DonationDto donation)
     {
-        quantity++;
+        donation.Quantity++;
     }
 
-    private void Decrement()
+    private void Decrement(DonationDto donation)
     {
-        if (quantity >= 2)
-            quantity--;
-        else quantity = 1;
+        if (donation.Quantity >= 2)
+            donation.Quantity--;
+        else donation.Quantity = 1;
     }
 
-    private async Task Purchase(int campaignId, int price, int productId, int amount)
+    private async Task Purchase(int campaignId, int price, int productId, int quantity)
     {
         int selectedCampaignId = campaignId;
         donatedProduct.CampaignId = campaignId;
         donatedProduct.ProductId = productId;
-        donatedProduct.Amount = amount;
+        donatedProduct.Amount = quantity;
 
         balance.CampaignId = campaignId;
-        balance.Amount = price;
+        balance.Amount = price * quantity;
 
         string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
