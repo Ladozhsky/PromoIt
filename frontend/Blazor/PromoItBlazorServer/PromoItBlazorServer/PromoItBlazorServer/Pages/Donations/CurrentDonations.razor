@@ -7,6 +7,7 @@
 @using System.Net.Http.Headers;
 @inject NavigationManager NavigationManager
 @inject IHttpContextAccessor HttpContextAccessor
+@inject IJSRuntime JSRuntime
 
 
 <PageTitle>Current donations</PageTitle>
@@ -25,7 +26,10 @@
         <h3>Price: @donation.Price</h3>
         <h3>Amount @donation.Amount</h3>
         <h1>Hashtah @donation.Hashtag</h1>
-                <a href="https://twitter.com/?lang=ru" target="_blank"><button class="btn-tweet" width="200px">Tweet</button></a>
+                <a href="https://twitter.com/?lang=ru" target="_blank"><button class="btn-tweet">Tweet</button></a>
+                <button class="btn btn-id" @onclick="@Increment">+</button>
+                    <input type=number @bind-value="quantity" class="quantity">
+                <button class="btn btn-id" @onclick="@Decrement">-</button>
                 <button class="btn btn-success" @onclick="() => Purchase(donation.CampaignId, donation.Price, donation.ProductId, donation.Amount)">Purchase</button>
         </div>
     }
@@ -36,10 +40,7 @@
     public List<DonationDto> donations = new List<DonationDto>();
     public DonatedProductDto donatedProduct = new DonatedProductDto();
     public BalanceTransactionDto balance = new BalanceTransactionDto();
-
-    int selectedCampaignId;
-    int selectedProductId;
-    int selectedAmount;
+    private int quantity = 1;
 
     HttpClient http = new HttpClient();
 
@@ -48,9 +49,21 @@
         NavigationManager.NavigateTo($"/campaign/{campaignId}");
     }
 
+    private void Increment()
+    {
+        quantity++;
+    }
+
+    private void Decrement()
+    {
+        if (quantity >= 2)
+            quantity--;
+        else quantity = 1;
+    }
+
     private async Task Purchase(int campaignId, int price, int productId, int amount)
     {
-        selectedCampaignId = campaignId;
+        int selectedCampaignId = campaignId;
         donatedProduct.CampaignId = campaignId;
         donatedProduct.ProductId = productId;
         donatedProduct.Amount = amount;
@@ -68,8 +81,13 @@
         {
             HttpResponseMessage response = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase", balance);
             HttpResponseMessage responseNext = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/api/Add-donated-product", donatedProduct);
-
+            NavigationManager.NavigateTo("/thanks");
         }
+        else
+        {
+            await JSRuntime.InvokeAsync<string>("alert", "You don't have enough money to buy this product");
+        }
+
     }
 
     protected override async Task OnInitializedAsync()
