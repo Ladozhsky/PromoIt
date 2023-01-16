@@ -11,5 +11,8 @@
         public int Amount { get; set; }
         public string Hashtag { get; set; }
         public int Quantity { get; set; }
+        public int OrderId { get; set; }
     }
+
+
 }

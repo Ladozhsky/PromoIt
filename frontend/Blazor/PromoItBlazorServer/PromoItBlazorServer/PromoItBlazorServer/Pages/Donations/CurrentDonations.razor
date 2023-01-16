@@ -27,10 +27,14 @@
         <h3>Amount @donation.Amount</h3>
         <h1>Hashtah @donation.Hashtag</h1>
                 <a href="https://twitter.com/?lang=ru" target="_blank"><button class="btn-tweet">Tweet</button></a>
+                <div style="align-item: center">
                 <button class="btn btn-id" @onclick="() => Increment(donation)">+</button>
-                    <input type=number @bind-value="@donation.Quantity" class="quantity">
+                </div>
+                        <h3>@donation.Quantity</h3>
+                <div style="align-item: center">
                 <button class="btn btn-id" @onclick="() => Decrement(donation)">-</button>
-                <button class="btn btn-success" @onclick="() => Purchase(donation.CampaignId, donation.Price, donation.ProductId, donation.Quantity)">Purchase</button>
+                </div>
+                <button class="btn btn-success" @onclick="() => Purchase(donation.CampaignId, donation.Price, donation.ProductId, donation.Quantity, donation.OrderId)">Purchase</button>
         </div>
     }
 </div>
@@ -39,6 +43,7 @@
     public List<DonationDto> donations = new List<DonationDto>();
     public DonatedProductDto donatedProduct = new DonatedProductDto();
     public BalanceTransactionDto balance = new BalanceTransactionDto();
+    public UpdateQuantity updateQuantity = new UpdateQuantity();
 
     HttpClient http = new HttpClient();
 
@@ -49,7 +54,9 @@
 
     private void Increment(DonationDto donation)
     {
-        donation.Quantity++;
+        if (donation.Quantity < donation.Amount)
+            donation.Quantity++;
+        else donation.Quantity = donation.Amount;
     }
 
     private void Decrement(DonationDto donation)
@@ -59,7 +66,7 @@
         else donation.Quantity = 1;
     }
 
-    private async Task Purchase(int campaignId, int price, int productId, int quantity)
+    private async Task Purchase(int campaignId, int price, int productId, int quantity, int orderId)
     {
         int selectedCampaignId = campaignId;
         donatedProduct.CampaignId = campaignId;
@@ -68,6 +75,8 @@
 
         balance.CampaignId = campaignId;
         balance.Amount = price * quantity;
+
+        updateQuantity.Quantity = quantity;
 
         string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
@@ -78,7 +87,9 @@
         if (dollarsAmount >= price)
         {
             HttpResponseMessage response = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase", balance);
-            HttpResponseMessage responseNext = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/api/Add-donated-product", donatedProduct);
+            HttpResponseMessage response2 = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/api/Add-donated-product", donatedProduct);
+            HttpResponseMessage response3 = await http.PutAsJsonAsync($"https://localhost:7096/api/Orders/{orderId}", updateQuantity);
+            
             NavigationManager.NavigateTo("/thanks");
         }
         else
