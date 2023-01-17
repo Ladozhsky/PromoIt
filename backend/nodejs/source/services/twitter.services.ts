@@ -3,6 +3,7 @@ import { client} from "../constants"
 import { TweetV2, TweetSearchRecentV2Paginator, UserV2Result} from "twitter-api-v2";
 import { ErrorService } from "./error.service";
 
+
 interface ITwitterService {
     searchTweetsByIdHashtag(userId : string , campaignsData : campaignIdHashtag): Promise<retweet[]>;
   }
@@ -45,6 +46,7 @@ export class TwitterService implements ITwitterService {
     }
 
     
+
     public async postTweet (purchase : purchase) : Promise<void> {
     try {
       const username : UserV2Result = await client.v2.user(`${purchase.twitter_user_id}`);
@@ -56,8 +58,6 @@ export class TwitterService implements ITwitterService {
     }
 }
 
-
-    
     private parselocalRetweet(local: TweetV2, campaignId : number): retweet {
      
         return {

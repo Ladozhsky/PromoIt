@@ -1,0 +1,47 @@
+﻿@page "/campaign/{id:int}"
+@attribute [Authorize]
+@using PromoItBlazorServer.Data
+@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Collections.Generic
+@using System.Net.Http.Headers;
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+<PageTitle>@campaign.CampaignName</PageTitle>
+
+<h1>@campaign.CampaignName</h1>
+
+<div class="card text-center">
+    <div class="card-body">
+        <h2 class="card-title">@campaign.CampaignName</h2>
+        <h4 class="card-text">@campaign.Description</h4>
+        <h1 class="card-text">@campaign.Hashtag</h1>
+        <button class="btn btn-success" @onclick="NavigateToDonation">Donate</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int? id { get; set; }
+
+    private CampaignDto campaign = new CampaignDto();
+
+    public void NavigateToDonation()
+    {
+        NavigationManager.NavigateTo($"/add-donation/{campaign.CampaignId}");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+
+        HttpClient http = new HttpClient();
+
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        campaign = await http.GetFromJsonAsync<CampaignDto>($"https://localhost:7096/api/Campaigns/{id}");
+
+    }
+}

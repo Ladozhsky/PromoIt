@@ -1,0 +1,52 @@
+﻿@page "/current-donations"
+@attribute [Authorize]
+@using PromoItBlazorServer.Data
+@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Collections.Generic
+@using System.Net.Http.Headers;
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+<PageTitle>Current donations</PageTitle>
+
+<h1>Current donations</h1>
+<AuthorizeView>
+<h2>You can share about campaign in Twitter and buy a products for charity</h2>
+</AuthorizeView>
+<div class="card-deck">
+    @foreach (var donation in donations)
+    {
+        <div class="card text-center">
+        <h2>Campaign: @donation.CampaignName</h2>
+        <h2>Company: @donation.CompanyName</h2>
+        <h3>Product: @donation.ProductName</h3> 
+        <h3>Amount @donation.Amount</h3>
+        <h1>Hashtah @donation.Hashtag</h1>
+                <a href="https://twitter.com/?lang=ru" target="_blank"><button class="btn btn-primary" width="200px">Tweet</button></a>
+        </div>
+    }
+</div>
+
+@code {
+
+    public List<DonationDto> donations = new List<DonationDto>();
+
+    public void NavigateToCampaign(int campaignId)
+    {
+        NavigationManager.NavigateTo($"/campaign/{campaignId}");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+
+        HttpClient http = new HttpClient();
+
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        donations = await http.GetFromJsonAsync<List<DonationDto>>("https://localhost:7096/api/Orders");
+    }
+}
+

@@ -1,5 +1,6 @@
 import {DbGetService} from './db.services';
 import { ErrorService } from './error.service';
+
 import { retweet, transaction, twitterUserIds, campaignIdHashtag } from '../entities';
 import { TwitterService } from "./twitter.services";
 import { Queries } from "../constants";
@@ -8,6 +9,7 @@ import { RetweetService } from './retweet.services';
 const errorService: ErrorService = new ErrorService();
 const dbGetService: DbGetService = new DbGetService(errorService);
 const twitterService: TwitterService = new TwitterService(errorService);
+
 const retweetService: RetweetService = new RetweetService(errorService);
 
 interface localRetweet extends retweet {
@@ -32,6 +34,7 @@ export class ListCreation implements IListCreation {
     public async createListOfRetweets () : Promise<retweet[]> {
         const userIds : twitterUserIds[] = await dbGetService.getAllCollumnData(Queries.TwitterUserIds);
         const campaignsData : campaignIdHashtag[] = await dbGetService.getAllCollumnData(Queries.CampainHashtag);
+
         const retweetArray : retweet[] = [];
             for (let i = 0; i < userIds.length; i++) {
                 for (let j = 0; j < campaignsData.length; j++) {

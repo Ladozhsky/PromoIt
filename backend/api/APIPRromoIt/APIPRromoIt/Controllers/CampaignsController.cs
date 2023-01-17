@@ -26,7 +26,7 @@ namespace APIPRromoIt.Controllers
         {
             var campaigns = await (from ca in _context.Campaigns
                                   join c in _context.Companies on ca.CompanyId equals c.CompanyId
-                                  select new { ca.CampaignName, ca.Hashtag, ca.Description, c.CompanyName, ca.CreateDate }).ToListAsync();
+                                  select new { ca.CampaignId, ca.CampaignName, ca.Hashtag, ca.Description, c.CompanyName, ca.CreateDate }).ToListAsync();
 
             return Ok(campaigns);
             //return await _context.Campaigns.Select(c => CampaignToTDO(c)).ToListAsync();
@@ -156,6 +156,7 @@ namespace APIPRromoIt.Controllers
            CampaignName = campaign.CampaignName,
            Hashtag = campaign.Hashtag,
            Description = campaign.Description,
+           CompanyId = campaign.CompanyId,
            CreateDate = DateTime.Now.Date
        };
     }
