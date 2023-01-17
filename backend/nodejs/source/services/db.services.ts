@@ -1,19 +1,13 @@
 import * as _ from "underscore";
-import { Queries } from "../constants";
-import { systemError, twitterUserId, campaign } from '../entities';
+import { systemError} from '../entities';
 import { SqlHelper } from "../helpers/sql.helper";
 import { ErrorService } from "./error.service";
 
-
-export interface ITwitterUserIds {
-  twitter_user_id: string;
-}
 interface IDbService {
   getAllCollumnData<T>(query : string) : Promise<T[]>;
-
 }
-
 export class DbGetService implements IDbService {
+
   private _errorService: ErrorService;
 
   constructor(private errorService: ErrorService) {
@@ -40,7 +34,4 @@ export class DbGetService implements IDbService {
         });
     });
   }
-
-
-
 }

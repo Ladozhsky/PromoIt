@@ -1,5 +1,4 @@
-import campaignController from "./controllers/campaign.controller";
-import { AppError, CompanyType} from "./enums";
+import { AppError} from "./enums";
 
 export interface systemError {
     key: AppError;
@@ -15,17 +14,10 @@ export interface campaign {
     company_id: number;
 }
 
-export interface company {
-    company_name: string;
-    site: string;
-    email: string;
-    company_type: CompanyType;
-}
-
 export interface retweet {
     twitt_id: string;
     twitter_user_id: string ;
-    campaign: string;    
+    campaign_id: number;    
     retweets: number;
     parsing_date: Date;
     creation_date: Date;
@@ -35,10 +27,17 @@ export interface retweet {
     status: number;   
 }
 
-export interface twitterUserId {
-    user_id: number;
-    twitter_username: string;
-    twitter_user_id: string;
+export interface transaction {
+    user_id: string ;
+    campaign_id: number;    
+    amount: number;
+    reason: string;
+    retweet_id: number;
+    creation_date: Date;
+    update_date: Date;
+    create_by_user: string;   
+    update_by_user: string;     
+
 }
 
 export interface twitterUserId {
@@ -46,3 +45,20 @@ export interface twitterUserId {
     twitter_username: string;
     twitter_user_id: string;
 }
+export interface twitterUserIds {
+    twitter_user_id: string;
+  }
+
+  
+export interface campaignIdHashtag {
+    hashtag: string;
+    campaign_id: number;
+  }
+  
+  export interface purchase {
+    twitter_user_id: string;
+
+    campaign: string;    
+    company: string;
+    product: string;
+  }
