@@ -1,9 +1,12 @@
-import { systemError, retweet } from '../entities';
+import { Request, Response, NextFunction } from 'express';
+import { systemError, retweet, purchase } from '../entities';
 import { ErrorService } from '../services/error.service';
 import { RetweetService } from '../services/retweet.services';
+import { TwitterService } from '../services/twitter.services';
 
 const errorService: ErrorService = new ErrorService();
 const retweetService: RetweetService = new RetweetService(errorService);
+const tweeterService: TwitterService = new TwitterService(errorService);
 
 const addRetweets = async (retweetListInput: Promise<retweet[]>) => {
   const retweetList : retweet[] = await retweetListInput
@@ -22,11 +25,22 @@ const addRetweets = async (retweetListInput: Promise<retweet[]>) => {
       })
         .then(() => {
           return console.log(retweetList[i]);
-      })
+        })
         .catch((error: systemError) => {
           return console.log(error);
-      });
+        });
     }
   }
-
-  export default (addRetweets)
+  
+const postTweet = async (req: Request, res: Response, next: NextFunction) => {
+  const body : purchase  = req.body;
+  tweeterService.postTweet(body)
+    .then(() => {
+      return console.log(req);
+    })
+    .catch((error: systemError) => {
+      return console.log(error);
+    });
+}
+    
+export default { addRetweets, postTweet }

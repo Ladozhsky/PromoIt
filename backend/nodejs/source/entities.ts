@@ -37,6 +37,7 @@ export interface transaction {
     update_date: Date;
     create_by_user: string;   
     update_by_user: string;     
+
 }
 
 export interface twitterUserId {
@@ -44,6 +45,20 @@ export interface twitterUserId {
     twitter_username: string;
     twitter_user_id: string;
 }
-export interface ITwitterUserIds {
+export interface twitterUserIds {
     twitter_user_id: string;
+  }
+
+  
+export interface campaignIdHashtag {
+    hashtag: string;
+    campaign_id: number;
+  }
+  
+  export interface purchase {
+    twitter_user_id: string;
+
+    campaign: string;    
+    company: string;
+    product: string;
   }
