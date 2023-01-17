@@ -22,7 +22,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var campaign in campaigns)
+        @foreach (var campaign in campaigns.AsEnumerable().Reverse())
         {
                         <tr>
                             <td>@campaign.CampaignName</td>

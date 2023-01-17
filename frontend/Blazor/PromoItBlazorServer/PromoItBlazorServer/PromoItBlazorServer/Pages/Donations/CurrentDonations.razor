@@ -20,7 +20,7 @@
 <h2>You can share about campaign in Twitter and buy a products for charity</h2>
 </AuthorizeView>
 <div class="card-deck">
-    @foreach (var donation in donations)
+    @foreach (var donation in donations.AsEnumerable().Reverse())
     {
         <div class="card text-center">
         <h2>Campaign: @donation.CampaignName</h2>

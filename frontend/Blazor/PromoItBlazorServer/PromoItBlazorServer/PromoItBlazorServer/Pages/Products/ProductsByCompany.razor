@@ -22,7 +22,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var product in products)
+        @foreach (var product in products.AsEnumerable().Reverse())
         {
                             <tr>
                                 <td>@product.ProductName</td>
