@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { systemError, retweet, purchase } from '../entities';
+import { systemError, retweet, tweetParams } from '../entities';
 import { ErrorService } from '../services/error.service';
 import { RetweetService } from '../services/retweet.services';
 import { TwitterService } from '../services/twitter.services';
@@ -33,7 +33,7 @@ const addRetweets = async (retweetListInput: Promise<retweet[]>) => {
   }
   
 const postTweet = async (req: Request, res: Response, next: NextFunction) => {
-  const body : purchase  = req.body;
+  const body : tweetParams  = req.body;
   tweeterService.postTweet(body)
     .then(() => {
       return console.log(req);

@@ -55,9 +55,8 @@ export interface campaignIdHashtag {
     campaign_id: number;
   }
   
-  export interface purchase {
+  export interface tweetParams {
     twitter_user_id: string;
-
     campaign: string;    
     company: string;
     product: string;
