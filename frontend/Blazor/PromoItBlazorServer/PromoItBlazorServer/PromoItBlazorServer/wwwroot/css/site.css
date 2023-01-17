@@ -11,8 +11,21 @@ h1 {
     font-weight: 900;
 }
 
+h3 {
+    font-family: 'Comic Sans MS';
+    font-weight: 900;
+}
+
 .card {
-    margin: 20px;
+    margin: 50px;
+    background-color: lightcyan
+}
+
+.card-balance {
+    margin: 50px;
+    background-color: palegreen;
+    width: 20%;
+    margin-left: 0px;
 }
 
 .btn {

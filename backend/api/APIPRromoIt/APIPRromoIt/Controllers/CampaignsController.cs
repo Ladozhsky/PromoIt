@@ -29,7 +29,6 @@ namespace APIPRromoIt.Controllers
                                   select new { ca.CampaignId, ca.CampaignName, ca.Hashtag, ca.Description, c.CompanyName, ca.CreateDate }).ToListAsync();
 
             return Ok(campaigns);
-            //return await _context.Campaigns.Select(c => CampaignToTDO(c)).ToListAsync();
         }
 
         // Get campaign by user id
