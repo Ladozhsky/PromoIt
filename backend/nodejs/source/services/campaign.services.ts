@@ -4,14 +4,6 @@ import { systemError, campaign } from "../entities";
 import { SqlHelper } from "../helpers/sql.helper";
 import { ErrorService } from "./error.service";
 
-interface localCampaign {
-  campaign_name: string;
-  hashtag: string;
-  description: string;
-  user_id: number;
-  company_id: number;
-}
-
 interface ICampaignService {
   addCampaign(campaign: campaign): Promise<campaign>
 }
@@ -42,15 +34,5 @@ export class CampaignService implements ICampaignService {
           reject(error);
         });
     });
-  }
-
-  private parseLocalCampaign(local: localCampaign): campaign {
-    return {
-      campaign_name: local.campaign_name,
-      hashtag: local.hashtag,
-      description: local.description,
-      user_id: local.user_id,
-      company_id: local.company_id,
-    };
   }
 }

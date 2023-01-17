@@ -1,5 +1,5 @@
 import * as _ from "underscore";
-import { systemError, twitterUserId, campaign } from '../entities';
+import { systemError} from '../entities';
 import { SqlHelper } from "../helpers/sql.helper";
 import { ErrorService } from "./error.service";
 
@@ -7,7 +7,7 @@ interface IDbService {
   getAllCollumnData<T>(query : string) : Promise<T[]>;
 }
 export class DbGetService implements IDbService {
-  
+
   private _errorService: ErrorService;
 
   constructor(private errorService: ErrorService) {

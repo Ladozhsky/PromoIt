@@ -1,19 +1,16 @@
 import {DbGetService} from './db.services';
 import { ErrorService } from './error.service';
-import { retweet, transaction } from '../entities';
+import { retweet, transaction, ITwitterUserIds } from '../entities';
 import { TwitterService } from "./twitter.services";
 import { Queries } from "../constants";
 import {ICanpaignHashtag} from "./twitter.services"
 import { RetweetService } from './retweet.services';
 
+
 const errorService: ErrorService = new ErrorService();
 const dbGetService: DbGetService = new DbGetService(errorService);
 const twitterService: TwitterService = new TwitterService();
 const retweetService: RetweetService = new RetweetService(errorService);
-
-export interface ITwitterUserIds {
-    twitter_user_id: string;
-  }
 
 interface localRetweet extends retweet {
     rn: number;
@@ -42,8 +39,8 @@ export class ListCreation implements IListCreation {
     }
 
     public async createListOfTransaction () : Promise<transaction[]> {
-        const lastRetweetAr : localRetweet[] = await dbGetService.getAllCollumnData(Queries.LastRetweet);
-        const top2RetweetAr : localRetweet[] = await dbGetService.getAllCollumnData(Queries.Top2Retweet);
+        const lastRetweetAr : localRetweet[] = await dbGetService.getAllCollumnData(Queries.LastNotProseedRetweet);
+        const top2RetweetAr : localRetweet[] = await dbGetService.getAllCollumnData(Queries.MostRetweetedProsessedRetweet);
         const transactionArray : transaction[] = [];
         for (let i = 0; i < lastRetweetAr.length; i++) {
             let top2Retweet : localRetweet  = top2RetweetAr[top2RetweetAr.findIndex(item => item.twitter_user_id === lastRetweetAr[i].twitter_user_id && item.campaign_id === lastRetweetAr[i].campaign_id)];

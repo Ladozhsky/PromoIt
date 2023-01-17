@@ -1,4 +1,4 @@
-import addRetweets from "../controllers/twitter.controllet";
+import addRetweets from "../controllers/twitter.controller";
 import { ListCreation } from "../services/list-creation.services";
 import * as cron from 'node-cron'
 
