@@ -2,6 +2,8 @@
 import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
+import twitterRoutes from './routes/twitter.routes';
+
 
 const router: Express = express();
 
@@ -27,7 +29,7 @@ router.use((req, res, next) => {
 });
 
 /** Routes */
-
+router.use('/twitter/', twitterRoutes.router);
 
 /** Error handling */
 router.use((req, res, next) => {

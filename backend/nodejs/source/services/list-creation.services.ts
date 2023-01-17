@@ -1,15 +1,13 @@
 import {DbGetService} from './db.services';
 import { ErrorService } from './error.service';
-import { retweet, transaction, ITwitterUserIds } from '../entities';
+import { retweet, transaction, twitterUserIds, campaignIdHashtag } from '../entities';
 import { TwitterService } from "./twitter.services";
 import { Queries } from "../constants";
-import {ICanpaignHashtag} from "./twitter.services"
 import { RetweetService } from './retweet.services';
-
 
 const errorService: ErrorService = new ErrorService();
 const dbGetService: DbGetService = new DbGetService(errorService);
-const twitterService: TwitterService = new TwitterService();
+const twitterService: TwitterService = new TwitterService(errorService);
 const retweetService: RetweetService = new RetweetService(errorService);
 
 interface localRetweet extends retweet {
@@ -24,10 +22,16 @@ interface IListCreation {
   
 export class ListCreation implements IListCreation {
     
+    private _errorService: ErrorService;
+
+    constructor(private errorService: ErrorService) {
+      this._errorService = errorService;
+    }
+
     // Use created list of Ids and Hashtags to create list of retweets
     public async createListOfRetweets () : Promise<retweet[]> {
-        const userIds : ITwitterUserIds[] = await dbGetService.getAllCollumnData(Queries.TwitterUserIds);
-        const campaignsData : ICanpaignHashtag[] = await dbGetService.getAllCollumnData(Queries.CampainHashtag);
+        const userIds : twitterUserIds[] = await dbGetService.getAllCollumnData(Queries.TwitterUserIds);
+        const campaignsData : campaignIdHashtag[] = await dbGetService.getAllCollumnData(Queries.CampainHashtag);
         const retweetArray : retweet[] = [];
             for (let i = 0; i < userIds.length; i++) {
                 for (let j = 0; j < campaignsData.length; j++) {
