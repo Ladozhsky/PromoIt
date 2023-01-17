@@ -1,4 +1,4 @@
-import addRetweets from "../controllers/twitter.controller";
+import controller from "../controllers/twitter.controller";
 import { ListCreation } from "../services/list-creation.services";
 import { ErrorService } from '../services/error.service';
 import * as cron from 'node-cron'
@@ -10,4 +10,4 @@ const retweetList : ListCreation = new ListCreation(errorService)
 //      addRetweets(retweetList.createListOfRetweetsTw())
 //  })
 
-addRetweets(retweetList.createListOfRetweets())
+controller.addRetweets(retweetList.createListOfRetweets())
