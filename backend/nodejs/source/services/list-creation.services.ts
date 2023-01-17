@@ -11,7 +11,6 @@ const dbGetService: DbGetService = new DbGetService(errorService);
 const twitterService: TwitterService = new TwitterService();
 const retweetService: RetweetService = new RetweetService(errorService);
 
-
 export interface ITwitterUserIds {
     twitter_user_id: string;
   }
@@ -22,14 +21,14 @@ interface localRetweet extends retweet {
 }
 
 interface IListCreation {
-    createListOfRetweetsTw(): Promise<retweet[]>;
-    createListOfTransactionDemo () : Promise<transaction[]>
+    createListOfRetweets(): Promise<retweet[]>;
+    createListOfTransaction () : Promise<transaction[]>
 }
   
 export class ListCreation implements IListCreation {
     
     // Use created list of Ids and Hashtags to create list of retweets
-    public async createListOfRetweetsTw () : Promise<retweet[]> {
+    public async createListOfRetweets () : Promise<retweet[]> {
         const userIds : ITwitterUserIds[] = await dbGetService.getAllCollumnData(Queries.TwitterUserIds);
         const campaignsData : ICanpaignHashtag[] = await dbGetService.getAllCollumnData(Queries.CampainHashtag);
         const retweetArray : retweet[] = [];
@@ -42,7 +41,7 @@ export class ListCreation implements IListCreation {
         return retweetArray;
     }
 
-    public async createListOfTransactionDemo () : Promise<transaction[]> {
+    public async createListOfTransaction () : Promise<transaction[]> {
         const lastRetweetAr : localRetweet[] = await dbGetService.getAllCollumnData(Queries.LastRetweet);
         const top2RetweetAr : localRetweet[] = await dbGetService.getAllCollumnData(Queries.Top2Retweet);
         const transactionArray : transaction[] = [];
@@ -77,16 +76,6 @@ export class ListCreation implements IListCreation {
     }
 
 }
-
-
-
-// async function name  () {
-// const list : ListCreation = new ListCreation
-// const newList = await list.createListOfTransactionDemo()
-// return console.log(newList)}
-
-// name ()
-
 
 
 

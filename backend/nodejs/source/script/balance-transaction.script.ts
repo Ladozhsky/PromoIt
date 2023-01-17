@@ -10,4 +10,4 @@ const transactionList : ListCreation = new ListCreation
 // })
 
 
-addTransactions(transactionList.createListOfTransactionDemo())
+addTransactions(transactionList.createListOfTransaction())

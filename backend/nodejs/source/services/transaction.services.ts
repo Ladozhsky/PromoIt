@@ -17,8 +17,6 @@ interface localTransaction {
 }
 
 interface ITransactionService {
-  getTransactions(): Promise<transaction[]>;
-  getTransactionsByUserId(userId: number): Promise<transaction[]>;
   addTransaction(transaction: transaction): Promise<transaction>
 }
 
@@ -27,49 +25,6 @@ export class TransactionService implements ITransactionService {
 
   constructor(private errorService: ErrorService) {
     this._errorService = errorService;
-  }
-
-  public getTransactions(): Promise<transaction[]> {
-    return new Promise<transaction[]>((resolve, reject) => {
-      const result: transaction[] = [];
-
-      SqlHelper.executeQueryArrayResult<localTransaction>(
-        this._errorService,
-        Queries.Transactions
-      )
-        .then((queryResult: localTransaction[]) => {
-          queryResult.forEach((transaction: localTransaction) => {
-            result.push(this.parselocalTransaction(transaction));
-          });
-
-          resolve(result);
-        })
-        .catch((error: systemError) => {
-          reject(error);
-        });
-    });
-  }
-
-  public getTransactionsByUserId(userId: number): Promise<transaction[]> {
-    return new Promise<transaction[]>((resolve, reject) => {
-      const result: transaction[] = [];
-
-      SqlHelper.executeQueryArrayResult<localTransaction>(
-        this._errorService,
-        Queries.TransactionsByUserId,
-        userId
-      )
-        .then((queryResult: localTransaction[]) => {
-          queryResult.forEach((transaction: localTransaction) => {
-            result.push(this.parselocalTransaction(transaction));
-          });
-
-          resolve(result);
-        })
-        .catch((error: systemError) => {
-          reject(error);
-        });
-    });
   }
 
   public addTransaction(transaction: transaction): Promise<transaction> {
@@ -95,19 +50,5 @@ export class TransactionService implements ITransactionService {
           reject(error);
         });
     });
-  }
-
-  private parselocalTransaction(local: localTransaction): transaction {
-    return {
-        user_id: local.user_id,
-        campaign_id: local.campaign_id,
-        amount: local.amount,
-        reason: local.reason,
-        retweet_id: local.retweet_id,
-        creation_date: local.creation_date,
-        update_date: local.update_date,
-        create_by_user: local.create_by_user,
-        update_by_user: local.update_by_user,
-    };
   }
 }

@@ -8,4 +8,4 @@ const retweetList : ListCreation = new ListCreation
 //      addRetweets(retweetList.createListOfRetweetsTw())
 //  })
 
-addRetweets(retweetList.createListOfRetweetsTw())
+addRetweets(retweetList.createListOfRetweets())

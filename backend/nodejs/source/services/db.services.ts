@@ -5,10 +5,9 @@ import { ErrorService } from "./error.service";
 
 interface IDbService {
   getAllCollumnData<T>(query : string) : Promise<T[]>;
-
 }
-
 export class DbGetService implements IDbService {
+  
   private _errorService: ErrorService;
 
   constructor(private errorService: ErrorService) {
@@ -35,7 +34,4 @@ export class DbGetService implements IDbService {
         });
     });
   }
-
-
-
 }
