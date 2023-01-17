@@ -10,7 +10,7 @@ interface localRetweet {
   retweet_id: number;
   twitt_id: string;
   twitter_user_id: string ;
-  campaign: string;    
+  campaign_id: number;    
   retweets: number;
   parsing_date: Date;
   creation_date: Date;
@@ -99,7 +99,7 @@ export class RetweetService implements IRetweetService {
         retweet,
         retweet.twitt_id,
         retweet.twitter_user_id,
-        retweet.campaign,
+        retweet.campaign_id,
         retweet.retweets,
         retweet.parsing_date,
         retweet.creation_date,
@@ -124,7 +124,7 @@ export class RetweetService implements IRetweetService {
       twitt_id: local.twitt_id,
       twitter_user_id: local.twitter_user_id,
       retweets: local.retweets,
-      campaign: local.campaign,
+      campaign_id: local.campaign_id,
       parsing_date: local.parsing_date,
       creation_date: local.creation_date,
       update_date: local.update_date,

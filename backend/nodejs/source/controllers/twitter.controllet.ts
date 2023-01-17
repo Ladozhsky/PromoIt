@@ -1,7 +1,6 @@
 import { systemError, retweet } from '../entities';
 import { ErrorService } from '../services/error.service';
 import { RetweetService } from '../services/twitter-related.setvises/retweet.services';
-import {NON_EXISTENT_ID} from "../constants"
 
 const errorService: ErrorService = new ErrorService();
 const retweetService: RetweetService = new RetweetService(errorService);
@@ -12,7 +11,7 @@ const addRetweets = async (retweetListInput: Promise<retweet[]>) => {
       retweetService.addRetweet({
         twitt_id: retweetList[i].twitt_id,
         twitter_user_id: retweetList[i].twitter_user_id,
-        campaign: retweetList[i].campaign,
+        campaign_id: retweetList[i].campaign_id,
         retweets: retweetList[i].retweets,
         parsing_date: new Date(),
         creation_date: new Date(),

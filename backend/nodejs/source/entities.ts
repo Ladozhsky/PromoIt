@@ -25,20 +25,7 @@ export interface company {
 export interface retweet {
     twitt_id: string;
     twitter_user_id: string ;
-    campaign: string;    
-    retweets: number;
-    parsing_date: Date;
-    creation_date: Date;
-    update_date: Date;
-    create_by_user: string;   
-    update_by_user: string;   
-    status: number;   
-}
-
-export interface retweet {
-    twitt_id: string;
-    twitter_user_id: string ;
-    campaign: string;    
+    campaign_id: number;    
     retweets: number;
     parsing_date: Date;
     creation_date: Date;
@@ -50,7 +37,7 @@ export interface retweet {
 
 export interface transaction {
     user_id: string ;
-    campaign: string;    
+    campaign_id: number;    
     amount: number;
     reason: string;
     retweet_id: number;

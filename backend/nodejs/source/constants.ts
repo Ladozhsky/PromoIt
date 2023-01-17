@@ -12,21 +12,21 @@ export class Queries {
 
     public static Retweets: string = "SELECT * FROM retweet";
     public static RetweetsByUserId: string = "SELECT * FROM retweet WHERE user_id = ?";
-    public static AddRetweet: string = "INSERT retweet (twitt_id, twitter_user_id, campaign, retweets, parsing_date, creation_date, update_date, create_by_user, update_by_user, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static AddRetweet: string = "INSERT retweet (twitt_id, twitter_user_id, campaign_id, retweets, parsing_date, creation_date, update_date, create_by_user, update_by_user, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static UpdateRetweet: string = "UPDATE retweet SET status = ? WHERE retweet_id = ?";
 
     public static Transactions: string = "SELECT * FROM balance_transactions";
     public static TransactionsByUserId: string = "SELECT * FROM balance_transactions WHERE twitter_user_id = ?";
-    public static AddTransaction: string = "INSERT balance_transactions (user_id, campaign, amount, reason, retweet_id, creation_date, update_date, create_by_user, update_by_user) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static AddTransaction: string = "INSERT balance_transactions (user_id, campaign_id, amount, reason, retweet_id, creation_date, update_date, create_by_user, update_by_user) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     //requests for twitter parsing and ingection
     public static TwitterUserIds: string = "SELECT twitter_user_id FROM twitter_accounts";
-    public static CampainHashtag: string = "SELECT hashtag, campaign_name FROM campaign";
+    public static CampainHashtag: string = "SELECT hashtag, campaign_id FROM campaign";
 
     //requests for balance transaction
 
-    public static LastRetweet: string = "WITH cte AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY campaign, twitter_user_id ORDER BY parsing_date DESC) AS rn FROM [promoit].[dbo].[retweet] WHERE status = 1) SELECT * FROM CTE WHERE rn = 1";
-    public static Top2Retweet: string = "WITH cte AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY campaign, twitter_user_id ORDER BY retweets DESC) AS rn FROM [promoit].[dbo].[retweet] WHERE status = 2) SELECT * FROM CTE WHERE rn = 1";
+    public static LastRetweet: string = "WITH cte AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY campaign_id, twitter_user_id ORDER BY parsing_date DESC) AS rn FROM [promoit].[dbo].[retweet] WHERE status = 1) SELECT * FROM CTE WHERE rn = 1";
+    public static Top2Retweet: string = "WITH cte AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY campaign_id, twitter_user_id ORDER BY retweets DESC) AS rn FROM [promoit].[dbo].[retweet] WHERE status = 2) SELECT * FROM CTE WHERE rn = 1";
 }
 
 export const DB_CONNECTION_STRING: string = "server=DESKTOP-MRQ963D\\MSSQLSERVER4;Database=promoit;Trusted_Connection=Yes;Driver={ODBC Driver 17 for SQL Server}";
