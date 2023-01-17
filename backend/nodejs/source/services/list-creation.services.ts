@@ -1,10 +1,10 @@
-import {DbGetService} from '../db.services';
-import { ErrorService } from '../error.service';
-import { retweet, transaction } from '../../entities';
+import {DbGetService} from './db.services';
+import { ErrorService } from './error.service';
+import { retweet, transaction } from '../entities';
 import { TwitterService } from "./twitter.services";
-import { Queries } from "../../constants";
+import { Queries } from "../constants";
 import {ICanpaignHashtag} from "./twitter.services"
-import { RetweetService } from '../twitter-related.setvises/retweet.services';
+import { RetweetService } from './retweet.services';
 
 const errorService: ErrorService = new ErrorService();
 const dbGetService: DbGetService = new DbGetService(errorService);
