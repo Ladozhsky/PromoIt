@@ -5,6 +5,7 @@
 @using System.Net.Http.Json
 @using System.Collections.Generic
 @using System.Net.Http.Headers;
+@using System.IdentityModel.Tokens.Jwt;
 @using Tweetinvi;
 @using Tweetinvi.Models;
 @inject NavigationManager NavigationManager
@@ -37,7 +38,8 @@
                     <button class="btn btn-id" @onclick="() => Decrement(donation)"><i class="fa fa-minus"></i></button>
                 </div>
                 <div style="align-item: center">
-                <button class="btn btn-purchase" @onclick="() => Purchase(donation.CampaignId, donation.Price, donation.ProductId, donation.Quantity, donation.OrderId, donation.Amount)">Purchase</button>
+                <button class="btn btn-purchase" @onclick="() => Purchase(donation.CampaignId, donation.Price, donation.ProductId, donation.Quantity, donation.OrderId, donation.Amount,
+                    donation.CampaignName, donation.CompanyName, donation.ProductName)">Purchase</button>
                 </div>
         </div>
     }
@@ -49,6 +51,7 @@
     public BalanceTransactionDto balance = new BalanceTransactionDto();
     public UpdateQuantity updateQuantity = new UpdateQuantity();
     public UpdateStatus updateStatus = new UpdateStatus();
+    public TweetParams tweetParams = new TweetParams();
 
     HttpClient http = new HttpClient();
 
@@ -71,7 +74,7 @@
         else donation.Quantity = 1;
     }
 
-    private async Task Purchase(int campaignId, int price, int productId, int quantity, int orderId, int amount)
+    private async Task Purchase(int campaignId, int price, int productId, int quantity, int orderId, int amount, string campaignName, string companyName, string productName)
     {
         int selectedCampaignId = campaignId;
         donatedProduct.CampaignId = campaignId;
@@ -84,6 +87,18 @@
         updateQuantity.Quantity = quantity;
 
         string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        string userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "user_id").Value;
+
+        string twitterId = userId.Split('|')[1];
+
+        tweetParams.twitter_user_id = twitterId;
+        tweetParams.campaign = campaignName;
+        tweetParams.company = companyName;
+        tweetParams.product = productName;
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
