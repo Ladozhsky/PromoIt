@@ -25,7 +25,6 @@ namespace APIPRromoIt.Models
         public virtual DbSet<ProductToOrder> ProductToOrders { get; set; } = null!;
         public virtual DbSet<Retweet> Retweets { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
-        public virtual DbSet<Tweet> Tweets { get; set; } = null!;
         public virtual DbSet<TwitterAccount> TwitterAccounts { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<UserBalance> UserBalances { get; set; } = null!;
@@ -278,9 +277,7 @@ namespace APIPRromoIt.Models
 
                 entity.ToTable("retweet");
 
-                entity.Property(e => e.Campaign)
-                    .HasMaxLength(50)
-                    .HasColumnName("campaign");
+                entity.Property(e => e.CampaignId).HasColumnName("campaign_id");
 
                 entity.Property(e => e.CreateByUser)
                     .HasMaxLength(50)
@@ -330,15 +327,6 @@ namespace APIPRromoIt.Models
                 entity.Property(e => e.RoleName)
                     .HasMaxLength(30)
                     .HasColumnName("role_name");
-            });
-
-            modelBuilder.Entity<Tweet>(entity =>
-            {
-                entity.ToTable("tweet");
-
-                entity.Property(e => e.TweetId).HasColumnName("tweet_id");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
             });
 
             modelBuilder.Entity<TwitterAccount>(entity =>

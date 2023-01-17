@@ -71,6 +71,7 @@ namespace APIPRromoIt.Controllers
                 OrderId = order.OrderId,
                 ProductId = orderDto.ProductId,
                 Amount = orderDto.Amount,
+                Status = 1
             };
 
             _context.ProductToOrders.Add(orderToProduct);

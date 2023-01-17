@@ -106,15 +106,17 @@
 
         if (dollarsAmount >= price)
         {
-            HttpResponseMessage response = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase", balance);
+            HttpResponseMessage response1 = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase", balance);
             HttpResponseMessage response2 = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/api/Add-donated-product", donatedProduct);
             HttpResponseMessage response3 = await http.PutAsJsonAsync($"https://localhost:7096/api/Orders/{orderId}", updateQuantity);
+            //HttpResponseMessage response4 = await http.PostAsJsonAsync("http://localhost:5555/twitter/", tweetParams);
+
 
             NavigationManager.NavigateTo("/thanks");
 
             if (quantity == amount)
             {
-                HttpResponseMessage response4 = await http.PutAsJsonAsync($"https://localhost:7096/api/Purchase/{orderId}", updateStatus);
+                HttpResponseMessage response5 = await http.PutAsJsonAsync($"https://localhost:7096/api/Purchase/{orderId}", updateStatus);
             }
         }
         else

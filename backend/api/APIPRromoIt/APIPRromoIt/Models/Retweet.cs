@@ -8,7 +8,7 @@ namespace APIPRromoIt.Models
         public int RetweetId { get; set; }
         public string TwittId { get; set; } = null!;
         public string TwitterUserId { get; set; } = null!;
-        public string Campaign { get; set; } = null!;
+        public int CampaignId { get; set; }
         public int Retweets { get; set; }
         public DateTime ParsingDate { get; set; }
         public DateTime CreationDate { get; set; }
