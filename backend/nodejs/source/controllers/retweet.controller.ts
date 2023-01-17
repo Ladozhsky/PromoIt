@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { systemError, retweet, transaction } from '../entities';
 import { ResponseHelper } from '../helpers/response.helper';
 import { ErrorService } from '../services/error.service';
-import { RetweetService } from '../services/twitter-related.setvises/retweet.services';
+import { RetweetService } from '../services/retweet.services';
 
 const errorService: ErrorService = new ErrorService();
 const retweetService: RetweetService = new RetweetService(errorService);

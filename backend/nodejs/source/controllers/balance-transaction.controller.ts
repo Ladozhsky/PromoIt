@@ -1,7 +1,7 @@
  import { systemError, transaction } from '../entities';
 import { ErrorService } from '../services/error.service';
-import { TransactionService } from '../services/twitter-related.setvises/transaction.services';
-import { RetweetService } from '../services/twitter-related.setvises/retweet.services';
+import { TransactionService } from '../services/transaction.services';
+import { RetweetService } from '../services/retweet.services';
 
 const errorService: ErrorService = new ErrorService();
 const transactionService: TransactionService = new TransactionService(errorService);

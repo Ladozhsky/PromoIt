@@ -1,5 +1,4 @@
 import * as _ from "underscore";
-import { Queries } from "../constants";
 import { systemError, twitterUserId, campaign } from '../entities';
 import { SqlHelper } from "../helpers/sql.helper";
 import { ErrorService } from "./error.service";
