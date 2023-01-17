@@ -2,9 +2,6 @@
 import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
-import companyRoutes from './routes/company.routes';
-import campaignRoutes from './routes/campaign.routes';
-import retweetRoutes from './routes/retweet.routes';
 
 const router: Express = express();
 
@@ -30,9 +27,7 @@ router.use((req, res, next) => {
 });
 
 /** Routes */
-router.use('/promo/', campaignRoutes.router);
-router.use('/promo/', companyRoutes.router);
-router.use('/promo/', retweetRoutes.router);
+
 
 /** Error handling */
 router.use((req, res, next) => {

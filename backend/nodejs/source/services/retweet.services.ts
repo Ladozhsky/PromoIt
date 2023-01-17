@@ -1,25 +1,10 @@
 import * as _ from "underscore";
 import { Queries } from "../constants";
-import { systemError, retweet, transaction } from '../entities';
+import { systemError, retweet } from '../entities';
 import { SqlHelper } from "../helpers/sql.helper";
 import { ErrorService } from "./error.service";
 
-interface localRetweet {
-  retweet_id: number;
-  twitt_id: string;
-  twitter_user_id: string ;
-  campaign_id: number;    
-  retweets: number;
-  parsing_date: Date;
-  creation_date: Date;
-  update_date: Date;
-  create_by_user: string;   
-  update_by_user: string;   
-  status: number;   
-}
-
 interface IRetweetService {
-  getRetweets(): Promise<retweet[]>;
   addRetweet(retweet: retweet): Promise<retweet>
 }
 
@@ -28,27 +13,6 @@ export class RetweetService implements IRetweetService {
 
   constructor(private errorService: ErrorService) {
     this._errorService = errorService;
-  }
-
-  public getRetweets(): Promise<retweet[]> {
-    return new Promise<retweet[]>((resolve, reject) => {
-      const result: retweet[] = [];
-
-      SqlHelper.executeQueryArrayResult<localRetweet>(
-        this._errorService,
-        Queries.Retweets
-      )
-        .then((queryResult: localRetweet[]) => {
-          queryResult.forEach((retweet: localRetweet) => {
-            result.push(this.parselocalRetweet(retweet));
-          });
-
-          resolve(result);
-        })
-        .catch((error: systemError) => {
-          reject(error);
-        });
-    });
   }
 
   public updateRetweetByScript(retweet_id: number): Promise<string> {
@@ -90,21 +54,5 @@ export class RetweetService implements IRetweetService {
         });
     });
   }
-
-
-
-  private parselocalRetweet(local: localRetweet): retweet {
-    return {
-      twitt_id: local.twitt_id,
-      twitter_user_id: local.twitter_user_id,
-      retweets: local.retweets,
-      campaign_id: local.campaign_id,
-      parsing_date: local.parsing_date,
-      creation_date: local.creation_date,
-      update_date: local.update_date,
-      create_by_user: local.create_by_user,
-      update_by_user: local.update_by_user,
-      status: local.status,
-    };
-  }
 }
+

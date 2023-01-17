@@ -4,18 +4,6 @@ import { systemError, transaction } from "../entities";
 import { SqlHelper } from "../helpers/sql.helper";
 import { ErrorService } from "./error.service";
 
-interface localTransaction {
-    user_id: string ;
-    campaign_id: number;    
-    amount: number;
-    reason: string;
-    retweet_id: number;
-    creation_date: Date;
-    update_date: Date;
-    create_by_user: string;   
-    update_by_user: string;     
-}
-
 interface ITransactionService {
   addTransaction(transaction: transaction): Promise<transaction>
 }
