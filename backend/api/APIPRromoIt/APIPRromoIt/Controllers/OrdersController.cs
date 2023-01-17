@@ -28,6 +28,7 @@ namespace APIPRromoIt.Controllers
                                    join c in _context.Companies on o.CompanyId equals c.CompanyId
                                    join po in _context.ProductToOrders on o.OrderId equals po.OrderId
                                    join p in _context.Products on po.ProductId equals p.ProductId
+                                   where po.Status == 1
                                    select new { ca.CampaignId, ca.CampaignName, c.CompanyName, p.ProductName, p.ProductId, p.Price, po.Amount, ca.Hashtag, o.Quantity, o.OrderId
         }).ToListAsync();
 

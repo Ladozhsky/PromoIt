@@ -257,6 +257,8 @@ namespace APIPRromoIt.Models
 
                 entity.Property(e => e.ProductId).HasColumnName("product_id");
 
+                entity.Property(e => e.Status).HasColumnName("status");
+
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.ProductToOrders)
                     .HasForeignKey(d => d.OrderId)

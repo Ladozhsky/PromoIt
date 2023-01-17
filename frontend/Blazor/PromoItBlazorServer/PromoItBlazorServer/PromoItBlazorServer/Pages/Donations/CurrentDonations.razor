@@ -9,7 +9,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @inject IJSRuntime JSRuntime
 
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <PageTitle>Current donations</PageTitle>
 
 <h1>Current donations</h1>
@@ -28,13 +28,15 @@
         <h1>Hashtah @donation.Hashtag</h1>
                 <a href="https://twitter.com/?lang=ru" target="_blank"><button class="btn-tweet">Tweet</button></a>
                 <div style="align-item: center">
-                <button class="btn btn-id" @onclick="() => Increment(donation)">+</button>
+                <button class="btn btn-id" @onclick="() => Increment(donation)"><i class="fa fa-plus"></i></button>
                 </div>
-                        <h3>@donation.Quantity</h3>
+                        <h1>@donation.Quantity</h1>
+                <div style="align-item: center align-text: center">
+                    <button class="btn btn-id" @onclick="() => Decrement(donation)"><i class="fa fa-minus"></i></button>
+                </div>
                 <div style="align-item: center">
-                <button class="btn btn-id" @onclick="() => Decrement(donation)">-</button>
+                <button class="btn btn-purchase" @onclick="() => Purchase(donation.CampaignId, donation.Price, donation.ProductId, donation.Quantity, donation.OrderId, donation.Amount)">Purchase</button>
                 </div>
-                <button class="btn btn-success" @onclick="() => Purchase(donation.CampaignId, donation.Price, donation.ProductId, donation.Quantity, donation.OrderId)">Purchase</button>
         </div>
     }
 </div>
@@ -44,6 +46,7 @@
     public DonatedProductDto donatedProduct = new DonatedProductDto();
     public BalanceTransactionDto balance = new BalanceTransactionDto();
     public UpdateQuantity updateQuantity = new UpdateQuantity();
+    public UpdateStatus updateStatus = new UpdateStatus();
 
     HttpClient http = new HttpClient();
 
@@ -66,7 +69,7 @@
         else donation.Quantity = 1;
     }
 
-    private async Task Purchase(int campaignId, int price, int productId, int quantity, int orderId)
+    private async Task Purchase(int campaignId, int price, int productId, int quantity, int orderId, int amount)
     {
         int selectedCampaignId = campaignId;
         donatedProduct.CampaignId = campaignId;
@@ -89,14 +92,18 @@
             HttpResponseMessage response = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase", balance);
             HttpResponseMessage response2 = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/api/Add-donated-product", donatedProduct);
             HttpResponseMessage response3 = await http.PutAsJsonAsync($"https://localhost:7096/api/Orders/{orderId}", updateQuantity);
-            
+
             NavigationManager.NavigateTo("/thanks");
+
+            if (quantity == amount)
+            {
+                HttpResponseMessage response4 = await http.PutAsJsonAsync($"https://localhost:7096/api/Purchase/{orderId}", updateStatus);
+            }
         }
         else
         {
             await JSRuntime.InvokeAsync<string>("alert", "You don't have enough money to buy this product");
         }
-
     }
 
     protected override async Task OnInitializedAsync()

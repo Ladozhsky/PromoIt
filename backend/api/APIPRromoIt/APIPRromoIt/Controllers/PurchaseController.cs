@@ -83,5 +83,16 @@ namespace APIPRromoIt.Controllers
 
             return Ok(donatedProduct);
         }
+
+        // Update Status or donation
+        [HttpPut("{orderId}")]
+        [Authorize]
+        public async Task<ActionResult<Donation>> UpdateAmount(int orderId)
+        {
+            var currentDonation = _context.ProductToOrders.Single(p => p.OrderId == orderId);
+            currentDonation.Status = 2;
+            _context.SaveChanges();
+            return Ok();
+        }
     }
 }

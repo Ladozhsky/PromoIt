@@ -12,4 +12,9 @@
     {
         public int Quantity { get; set; }
     }
+
+    public partial class UpdateStatus
+    {
+        public int Status { get; set; }
+    }
 }
