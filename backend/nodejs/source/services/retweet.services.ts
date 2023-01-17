@@ -20,7 +20,6 @@ interface localRetweet {
 
 interface IRetweetService {
   getRetweets(): Promise<retweet[]>;
-  getRetweetsByUserId(userId: number): Promise<retweet[]>;
   addRetweet(retweet: retweet): Promise<retweet>
 }
 
@@ -52,42 +51,19 @@ export class RetweetService implements IRetweetService {
     });
   }
 
-  public getRetweetsByUserId(userId: number): Promise<retweet[]> {
-    return new Promise<retweet[]>((resolve, reject) => {
-      const result: retweet[] = [];
-
-      SqlHelper.executeQueryArrayResult<localRetweet>(
-        this._errorService,
-        Queries.RetweetsByUserId,
-        userId
-      )
-        .then((queryResult: localRetweet[]) => {
-          queryResult.forEach((retweet: localRetweet) => {
-            result.push(this.parselocalRetweet(retweet));
-          });
-
-          resolve(result);
+  public updateRetweetByScript(retweet_id: number): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      const updateDate: Date = new Date();
+      const sucsessfulUpdate: string = `status for retweet ${retweet_id}sucsessfuly changed to 2`;
+      SqlHelper.executeQueryNoResult(this.errorService, Queries.UpdateRetweet, false, 2, retweet_id)
+        .then(() => {
+          resolve(sucsessfulUpdate);
         })
         .catch((error: systemError) => {
           reject(error);
         });
     });
   }
-
-  public updateRetweetByScript(retweet_id: number): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-        const updateDate: Date = new Date();
-        const sucsessfulUpdate: string = `status for retweet ${retweet_id}sucsessfuly changed to 2`;
-        SqlHelper.executeQueryNoResult(this.errorService, Queries.UpdateRetweet, false, 2, retweet_id)
-            .then(() => {
-                resolve(sucsessfulUpdate);
-            })
-            .catch((error: systemError) => {
-                reject(error);
-            });
-    });
-}
-
 
   public addRetweet(retweet: retweet): Promise<retweet> {
     return new Promise<retweet>((resolve, reject) => {
