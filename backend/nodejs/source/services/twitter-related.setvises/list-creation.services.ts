@@ -27,6 +27,7 @@ interface IListCreation {
 }
   
 export class ListCreation implements IListCreation {
+    
     // Use created list of Ids and Hashtags to create list of retweets
     public async createListOfRetweetsTw () : Promise<retweet[]> {
         const userIds : ITwitterUserIds[] = await dbGetService.getAllCollumnData(Queries.TwitterUserIds);
@@ -46,7 +47,7 @@ export class ListCreation implements IListCreation {
         const top2RetweetAr : localRetweet[] = await dbGetService.getAllCollumnData(Queries.Top2Retweet);
         const transactionArray : transaction[] = [];
         for (let i = 0; i < lastRetweetAr.length; i++) {
-            let top2Retweet : localRetweet  = top2RetweetAr[top2RetweetAr.findIndex(item => item.twitter_user_id === lastRetweetAr[i].twitter_user_id && item.campaign === lastRetweetAr[i].campaign)];
+            let top2Retweet : localRetweet  = top2RetweetAr[top2RetweetAr.findIndex(item => item.twitter_user_id === lastRetweetAr[i].twitter_user_id && item.campaign_id === lastRetweetAr[i].campaign_id)];
             if(top2Retweet === undefined){
                 transactionArray.push(this.parselocalTransaction(lastRetweetAr[i], lastRetweetAr[i].retweets + 1, "FTP")) // FTP - first tweet posting
             }  
@@ -64,7 +65,7 @@ export class ListCreation implements IListCreation {
     private parselocalTransaction(local: localRetweet, amount: number, reason: string): transaction {
         return {
             user_id: local.twitter_user_id,
-            campaign: local.campaign,   
+            campaign_id: local.campaign_id,   
             amount: amount,
             reason: reason,
             retweet_id: local.retweet_id,

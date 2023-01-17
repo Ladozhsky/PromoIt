@@ -10,7 +10,7 @@ export interface IUserHashtag {
 
 export interface ICanpaignHashtag {
   hashtag: string;
-  campaign_name: string;
+  campaign_id: number;
 }
 
 interface ITwitterService {
@@ -38,11 +38,11 @@ export class TwitterService implements ITwitterService {
               }
             }
             if (retweetedCheck === false){
-              retweetArray.push(this.parselocalRetweet(tweet, campaignsData.campaign_name))
+              retweetArray.push(this.parselocalRetweet(tweet, campaignsData.campaign_id))
 
             }   
           }
-          else retweetArray.push(this.parselocalRetweet(tweet, campaignsData.campaign_name))
+          else retweetArray.push(this.parselocalRetweet(tweet, campaignsData.campaign_id))
         }
 
         return retweetArray
@@ -51,12 +51,12 @@ export class TwitterService implements ITwitterService {
     }
 
     
-    private parselocalRetweet(local: TweetV2, lCampaign : string): retweet {
+    private parselocalRetweet(local: TweetV2, campaignId : number): retweet {
      
         return {
           twitt_id: local.id,
           twitter_user_id: local.author_id as string,
-          campaign: lCampaign,
+          campaign_id: campaignId,
           retweets: local.public_metrics?.retweet_count as number,
           parsing_date: new Date(),
           creation_date: new Date(),

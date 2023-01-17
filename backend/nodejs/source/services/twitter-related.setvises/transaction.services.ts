@@ -6,7 +6,7 @@ import { ErrorService } from "../error.service";
 
 interface localTransaction {
     user_id: string ;
-    campaign: string;    
+    campaign_id: number;    
     amount: number;
     reason: string;
     retweet_id: number;
@@ -79,7 +79,7 @@ export class TransactionService implements ITransactionService {
         Queries.AddTransaction,
         transaction,
         transaction.user_id,
-        transaction.campaign,
+        transaction.campaign_id,
         transaction.amount,
         transaction.reason,
         transaction.retweet_id,
@@ -100,7 +100,7 @@ export class TransactionService implements ITransactionService {
   private parselocalTransaction(local: localTransaction): transaction {
     return {
         user_id: local.user_id,
-        campaign: local.campaign,
+        campaign_id: local.campaign_id,
         amount: local.amount,
         reason: local.reason,
         retweet_id: local.retweet_id,

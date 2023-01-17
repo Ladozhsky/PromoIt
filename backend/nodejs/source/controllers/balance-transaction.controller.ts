@@ -12,7 +12,7 @@ const addTransactions = async (transactionListInput: Promise<transaction[]>) => 
   for (let i = 0; i < transactionList.length; i++) {
       transactionService.addTransaction({
         user_id: transactionList[i].user_id,
-        campaign: transactionList[i].campaign,
+        campaign_id: transactionList[i].campaign_id,
         amount: transactionList[i].amount,
         reason: transactionList[i].reason,
         retweet_id: transactionList[i].retweet_id,
