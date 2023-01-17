@@ -36,7 +36,7 @@
     </form>
 
 @code {
-    private List<string> companyTypes = new List<string> { "", "Business", "NPO" };
+    private List<string> companyTypes = new List<string> { "Business", "NPO" };
 
     private string ErrorMessage { get; set; }
 
@@ -49,7 +49,7 @@
 
     private List<CompanyDto> companies = new List<CompanyDto>();
 
-    HttpClient client = new HttpClient();
+    HttpClient http = new HttpClient();
 
     private async Task SubmitCompanyForm()
     {
@@ -57,9 +57,9 @@
         {
             string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            HttpResponseMessage response = await client.PostAsJsonAsync("https://localhost:7096/api/Companies", company);
+            HttpResponseMessage response = await http.PostAsJsonAsync("https://localhost:7096/api/Companies", company);
             if (response.IsSuccessStatusCode)
             {
                 response.EnsureSuccessStatusCode();

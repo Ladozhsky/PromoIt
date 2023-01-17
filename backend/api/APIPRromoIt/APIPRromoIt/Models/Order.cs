@@ -14,6 +14,7 @@ namespace APIPRromoIt.Models
         public int CampaignId { get; set; }
         public int CompanyId { get; set; }
         public string UserId { get; set; } = null!;
+        public int? Quantity { get; set; }
 
         public virtual Campaign Campaign { get; set; } = null!;
         public virtual Company Company { get; set; } = null!;

@@ -5,10 +5,14 @@
 @using System.Net.Http.Json
 @using System.Collections.Generic
 @using System.Net.Http.Headers;
+@using System.IdentityModel.Tokens.Jwt;
+@using Tweetinvi;
+@using Tweetinvi.Models;
 @inject NavigationManager NavigationManager
 @inject IHttpContextAccessor HttpContextAccessor
+@inject IJSRuntime JSRuntime
 
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <PageTitle>Current donations</PageTitle>
 
 <h1>Current donations</h1>
@@ -16,33 +20,114 @@
 <h2>You can share about campaign in Twitter and buy a products for charity</h2>
 </AuthorizeView>
 <div class="card-deck">
-    @foreach (var donation in donations)
+    @foreach (var donation in donations.AsEnumerable().Reverse())
     {
         <div class="card text-center">
         <h2>Campaign: @donation.CampaignName</h2>
         <h2>Company: @donation.CompanyName</h2>
         <h3>Product: @donation.ProductName</h3> 
+        <h3>Price: @donation.Price</h3>
         <h3>Amount @donation.Amount</h3>
         <h1>Hashtah @donation.Hashtag</h1>
-                <a href="https://twitter.com/?lang=ru" target="_blank"><button class="btn btn-primary" width="200px">Tweet</button></a>
+                <a href="https://twitter.com/?lang=ru" target="_blank"><button class="btn-tweet">Tweet</button></a>
+                <div style="align-item: center">
+                <button class="btn btn-id" @onclick="() => Increment(donation)"><i class="fa fa-plus"></i></button>
+                </div>
+                        <h1>@donation.Quantity</h1>
+                <div style="align-item: center align-text: center">
+                    <button class="btn btn-id" @onclick="() => Decrement(donation)"><i class="fa fa-minus"></i></button>
+                </div>
+                <div style="align-item: center">
+                <button class="btn btn-purchase" @onclick="() => Purchase(donation.CampaignId, donation.Price, donation.ProductId, donation.Quantity, donation.OrderId, donation.Amount,
+                    donation.CampaignName, donation.CompanyName, donation.ProductName)">Purchase</button>
+                </div>
         </div>
     }
 </div>
 
 @code {
-
     public List<DonationDto> donations = new List<DonationDto>();
+    public DonatedProductDto donatedProduct = new DonatedProductDto();
+    public BalanceTransactionDto balance = new BalanceTransactionDto();
+    public UpdateQuantity updateQuantity = new UpdateQuantity();
+    public UpdateStatus updateStatus = new UpdateStatus();
+    public TweetParams tweetParams = new TweetParams();
+
+    HttpClient http = new HttpClient();
 
     public void NavigateToCampaign(int campaignId)
     {
         NavigationManager.NavigateTo($"/campaign/{campaignId}");
     }
 
+    private void Increment(DonationDto donation)
+    {
+        if (donation.Quantity < donation.Amount)
+            donation.Quantity++;
+        else donation.Quantity = donation.Amount;
+    }
+
+    private void Decrement(DonationDto donation)
+    {
+        if (donation.Quantity >= 2)
+            donation.Quantity--;
+        else donation.Quantity = 1;
+    }
+
+    private async Task Purchase(int campaignId, int price, int productId, int quantity, int orderId, int amount, string campaignName, string companyName, string productName)
+    {
+        int selectedCampaignId = campaignId;
+        donatedProduct.CampaignId = campaignId;
+        donatedProduct.ProductId = productId;
+        donatedProduct.Amount = quantity;
+
+        balance.CampaignId = campaignId;
+        balance.Amount = price * quantity;
+
+        updateQuantity.Quantity = quantity;
+
+        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        string userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "user_id").Value;
+
+        string twitterId = userId.Split('|')[1];
+
+        tweetParams.twitter_user_id = twitterId;
+        tweetParams.campaign = campaignName;
+        tweetParams.company = companyName;
+        tweetParams.product = productName;
+
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        int dollarsAmount = await http.GetFromJsonAsync<int>($"https://localhost:7096/api/Purchase/{selectedCampaignId}");
+
+        if (dollarsAmount >= price)
+        {
+            HttpResponseMessage response1 = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase", balance);
+            HttpResponseMessage response2 = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/api/Add-donated-product", donatedProduct);
+            HttpResponseMessage response3 = await http.PutAsJsonAsync($"https://localhost:7096/api/Orders/{orderId}", updateQuantity);
+            //HttpResponseMessage response4 = await http.PostAsJsonAsync("http://localhost:5555/twitter/", tweetParams);
+
+
+            NavigationManager.NavigateTo("/thanks");
+
+            if (quantity == amount)
+            {
+                HttpResponseMessage response5 = await http.PutAsJsonAsync($"https://localhost:7096/api/Purchase/{orderId}", updateStatus);
+            }
+        }
+        else
+        {
+            await JSRuntime.InvokeAsync<string>("alert", "You don't have enough money to buy this product");
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
-
-        HttpClient http = new HttpClient();
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 

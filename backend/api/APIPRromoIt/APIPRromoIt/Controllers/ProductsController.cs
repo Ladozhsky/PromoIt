@@ -63,5 +63,21 @@ namespace APIPRromoIt.Controllers
 
             return Ok(products);
         }
+
+        [HttpGet("/api/donated-products")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<DonatedProductDto>>> GetDonatedProductsByUserId()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            string userId = identity?.FindFirst("user_id")?.Value;
+
+            var donatedProducts = await (from dp in _context.DonatedProducts
+                                  join c in _context.Campaigns on dp.CampaignId equals c.CampaignId
+                                  join p in _context.Products on dp.ProductId equals p.ProductId
+                                  where dp.UserId == userId
+                                  select new { p.ProductName, c.CampaignName, dp.Amount }).ToListAsync();
+
+            return Ok(donatedProducts);
+        }
     }
 }

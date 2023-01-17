@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.0.4" />
+    <PackageReference Include="linqtotwitter" Version="6.15.0" />
+    <PackageReference Include="TweetinviAPI" Version="5.0.4" />
   </ItemGroup>
 
 </Project>

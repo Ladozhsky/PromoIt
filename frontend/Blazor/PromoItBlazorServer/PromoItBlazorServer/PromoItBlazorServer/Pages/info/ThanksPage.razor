@@ -1,0 +1,13 @@
+﻿@page "/thanks"
+@inject NavigationManager NavigationManager
+<h1>Thank you! You made world better!</h1>
+<img src="https://www.csrjournal.com/uploads/posts/2014-07/1404982927_new241_csr_day.png" />
+<br />
+<button class="btn btn-warning" @onclick="GoBack">Back to the list</button>
+
+@code {
+	public void GoBack()
+	{
+		NavigationManager.NavigateTo("/current-donations");
+	}
+}

@@ -7,4 +7,14 @@
         public int ProductId { get; set; }
         public int Amount { get; set; }
     }
+
+    public partial class UpdateQuantity
+    {
+        public int Quantity { get; set; }
+    }
+
+    public partial class UpdateStatus
+    {
+        public int Status { get; set; }
+    }
 }

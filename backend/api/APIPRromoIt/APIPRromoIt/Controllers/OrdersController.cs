@@ -28,10 +28,21 @@ namespace APIPRromoIt.Controllers
                                    join c in _context.Companies on o.CompanyId equals c.CompanyId
                                    join po in _context.ProductToOrders on o.OrderId equals po.OrderId
                                    join p in _context.Products on po.ProductId equals p.ProductId
-                                   select new { ca.CampaignName, c.CompanyName, p.ProductName, po.Amount, ca.Hashtag
+                                   where po.Status == 1
+                                   select new { ca.CampaignId, ca.CampaignName, c.CompanyName, p.ProductName, p.ProductId, p.Price, po.Amount, ca.Hashtag, o.Quantity, o.OrderId
         }).ToListAsync();
 
             return Ok(donations);
+        }
+
+        [HttpPut("{orderId}")]
+        [Authorize]
+        public async Task<ActionResult<Donation>> UpdateAmount(int orderId, UpdateQuantity updateQuantity)
+        {
+            var productToOrder = _context.ProductToOrders.Single(p => p.OrderId == orderId);
+            productToOrder.Amount -= updateQuantity.Quantity;
+            _context.SaveChanges();
+            return Ok();
         }
 
         [HttpPost]
@@ -60,6 +71,7 @@ namespace APIPRromoIt.Controllers
                 OrderId = order.OrderId,
                 ProductId = orderDto.ProductId,
                 Amount = orderDto.Amount,
+                Status = 1
             };
 
             _context.ProductToOrders.Add(orderToProduct);

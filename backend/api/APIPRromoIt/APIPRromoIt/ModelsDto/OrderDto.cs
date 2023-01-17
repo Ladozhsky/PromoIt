@@ -17,5 +17,17 @@ namespace APIPRromoIt.ModelsDto
         public string ProductName { get; set; }
         public int Amout { get; set; }
         public string Hashtag { get; set; }
+        public int Quantity { get; set; }
+        public int OrderId { get; set; }
+    }
+
+    public partial class UpdateQuantity
+    {
+        public int Quantity { get; set; }
+    }
+
+    public partial class UpdateStatus
+    {
+        public int Status { get; set; }
     }
 }

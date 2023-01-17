@@ -1,0 +1,44 @@
+﻿@page "/my-balance"
+@attribute [Authorize]
+@using PromoItBlazorServer.Data
+@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Collections.Generic
+@using System.Net.Http.Headers;
+@using Tweetinvi;
+@using Tweetinvi.Models;
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IJSRuntime JSRuntime
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<PageTitle>My balance</PageTitle>
+
+<h1>My balance</h1>
+
+<div class="card-deck">
+    @foreach (var dollar in dollars)
+    {
+            <div class="card-balance text-center">
+                <span><h3>@dollar.CampaignName</h3></span>
+                    <span><h3>@dollar.Dollars $</h3></span>
+            </div>
+    }
+</div>
+
+@code {
+    public List<DollarsByUser> dollars = new List<DollarsByUser>();
+
+    HttpClient http = new HttpClient();
+
+    protected override async Task OnInitializedAsync()
+    {
+        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        dollars = await http.GetFromJsonAsync<List<DollarsByUser>>("https://localhost:7096/sum");
+    }
+}
+
+
