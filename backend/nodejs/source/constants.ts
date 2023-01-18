@@ -13,12 +13,12 @@ export class Queries {
 
     public static Transactions: string = "SELECT * FROM balance_transactions";
     public static TransactionsByUserId: string = "SELECT * FROM balance_transactions WHERE twitter_user_id = ?";
-    public static AddTransaction: string = "INSERT balance_transactions (user_id, campaign_id, amount, reason, retweet_id, creation_date, update_date, create_by_user, update_by_user) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static AddTransaction: string = "INSERT balance_transactions (user_id, campaign_id, amount, reason, retweet_id, create_date, update_date, create_by_user, update_by_user) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     public static TwitterUserIds: string = "SELECT email FROM [promoit].[dbo].[user] WHERE user_id LIKE 'twitter|%'";
 }
 
-export const DB_CONNECTION_STRING: string = "Server=tcp:promoit2.database.windows.net,1433;Initial Catalog=promoit3;Persist Security Info=False;User ID=Vlad;Password=Prince31dc;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+export const DB_CONNECTION_STRING: string = "server=DESKTOP-MRQ963D\\MSSQLSERVER4;Database=promoit;Trusted_Connection=Yes;Driver={ODBC Driver 17 for SQL Server}";
 
 export const client: TwitterApiReadWrite = new TwitterApiReadWrite({
   appKey: "OL3a0lj0AdyP4Yoswr9QFikM1",

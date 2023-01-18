@@ -33,7 +33,7 @@ export interface transaction {
     amount: number;
     reason: string;
     retweet_id: number;
-    creation_date: Date;
+    create_date: Date;
     update_date: Date;
     create_by_user: string;   
     update_by_user: string;     
