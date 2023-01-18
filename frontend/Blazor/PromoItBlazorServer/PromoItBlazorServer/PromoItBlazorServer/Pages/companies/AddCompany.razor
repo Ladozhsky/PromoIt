@@ -26,9 +26,10 @@
     <div>
     <label for="companytype">Choose your company type</label>
     <select id="companytype" class="form-select form-select-lg mb-3" @bind="@company.CompanyType">
+            <option value="" selected disabled></option>
             @foreach (var companyType in companyTypes)
             {
-                 <option value="@companyType">@companyType</option>
+                     <option>@companyType</option>
             }
     </select>
     </div>

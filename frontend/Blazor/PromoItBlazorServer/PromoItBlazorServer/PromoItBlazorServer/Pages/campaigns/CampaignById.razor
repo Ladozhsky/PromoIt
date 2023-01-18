@@ -18,7 +18,9 @@
         <h2 class="card-title">@campaign.CampaignName</h2>
         <h4 class="card-text">@campaign.Description</h4>
         <h1 class="card-text">@campaign.Hashtag</h1>
+        <AuthorizeView Policy="Business Representative">
         <button class="btn btn-success" @onclick="NavigateToDonation">Donate</button>
+        </AuthorizeView>
     </div>
 </div>
 
