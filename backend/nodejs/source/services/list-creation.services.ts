@@ -47,16 +47,16 @@ export class ListCreation implements IListCreation {
 
     public async createListOfTransaction () : Promise<transaction[]> {
         const lastRetweetAr : localRetweet[] = await dbGetService.getAllCollumnData(Queries.LastNotProseedRetweet);
-        const top2RetweetAr : localRetweet[] = await dbGetService.getAllCollumnData(Queries.MostRetweetedProsessedRetweet);
+        const top2RetweetAr : localRetweet[] = await dbGetService.getAllCollumnData(Queries.MostRetweetedProsessedTweet);
         const transactionArray : transaction[] = [];
         for (let i = 0; i < lastRetweetAr.length; i++) {
-            let top2Retweet : localRetweet  = top2RetweetAr[top2RetweetAr.findIndex(item => item.twitter_user_id === lastRetweetAr[i].twitter_user_id && item.campaign_id === lastRetweetAr[i].campaign_id)];
-            if(top2Retweet === undefined){
+            let mostRetweetedTweet : localRetweet  = top2RetweetAr[top2RetweetAr.findIndex(item => item.twitter_user_id === lastRetweetAr[i].twitter_user_id && item.campaign_id === lastRetweetAr[i].campaign_id)];
+            if(mostRetweetedTweet === undefined){
                 transactionArray.push(this.parselocalTransaction(lastRetweetAr[i], lastRetweetAr[i].retweets + 1, "FTP")) // FTP - first tweet posting
             }  
             // if have new retweets
-            else if (lastRetweetAr[i].retweets - top2Retweet.retweets > 0){
-                transactionArray.push(this.parselocalTransaction(lastRetweetAr[i], lastRetweetAr[i].retweets - top2Retweet.retweets, "RC")) // RC - retweet counting
+            else if (lastRetweetAr[i].retweets > mostRetweetedTweet.retweets){
+                transactionArray.push(this.parselocalTransaction(lastRetweetAr[i], lastRetweetAr[i].retweets - mostRetweetedTweet.retweets, "RC")) // RC - retweet counting
             }
             else {
                 retweetService.updateRetweetByScript(lastRetweetAr[i].retweet_id)

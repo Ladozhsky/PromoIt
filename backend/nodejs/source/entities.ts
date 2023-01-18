@@ -37,7 +37,6 @@ export interface transaction {
     update_date: Date;
     create_by_user: string;   
     update_by_user: string;     
-
 }
 
 export interface twitterUserId {
