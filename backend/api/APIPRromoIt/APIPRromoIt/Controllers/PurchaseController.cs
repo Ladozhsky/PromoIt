@@ -22,7 +22,7 @@ namespace APIPRromoIt.Controllers
 
         // Get sum of tweets/retweets by campaignId and twitterId
         [HttpGet("{campaignId}")]
-        [Authorize]
+        [Authorize(Policy = "Social Activist")]
         public async Task<int> GetTweetsSum(int campaignId)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -38,7 +38,7 @@ namespace APIPRromoIt.Controllers
 
         // Post new transaction after purchase
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = "Social Activist")]
         public async Task<ActionResult<BalanceTransactionDto>> PostBalanceTransaction(BalanceTransactionDto balanceTransactionDto)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -64,7 +64,7 @@ namespace APIPRromoIt.Controllers
 
         //Post donated product by user
         [HttpPost("api/Add-donated-product")]
-        [Authorize]
+        [Authorize(Policy = "Social Activist")]
         public async Task<ActionResult<DonatedProduct>> PostDonatedProduct(DonatedProductDto donatedProductDto)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -86,7 +86,7 @@ namespace APIPRromoIt.Controllers
 
         // Update Status or donation
         [HttpPut("{orderId}")]
-        [Authorize]
+        [Authorize(Policy = "Social Activist")]
         public async Task<ActionResult<Donation>> UpdateAmount(int orderId)
         {
             var currentDonation = _context.ProductToOrders.Single(p => p.OrderId == orderId);

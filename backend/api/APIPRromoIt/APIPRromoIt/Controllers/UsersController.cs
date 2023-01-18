@@ -64,7 +64,7 @@ namespace APIPRromoIt.Controllers
 
         // Get sum of tweets/retweets by campaignId and twitterId
         [HttpGet("/sum")]
-        [Authorize]
+        [Authorize(Policy = "Social Activist")]
         public async Task<ActionResult<IEnumerable<DollarsByUser>>> GetTweetsSum()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
