@@ -29,6 +29,8 @@
         <h3>Price: @donation.Price</h3>
         <h3>Amount @donation.Amount</h3>
         <h1>Hashtah @donation.Hashtag</h1>
+
+            <AuthorizeView Policy="Social Activist">
                 <a href="https://twitter.com/?lang=ru" target="_blank"><button class="btn-tweet">Tweet</button></a>
                 <div style="align-item: center">
                 <button class="btn btn-id" @onclick="() => Increment(donation)"><i class="fa fa-plus"></i></button>
@@ -41,6 +43,7 @@
                 <button class="btn btn-purchase" @onclick="() => Purchase(donation.CampaignId, donation.Price, donation.ProductId, donation.Quantity, donation.OrderId, donation.Amount,
                     donation.CampaignName, donation.CompanyName, donation.ProductName)">Purchase</button>
                 </div>
+            </AuthorizeView>
         </div>
     }
 </div>

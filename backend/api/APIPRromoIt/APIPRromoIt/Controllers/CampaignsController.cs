@@ -21,7 +21,6 @@ namespace APIPRromoIt.Controllers
 
         // Get all campaigns
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<CampaignDto>>> GetCampaigns()
         {
             var campaigns = await (from ca in _context.Campaigns
@@ -33,7 +32,7 @@ namespace APIPRromoIt.Controllers
 
         // Get campaign by user id
         [HttpGet("/api/Campaigns/byUser")]
-        [Authorize]
+        [Authorize(Policy = "NPO Representative")]
         public async Task<ActionResult<IEnumerable<CampaignDto>>> GetCampaignsByUserId()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -50,7 +49,7 @@ namespace APIPRromoIt.Controllers
 
         // Get campaign by id
         [HttpGet("{id}")]
-        [Authorize]
+        [Authorize(Policy="AdminOnly")]
         public async Task<ActionResult<CampaignDto>> GetCampaign(int id)
         {
             var campaign = await _context.Campaigns.FindAsync(id);
@@ -64,7 +63,7 @@ namespace APIPRromoIt.Controllers
 
         // Add campaign
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = "NPO Representative")]
         public async Task<ActionResult<CampaignDto>> PostCampaign(CampaignDto campaignDto)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -93,7 +92,7 @@ namespace APIPRromoIt.Controllers
 
         // Update campaign
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> PutCampaign(int id, CampaignDto campaignDto)
         {
             if (id != campaignDto.CampaignId)
@@ -110,9 +109,6 @@ namespace APIPRromoIt.Controllers
             campaign.CampaignName = campaignDto.CampaignName;
             campaign.Hashtag = campaignDto.Hashtag;
             campaign.Description = campaignDto.Description;
-            //campaign.UserId = campaignDto.UserId;
-            //campaign.CreateDate = campaignDto.CreateDate;
-            //campaign.CompanyId = campaignDto.CompanyId;
 
             try
             {
@@ -128,7 +124,7 @@ namespace APIPRromoIt.Controllers
 
         // Delete campaign
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> DeleteCampaign(int id)
         {
             var campaign = await _context.Campaigns.FindAsync(id);
@@ -155,7 +151,6 @@ namespace APIPRromoIt.Controllers
            CampaignName = campaign.CampaignName,
            Hashtag = campaign.Hashtag,
            Description = campaign.Description,
-           //CompanyId = campaign.CompanyId,
            CreateDate = DateTime.Now.Date
        };
     }
