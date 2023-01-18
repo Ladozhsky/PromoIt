@@ -32,6 +32,6 @@ export class DbGetService implements IDbService {
         .catch((error: systemError) => {
           reject(error);
         });
-    });
+    }).catch(); //TODO Error Handling
   }
 }

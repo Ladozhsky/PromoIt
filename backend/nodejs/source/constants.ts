@@ -15,7 +15,7 @@ export class Queries {
     public static TransactionsByUserId: string = "SELECT * FROM balance_transactions WHERE twitter_user_id = ?";
     public static AddTransaction: string = "INSERT balance_transactions (user_id, campaign_id, amount, reason, retweet_id, creation_date, update_date, create_by_user, update_by_user) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    public static TwitterUserIds: string = "SELECT twitter_user_id FROM twitter_accounts";
+    public static TwitterUserIds: string = "SELECT email FROM [promoit].[dbo].[user] WHERE user_id LIKE 'twitter|%'";
 }
 
 export const DB_CONNECTION_STRING: string = "server=DESKTOP-MRQ963D\\MSSQLSERVER4;Database=promoit;Trusted_Connection=Yes;Driver={ODBC Driver 17 for SQL Server}";
