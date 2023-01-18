@@ -43,18 +43,18 @@ export class TwitterService implements ITwitterService {
         return retweetArray
       }
 
-    }
-
     
+}
 
-    public async postTweet (tweetParams : tweetParams) : Promise<void> {
+
+    public async postTweet (tweetParams : tweetParams) {
     try {
       const username : UserV2Result = await client.v2.user(`${tweetParams.twitter_user_id}`);
-      const response = await client.v2.tweet(`Hello! Activist @${username.data.username} purchase ${tweetParams.product} provided by ${tweetParams.company} for charity campaign ${tweetParams.campaign}`);
-      return console.log(response);
+      const response = await client.v2.tweet(`This activist @${username.data.username} purchase ${tweetParams.product} provided by ${tweetParams.company} for charity campaign ${tweetParams.campaign}`);
+      console.log(response);
     } 
     catch (error) {
-      return console.log(error);
+    console.log(error);
     }
 }
 

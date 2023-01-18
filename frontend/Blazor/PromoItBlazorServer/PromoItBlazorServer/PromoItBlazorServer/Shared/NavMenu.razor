@@ -19,53 +19,67 @@
                 <span class="oi oi-list" aria-hidden="true"></span> All Campaigns
             </NavLink>
         </div>
-        <AuthorizeView>
+        <AuthorizeView Policy="NPO Representative">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="my-campaigns">
                 <span class="oi oi-list" aria-hidden="true"></span> My campaigns
             </NavLink>
         </div>
         </AuthorizeView>
+        <AuthorizeView Policy="NPO Representative">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="add-campaign">
                 <span class="oi oi-plus" aria-hidden="true"></span> Add new campaign
             </NavLink>
         </div>
+        </AuthorizeView>
+        <AuthorizeView Policy="AdminOnly">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="register">
                 <span class="oi oi-person" aria-hidden="true"></span> Finish register
             </NavLink>
         </div>
+        </AuthorizeView>
+        <AuthorizeView Policy="Business representative and Admin">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="add-company">
                 <span class="oi oi-plus" aria-hidden="true"></span> Add new company
             </NavLink>
         </div>
+        </AuthorizeView>
+        <AuthorizeView Policy="Business representative and Admin">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="add-product">
                 <span class="oi oi-plus" aria-hidden="true"></span> Add new product
             </NavLink>
         </div>
+        </AuthorizeView>
+        <AuthorizeView Policy="Business representative">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="my-products">
                 <span class="oi oi-cart" aria-hidden="true"></span> My company's products
             </NavLink>
         </div>
+        </AuthorizeView>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="current-donations">
                 <span class="oi oi-heart" aria-hidden="true"></span> Current donations
             </NavLink>
         </div>
+        <AuthorizeView Policy="Social Activist">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/donated-products">
                 <span class="oi oi-circle-check" aria-hidden="true"></span> My donated products
             </NavLink>
         </div>
+        </AuthorizeView>
+        <AuthorizeView Policy="Social Activist">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/my-balance">
                 <span class="oi oi-dollar" aria-hidden="true"></span> My balance
             </NavLink>
         </div>
+        </AuthorizeView>
     </nav>
 </div>
 

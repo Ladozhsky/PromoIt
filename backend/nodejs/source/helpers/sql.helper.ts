@@ -82,7 +82,10 @@ export class SqlHelper {
                     resolve(connection)
                 }
             });
-        });
+        }).catch(err => {
+            console.log("Error occurred while connecting to database: ", err);
+            throw errorService.getError(AppError.ConnectionError);
+    });
     }
 
 
