@@ -9,7 +9,7 @@ export class Queries {
     public static AddRetweet: string = "INSERT retweet (twitt_id, twitter_user_id, campaign_id, retweets, parsing_date, creation_date, update_date, create_by_user, update_by_user, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static UpdateRetweet: string = "UPDATE retweet SET status = ? WHERE retweet_id = ?";
     public static LastNotProseedRetweet: string = "WITH cte AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY campaign_id, twitter_user_id ORDER BY parsing_date DESC) AS rn FROM [promoit].[dbo].[retweet] WHERE status = 1) SELECT * FROM CTE WHERE rn = 1";
-    public static MostRetweetedProsessedRetweet: string = "WITH cte AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY campaign_id, twitter_user_id ORDER BY retweets DESC) AS rn FROM [promoit].[dbo].[retweet] WHERE status = 2) SELECT * FROM CTE WHERE rn = 1";
+    public static MostRetweetedProsessedTweet: string = "WITH cte AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY campaign_id, twitter_user_id ORDER BY retweets DESC) AS rn FROM [promoit].[dbo].[retweet] WHERE status = 2) SELECT * FROM CTE WHERE rn = 1";
 
     public static Transactions: string = "SELECT * FROM balance_transactions";
     public static TransactionsByUserId: string = "SELECT * FROM balance_transactions WHERE twitter_user_id = ?";
