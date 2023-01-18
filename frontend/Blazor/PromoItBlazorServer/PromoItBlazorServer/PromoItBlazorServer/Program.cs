@@ -22,7 +22,6 @@ builder.Services
                 var claims = new List<Claim>
                     {
                         new Claim("jwt_token", token)
-                        //new Claim("user_id", context.Principal.FindFirst("sub").Value)
                     };
                 var appIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 context.Principal.AddIdentity(appIdentity);
@@ -61,10 +60,13 @@ builder.Services
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly", policy => policy.RequireClaim("https://promoteit.co.il/claims/role", "Admin"));
-    options.AddPolicy("NPO Representative and Admin", policy => policy.RequireClaim("https://promoteit.co.il/claims/role", "NPO Representative", "Admin"));
-    options.AddPolicy("Business representative and Admin", policy => policy.RequireClaim("https://promoteit.co.il/claims/role", "Business representative", "Admin"));
-
+    options.AddPolicy("AdminOnly", policy => policy.RequireClaim("https://promoit.co.il/claims/role", "Admin"));
+    options.AddPolicy("NPO Representative and Admin", policy => policy.RequireClaim("https://promoit.co.il/claims/role", "NPO Representative", "Admin"));
+    options.AddPolicy("Business representative and Admin", policy => policy.RequireClaim("https://promoit.co.il/claims/role", "Business representative", "Admin"));
+    options.AddPolicy("Social Activist and Admin", policy => policy.RequireClaim("https://promoit.co.il/claims/role", "Social Activist", "Admin"));
+    options.AddPolicy("Social Activist", policy => policy.RequireClaim("https://promoit.co.il/claims/role", "Social Activist"));
+    options.AddPolicy("NPO Representative", policy => policy.RequireClaim("https://promoit.co.il/claims/role", "NPO Representative"));
+    options.AddPolicy("Business representative", policy => policy.RequireClaim("https://promoit.co.il/claims/role", "Business representative"));
 });
 
 // Add services to the container.

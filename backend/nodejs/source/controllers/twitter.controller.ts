@@ -35,11 +35,13 @@ const addRetweets = async (retweetListInput: Promise<retweet[]>) => {
 const postTweet = async (req: Request, res: Response, next: NextFunction) => {
   const body : tweetParams  = req.body;
   tweeterService.postTweet(body)
-    .then(() => {
-      return console.log(req);
+    .then( async () => {
+      //console.log(req);
+      return await res.status(200);
     })
     .catch((error: systemError) => {
-      return console.log(error);
+        console.log(error);
+      return res.status(403);
     });
 }
     

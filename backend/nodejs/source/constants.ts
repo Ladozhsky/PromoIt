@@ -18,7 +18,7 @@ export class Queries {
     public static TwitterUserIds: string = "SELECT twitter_user_id FROM twitter_accounts";
 }
 
-export const DB_CONNECTION_STRING: string = "server=LAPTOP-V0M7V3Q0;Database=promoit;Trusted_Connection=Yes;Driver={ODBC Driver 17 for SQL Server}";
+export const DB_CONNECTION_STRING: string = "Server=tcp:promoit2.database.windows.net,1433;Initial Catalog=promoit3;Persist Security Info=False;User ID=Vlad;Password=Prince31dc;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
 export const client: TwitterApiReadWrite = new TwitterApiReadWrite({
   appKey: "OL3a0lj0AdyP4Yoswr9QFikM1",

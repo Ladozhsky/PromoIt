@@ -104,13 +104,11 @@
 
         int dollarsAmount = await http.GetFromJsonAsync<int>($"https://localhost:7096/api/Purchase/{selectedCampaignId}");
 
-        if (dollarsAmount >= price)
+        if (dollarsAmount >= price * quantity)
         {
             HttpResponseMessage response1 = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase", balance);
             HttpResponseMessage response2 = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/api/Add-donated-product", donatedProduct);
             HttpResponseMessage response3 = await http.PutAsJsonAsync($"https://localhost:7096/api/Orders/{orderId}", updateQuantity);
-            //HttpResponseMessage response4 = await http.PostAsJsonAsync("http://localhost:5555/twitter/", tweetParams);
-
 
             NavigationManager.NavigateTo("/thanks");
 
@@ -118,6 +116,7 @@
             {
                 HttpResponseMessage response5 = await http.PutAsJsonAsync($"https://localhost:7096/api/Purchase/{orderId}", updateStatus);
             }
+            HttpResponseMessage response4 = await http.PostAsJsonAsync("http://localhost:5555/twitter/", tweetParams);
         }
         else
         {
