@@ -15,6 +15,7 @@
 <h3>Choose your company</h3>
 <div>
     <select id="company" class="form-select form-select-lg mb-3" @bind="@user.CompanyId">
+    <option value="" selected disabled></option>
     @foreach (var company in companies)
         {
             <option value="@company.CompanyId">@company.CompanyName</option>
