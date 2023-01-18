@@ -5,6 +5,7 @@ import { retweet, transaction, twitterUserIds, campaignIdHashtag } from '../enti
 import { TwitterService } from "./twitter.services";
 import { Queries } from "../constants";
 import { RetweetService } from './retweet.services';
+import { error } from 'console';
 
 const errorService: ErrorService = new ErrorService();
 const dbGetService: DbGetService = new DbGetService(errorService);
@@ -32,23 +33,32 @@ export class ListCreation implements IListCreation {
 
     // Use created list of Ids and Hashtags to create list of retweets
     public async createListOfRetweets () : Promise<retweet[]> {
+      
         const userIds : twitterUserIds[] = await dbGetService.getAllCollumnData(Queries.TwitterUserIds);
         const campaignsData : campaignIdHashtag[] = await dbGetService.getAllCollumnData(Queries.CampainHashtag);
 
         const retweetArray : retweet[] = [];
+
+        try {
             for (let i = 0; i < userIds.length; i++) {
-                for (let j = 0; j < campaignsData.length; j++) {
-                    const tweets = await twitterService.searchTweetsByIdHashtag(userIds[i].twitter_user_id, campaignsData[j]);
-                    retweetArray.push(...tweets)
+            for (let j = 0; j < campaignsData.length; j++) {
+                const tweets = await twitterService.searchTweetsByIdHashtag(userIds[i].email, campaignsData[j]);
+                retweetArray.push(...tweets)
                 }
             }
+        } catch (error) {
+            console.log(error)
+        }    
         return retweetArray;
     }
 
     public async createListOfTransaction () : Promise<transaction[]> {
+       
+        
         const lastRetweetAr : localRetweet[] = await dbGetService.getAllCollumnData(Queries.LastNotProseedRetweet);
         const top2RetweetAr : localRetweet[] = await dbGetService.getAllCollumnData(Queries.MostRetweetedProsessedTweet);
         const transactionArray : transaction[] = [];
+        try {
         for (let i = 0; i < lastRetweetAr.length; i++) {
             let mostRetweetedTweet : localRetweet  = top2RetweetAr[top2RetweetAr.findIndex(item => item.twitter_user_id === lastRetweetAr[i].twitter_user_id && item.campaign_id === lastRetweetAr[i].campaign_id)];
             if(mostRetweetedTweet === undefined){
@@ -61,6 +71,9 @@ export class ListCreation implements IListCreation {
             else {
                 retweetService.updateRetweetByScript(lastRetweetAr[i].retweet_id)
             }
+        }     
+        } catch (error) {
+            console.log(error)
         }
         return transactionArray
     }

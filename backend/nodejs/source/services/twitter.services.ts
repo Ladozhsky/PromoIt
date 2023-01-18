@@ -18,7 +18,8 @@ export class TwitterService implements ITwitterService {
         const twitterQuery : string = `${campaignsData.hashtag} from:${userId}`;
         let retweetArray : retweet[] = [];
 
-        const jsTweets : TweetSearchRecentV2Paginator = await client.v2.search(
+        try {
+         const jsTweets : TweetSearchRecentV2Paginator = await client.v2.search(
             twitterQuery, 
             {
                 'tweet.fields': 'public_metrics,author_id,referenced_tweets',
@@ -40,8 +41,12 @@ export class TwitterService implements ITwitterService {
           else retweetArray.push(this.parselocalRetweet(tweet, campaignsData.campaign_id))
         }
 
-        return retweetArray
-      }
+
+      }  
+        } catch (error) {
+          console.log(error)
+        }
+      return retweetArray
 
     
 }

@@ -45,7 +45,7 @@ export interface twitterUserId {
     twitter_user_id: string;
 }
 export interface twitterUserIds {
-    twitter_user_id: string;
+    email: string;
   }
 
   
