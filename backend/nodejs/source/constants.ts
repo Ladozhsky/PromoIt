@@ -18,9 +18,7 @@ export class Queries {
     public static TwitterUserIds: string = "SELECT email FROM [promoit].[dbo].[user] WHERE user_id LIKE 'twitter|%'";
 }
 
-
-export const DB_CONNECTION_STRING: string = "Server=LAPTOP-V0M7V3Q0;Database=promoit;Trusted_Connection=True;";
-
+export const DB_CONNECTION_STRING: string = "server=LAPTOP-V0M7V3Q0;Database=promoit;Trusted_Connection=Yes;Driver={ODBC Driver 17 for SQL Server}";
 
 export const client: TwitterApiReadWrite = new TwitterApiReadWrite({
   appKey: "OL3a0lj0AdyP4Yoswr9QFikM1",

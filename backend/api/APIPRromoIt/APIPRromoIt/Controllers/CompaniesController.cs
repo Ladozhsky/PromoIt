@@ -20,15 +20,14 @@ namespace APIPRromoIt.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies()
         {
             return await _context.Companies.Select(c => CompanyToTDO(c)).ToListAsync();
         }
 
-        // Add user
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = "Business representative and Admin")]
         public async Task<ActionResult<Company>> PostCompany(CompanyDto companyDto)
         {
             Company company = new Company
