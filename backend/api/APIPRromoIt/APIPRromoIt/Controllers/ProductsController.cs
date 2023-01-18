@@ -20,7 +20,7 @@ namespace APIPRromoIt.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = "Business representative and Admin")]
         public async Task<ActionResult<ProductDto>> PostProduct(ProductDto productDto)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -46,7 +46,7 @@ namespace APIPRromoIt.Controllers
         }
 
         [HttpGet("/api/Products/byCompany")]
-        [Authorize]
+        [Authorize(Policy ="Business Representative")]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCompanyId()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -65,7 +65,7 @@ namespace APIPRromoIt.Controllers
         }
 
         [HttpGet("/api/donated-products")]
-        [Authorize]
+        [Authorize(Policy = "Social Activist")]
         public async Task<ActionResult<IEnumerable<DonatedProductDto>>> GetDonatedProductsByUserId()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;

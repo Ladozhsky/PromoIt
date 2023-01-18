@@ -27,7 +27,7 @@ namespace APIPRromoIt.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "Business representative and Admin")]
+        [Authorize]
         public async Task<ActionResult<Company>> PostCompany(CompanyDto companyDto)
         {
             Company company = new Company

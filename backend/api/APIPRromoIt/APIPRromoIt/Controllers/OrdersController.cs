@@ -20,7 +20,6 @@ namespace APIPRromoIt.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<Donation>>> GetDonations()
         {
             var donations = await (from ca in _context.Campaigns
@@ -36,7 +35,7 @@ namespace APIPRromoIt.Controllers
         }
 
         [HttpPut("{orderId}")]
-        [Authorize]
+        [Authorize(Policy ="Social Activist")]
         public async Task<ActionResult<Donation>> UpdateAmount(int orderId, UpdateQuantity updateQuantity)
         {
             var productToOrder = _context.ProductToOrders.Single(p => p.OrderId == orderId);
@@ -46,7 +45,7 @@ namespace APIPRromoIt.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy ="Business Representative")]
         public async Task<ActionResult<OrderDto>> PostOrder(OrderDto orderDto)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
