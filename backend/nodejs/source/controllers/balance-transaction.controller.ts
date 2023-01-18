@@ -16,7 +16,7 @@ const addTransactions = async (transactionListInput: Promise<transaction[]>) => 
         amount: transactionList[i].amount,
         reason: transactionList[i].reason,
         retweet_id: transactionList[i].retweet_id,
-        creation_date: new Date(),
+        create_date: new Date(),
         update_date: new Date(),
         create_by_user: transactionList[i].create_by_user,
         update_by_user: transactionList[i].update_by_user,

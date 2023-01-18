@@ -85,7 +85,7 @@ export class ListCreation implements IListCreation {
             amount: amount,
             reason: reason,
             retweet_id: local.retweet_id,
-            creation_date: new Date(),
+            create_date: new Date(),
             update_date: new Date(),
             create_by_user: "server_script",  
             update_by_user: "server_script"  
