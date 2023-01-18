@@ -26,7 +26,7 @@ export class TransactionService implements ITransactionService {
         transaction.amount,
         transaction.reason,
         transaction.retweet_id,
-        transaction.creation_date,
+        transaction.create_date,
         transaction.update_date,
         transaction.create_by_user,
         transaction.update_by_user,

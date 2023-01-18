@@ -13,12 +13,14 @@ export class Queries {
 
     public static Transactions: string = "SELECT * FROM balance_transactions";
     public static TransactionsByUserId: string = "SELECT * FROM balance_transactions WHERE twitter_user_id = ?";
-    public static AddTransaction: string = "INSERT balance_transactions (user_id, campaign_id, amount, reason, retweet_id, creation_date, update_date, create_by_user, update_by_user) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static AddTransaction: string = "INSERT balance_transactions (user_id, campaign_id, amount, reason, retweet_id, create_date, update_date, create_by_user, update_by_user) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     public static TwitterUserIds: string = "SELECT email FROM [promoit].[dbo].[user] WHERE user_id LIKE 'twitter|%'";
 }
 
+
 export const DB_CONNECTION_STRING: string = "Server=LAPTOP-V0M7V3Q0;Database=promoit;Trusted_Connection=True;";
+
 
 export const client: TwitterApiReadWrite = new TwitterApiReadWrite({
   appKey: "OL3a0lj0AdyP4Yoswr9QFikM1",
