@@ -13,7 +13,7 @@
 <h1>All campaigns</h1>
 
 <table class="table table-hover table-striped">
-    <thead class="table-dark">
+    <thead class="thead-style">
         <tr>
             <th>Name</th>
             <th>Hashtag</th>
@@ -32,7 +32,7 @@
                         <td>@campaign.Description</td>
                         <td>@campaign.CompanyName</td>
                         <td>@campaign.CreateDate.ToShortDateString()</td>
-                        <td><button class="btn btn-info" @onclick="() => NavigateToCampaign(campaign.CampaignId)">View more</button></td>
+                        <td><button class="btn" style="background-color: #5f6b3b; color: white" @onclick="() => NavigateToCampaign(campaign.CampaignId)">View more</button></td>
                     </tr>
         }
     </tbody>

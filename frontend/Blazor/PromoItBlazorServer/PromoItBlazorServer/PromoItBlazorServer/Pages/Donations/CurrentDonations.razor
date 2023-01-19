@@ -14,29 +14,43 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <PageTitle>Current donations</PageTitle>
 
+<div style="margin-left:50px">
 <h1>Current donations</h1>
-<AuthorizeView>
+<AuthorizeView Policy="Social Activist">
 <h2>You can share about campaign in Twitter and buy a products for charity</h2>
 </AuthorizeView>
-<div class="card-deck">
+</div>
+<div class="don-card">
     @foreach (var donation in donations.AsEnumerable().Reverse())
     {
         <div class="card text-center">
-        <h2>Campaign: @donation.CampaignName</h2>
-        <h2>Company: @donation.CompanyName</h2>
-        <h3>Product: @donation.ProductName</h3> 
-        <h3>Price: @donation.Price</h3>
-        <h3>Amount @donation.Amount</h3>
-        <h1>Hashtah @donation.Hashtag</h1>
+        <div class="to-center">
+             <h2 class="h2-inline">Campaign:&nbsp</h2><h2 class="h2-inline-black"> @donation.CampaignName</h2>
+        </div>
+        <div class="to-center">
+                <h2 class="h2-inline">Company:&nbsp</h2><h2 class="h2-inline-black"> @donation.CompanyName</h2>
+        </div>
+        <div class="to-center">
+            <h2 class="h2-inline">Product:&nbsp</h2><h2 class="h2-inline-black"> @donation.ProductName</h2> 
+        </div>
+        <div class="to-center">
+            <h2 class="h2-inline">Price:&nbsp</h2><h2 class="h2-inline-black"> @donation.Price</h2>
+        </div>
+        <div class="to-center">
+            <h2 class="h2-inline">Amount:&nbsp</h2><h2 class="h2-inline-black"> @donation.Amount</h2>
+        </div>
+        <div class="to-center">
+            <h1 class="h2-inline">Hashtag:&nbsp</h1><h1 class="h2-inline-black"> @donation.Hashtag</h1>
+        </div>
 
             <AuthorizeView Policy="Social Activist">
                 <a href="https://twitter.com/?lang=ru" target="_blank"><button class="btn-tweet">Tweet</button></a>
                 <div style="align-item: center">
-                <button class="btn btn-id" @onclick="() => Increment(donation)"><i class="fa fa-plus"></i></button>
+                <button class="btn-id" @onclick="() => Increment(donation)"><i class="fa fa-plus"></i></button>
                 </div>
                         <h1>@donation.Quantity</h1>
                 <div style="align-item: center align-text: center">
-                    <button class="btn btn-id" @onclick="() => Decrement(donation)"><i class="fa fa-minus"></i></button>
+                    <button class="btn-id" @onclick="() => Decrement(donation)"><i class="fa fa-minus"></i></button>
                 </div>
                 <div style="align-item: center">
                 <button class="btn btn-purchase" @onclick="() => Purchase(donation.CampaignId, donation.Price, donation.ProductId, donation.Quantity, donation.OrderId, donation.Amount,

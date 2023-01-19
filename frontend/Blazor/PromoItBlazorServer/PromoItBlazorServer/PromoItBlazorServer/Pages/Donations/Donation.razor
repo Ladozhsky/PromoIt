@@ -12,10 +12,10 @@
     <title>Donation</title>
     <link href="~/css/mycss.css" rel="stylesheet" />
 </head>
-
+<div style="margin-left:50px">
 <h1>Make your donation</h1>
-
-<img src="https://cdnn21.img.ria.ru/images/96378/63/963786378_0:105:2000:1230_600x0_80_0_0_bd991d21f2e979514ae76e42410fd11c.jpg.webp" width="700px"/>
+<img class="promo-img" src="https://cdnn21.img.ria.ru/images/96378/63/963786378_0:105:2000:1230_600x0_80_0_0_bd991d21f2e979514ae76e42410fd11c.jpg.webp" width="700px"/>
+</div>
 <br />
 <div class="card text-center donation-card">
 
@@ -25,6 +25,7 @@
     <div>
     <label for="product">Choose product you want to donate</label>
     <select id="product" class="form-select form-select-lg mb-3" @bind="@order.ProductId">
+    <option value="" selected disabled></option>
     @foreach (var product in products)
             {
                 <option value="@product.ProductId">@product.ProductName</option>
@@ -33,10 +34,10 @@
     </div>
     <div class="form-group">
         <label for="amount">Amount</label>
-        <input type="text" class="form-control" id="amount" @bind="@order.Amount" required />
+        <input type="text" placeholder="Enter here" class="form-control" id="amount" @bind="@order.Amount" required />
     </div>
 
-    <button type="submit" class="btn btn-primary">Donate</button>
+    <button type="submit" class="btn btn-success">Donate</button>
 </form>
 </div>
 @if (ErrorMessage != null)
