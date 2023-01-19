@@ -22,12 +22,13 @@ namespace APIPRromoIt.Controllers
 
         // Get all users
         [HttpGet("/allUsers")]
-        //[Authorize(Policy="AdminOnly")]
+        [Authorize(Policy="AdminOnly")]
 		public async Task<ActionResult<IEnumerable<UserForAdmin>>> GetAllUsers()
 		{
 			var users = await (from u in _context.Users
 								   join c in _context.Companies on u.CompanyId equals c.CompanyId
-								   select new { u.UserName, u.Address, u.TelNumber, c.CompanyName, u.Role, u.Status }).ToListAsync();
+                                   orderby u.Status descending
+                                   select new { u.UserId, u.UserName, u.EmailTwitterId, u.Address, u.TelNumber, c.CompanyName, u.Role, u.Status }).ToListAsync();
 
 			return Ok(users);
 		}
@@ -95,10 +96,21 @@ namespace APIPRromoIt.Controllers
 
         //Get Roles
         [HttpGet("roles")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
         {
             return await _context.Roles.ToListAsync();
+        }
+
+        // Update Status of User
+        [HttpPut("{userId}")]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<ActionResult<User>> UpdateUserStatus(string userId)
+        {
+            var currentUser = _context.Users.Single(u => u.UserId == userId);
+            currentUser.Status = "Verified";
+            _context.SaveChanges();
+            return Ok();
         }
     }
 }
