@@ -20,7 +20,7 @@ namespace APIPRromoIt.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "AdminOnly")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies()
         {
             return await _context.Companies.Select(c => CompanyToTDO(c)).ToListAsync();
