@@ -8,11 +8,13 @@
 @inject IJSRuntime JSRuntime
 @inject IHttpContextAccessor HttpContextAccessor
 
+<div style="margin-left:50px">
 <h1>Finish your registration</h1>
+<img class="promo-img" height=350px src="https://d3mvlb3hz2g78.cloudfront.net/wp-content/uploads/2020/11/thumb_720_450_dreamstime_m_44810592_(1).jpg"/>
+</div>
 
-<img src="https://d3mvlb3hz2g78.cloudfront.net/wp-content/uploads/2020/11/thumb_720_450_dreamstime_m_44810592_(1).jpg"/>
-
-<h3>Choose your company</h3>
+<div class="card text-center donation-card">
+<h3>Choose your company or create new</h3>
 <div>
     <select id="company" class="form-select form-select-lg mb-3" @bind="@user.CompanyId">
     <option value="" selected disabled></option>
@@ -23,26 +25,26 @@
     </select>
 </div>
 <div>
-    <button type="button" class="btn btn-primary" @onclick="NavigateToAddCompany">Create New Company</button>
+    <button type="button" class="btn btn-success" @onclick="NavigateToAddCompany">Create New Company</button>
 </div>
 
 <form method="post" @onsubmit="@SubmitUserForm">
     <div class="form-group">
         <label for="username">Your name</label>
-        <input type="text" class="form-control" id="username" @bind="@user.UserName" required />
+        <input type="text" placeholder="Name" class="form-control" id="username" @bind="@user.UserName" required />
     </div>
     <div class="form-group">
         <label for="address">Address</label>
-        <input type="address" class="form-control" id="address" @bind="@user.Address" required />
+        <input type="address" placeholder="Address" class="form-control" id="address" @bind="@user.Address" required />
     </div>
     <div class="form-group">
         <label for="telnumber">Phone number</label>
-        <input type="telnumber" class="form-control" id="telnumber" @bind="@user.TelNumber" required />
+        <input type="telnumber" placeholder="Phone number" class="form-control" id="telnumber" @bind="@user.TelNumber" required />
     </div>
     
-    <button type="submit" class="btn btn-primary">End register</button>
+    <button type="submit" class="btn btn-success">End register</button>
     </form>
-
+</div>
     @if (ErrorMessage != null)
     {
           <div class="alert alert-danger">@ErrorMessage</div>

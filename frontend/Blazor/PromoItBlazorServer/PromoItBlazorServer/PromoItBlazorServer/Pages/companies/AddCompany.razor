@@ -8,20 +8,25 @@
 @inject IJSRuntime JSRuntime
 @inject IHttpContextAccessor HttpContextAccessor
 
+<div style="margin-left:50px">
+<h1>Add new company</h1>
+<img class="promo-img" height="350px" src="https://alterainvest.ru/upload/iblock/e53/e535801c6230b298d7c2db4b153bc4bc.jpg" />
+</div>
 
+<div class="card text-center donation-card">
 <form method="post" @onsubmit="@SubmitCompanyForm">
 
     <div class="form-group">
         <label for="companyname">Company name</label>
-        <input type="text" class="form-control" id="companyname" @bind="@company.CompanyName" required />
+        <input type="text" class="form-control" placeholder="Company name" id="companyname" @bind="@company.CompanyName" required />
     </div>
     <div class="form-group">
         <label for="site">Website</label>
-    <input type="text" class="form-control" id="site" @bind="@company.Site" required />
+    <input type="text" class="form-control" placeholder="Website" id="site" @bind="@company.Site" required />
     </div>
     <div class="form-group">
         <label for="email">Email</label>
-    <input type="text" class="form-control" id="email" @bind="@company.Email" required />
+    <input type="text" class="form-control" placeholder="Email" id="email" @bind="@company.Email" required />
     </div>
     <div>
     <label for="companytype">Choose your company type</label>
@@ -33,9 +38,9 @@
             }
     </select>
     </div>
-    <button type="submit" class="btn btn-primary" @onclick="NavigateToRegister">Create company</button>
+    <button type="submit" class="btn btn-success" @onclick="NavigateToRegister">Create company</button>
     </form>
-
+    </div>
 @code {
     private List<string> companyTypes = new List<string> { "Business", "NPO" };
 

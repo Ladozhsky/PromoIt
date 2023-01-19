@@ -8,27 +8,29 @@
 @inject IJSRuntime JSRuntime
 @inject IHttpContextAccessor HttpContextAccessor
 
-
+<div style="margin-left:50px">
 <h1>Add new product that you can give to charity!</h1>
 
-<img src="https://webpulse.imgsmail.ru/imgpreview?mb=webpulse&key=pulse_cabinet-image-aabae32a-0b86-4e43-b0d2-4acd32e79156" width="700px"/>
+<img class="promo-img" src="https://webpulse.imgsmail.ru/imgpreview?mb=webpulse&key=pulse_cabinet-image-aabae32a-0b86-4e43-b0d2-4acd32e79156" width="700px"/>
+</div>
 
+<div class="card text-center donation-card">
 <form method="post" @onsubmit="@SubmitForm">
     <div class="form-group">
         <label for="product">Name of product</label>
-        <input type="text" class="form-control" id="product" @bind="@product.ProductName" required />
+        <input type="text" class="form-control" placeholder="Product name" id="product" @bind="@product.ProductName" required />
     </div>
     <div class="form-group">
         <label for="price">Price</label>
-        <input type="text" class="form-control" id="price" @bind="@product.Price" required />
+        <input type="text" class="form-control" placeholder="Price" id="price" @bind="@product.Price" required />
     </div>
     <div class="form-group">
         <label for="image">Insert url of the image</label>
-        <input type="text" class="form-control" id="image" @bind="@product.Image" required />
+        <input type="text" class="form-control" placeholder="Url" id="image" @bind="@product.Image" required />
     </div>
     <button type="submit" class="btn btn-primary">Add</button>
 </form>
-
+</div>
 @if (ErrorMessage != null)
 {
                 <div class="alert alert-danger">@ErrorMessage</div>

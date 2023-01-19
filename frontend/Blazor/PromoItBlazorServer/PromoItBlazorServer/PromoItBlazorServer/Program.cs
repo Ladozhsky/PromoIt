@@ -58,6 +58,8 @@ builder.Services
         options.UseRefreshTokens = true;
     });
 
+builder.Services.AddCors();
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireClaim("https://promoit.co.il/claims/role", "Admin"));
@@ -90,6 +92,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseCors(builder => builder.AllowAnyOrigin());
 
 app.UseAuthentication();
 app.UseAuthorization();

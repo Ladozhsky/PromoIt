@@ -49,7 +49,7 @@ namespace APIPRromoIt.Controllers
 
         // Get campaign by id
         [HttpGet("{id}")]
-        [Authorize(Policy="AdminOnly")]
+        [Authorize]
         public async Task<ActionResult<CampaignDto>> GetCampaign(int id)
         {
             var campaign = await _context.Campaigns.FindAsync(id);
