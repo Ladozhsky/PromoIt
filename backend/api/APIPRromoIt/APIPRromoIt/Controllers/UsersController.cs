@@ -20,8 +20,20 @@ namespace APIPRromoIt.Controllers
             _context = context;
         }
 
-        // Add user
-        [HttpPost]
+        // Get all users
+        [HttpGet("/allUsers")]
+        //[Authorize(Policy="AdminOnly")]
+		public async Task<ActionResult<IEnumerable<UserForAdmin>>> GetAllUsers()
+		{
+			var users = await (from u in _context.Users
+								   join c in _context.Companies on u.CompanyId equals c.CompanyId
+								   select new { u.UserName, u.Address, u.TelNumber, c.CompanyName, u.Role, u.Status }).ToListAsync();
+
+			return Ok(users);
+		}
+
+		// Add user
+		[HttpPost]
         [Authorize]
         public async Task<ActionResult<User>> PostUser(UserDto userDto)
         {
@@ -35,11 +47,12 @@ namespace APIPRromoIt.Controllers
             {
                 UserId = userId,
                 UserName = userDto.UserName,
-                Email = (email == null) ? twitterId : email,
+                EmailTwitterId = (email == null) ? twitterId : email,
                 Address = userDto.Address,
                 TelNumber = userDto.TelNumber,
                 Role = userDto.Role,
-                CompanyId = userDto.CompanyId
+                CompanyId = userDto.CompanyId,
+                Status = "New"
             };
 
             _context.Users.Add(user);

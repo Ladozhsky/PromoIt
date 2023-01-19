@@ -273,9 +273,9 @@ namespace APIPRromoIt.Models
 
             modelBuilder.Entity<Retweet>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("retweet");
+
+                entity.Property(e => e.RetweetId).HasColumnName("retweet_id");
 
                 entity.Property(e => e.CampaignId).HasColumnName("campaign_id");
 
@@ -290,8 +290,6 @@ namespace APIPRromoIt.Models
                 entity.Property(e => e.ParsingDate)
                     .HasColumnType("datetime")
                     .HasColumnName("parsing_date");
-
-                entity.Property(e => e.RetweetId).HasColumnName("retweet_id");
 
                 entity.Property(e => e.Retweets).HasColumnName("retweets");
 
@@ -360,13 +358,17 @@ namespace APIPRromoIt.Models
 
                 entity.Property(e => e.CompanyId).HasColumnName("company_id");
 
-                entity.Property(e => e.Email)
+                entity.Property(e => e.EmailTwitterId)
                     .HasMaxLength(50)
-                    .HasColumnName("email");
+                    .HasColumnName("email_twitter_id");
 
                 entity.Property(e => e.Role)
                     .HasMaxLength(50)
                     .HasColumnName("role");
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(50)
+                    .HasColumnName("status");
 
                 entity.Property(e => e.TelNumber)
                     .HasMaxLength(50)

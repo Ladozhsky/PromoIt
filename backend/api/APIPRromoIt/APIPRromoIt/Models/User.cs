@@ -15,11 +15,12 @@ namespace APIPRromoIt.Models
 
         public string UserId { get; set; } = null!;
         public string UserName { get; set; } = null!;
-        public string Email { get; set; } = null!;
+        public string EmailTwitterId { get; set; } = null!;
         public string? Address { get; set; }
         public string TelNumber { get; set; } = null!;
         public string Role { get; set; } = null!;
         public int? CompanyId { get; set; }
+        public string Status { get; set; } = null!;
 
         public virtual Company? Company { get; set; }
         public virtual ICollection<Campaign> Campaigns { get; set; }
