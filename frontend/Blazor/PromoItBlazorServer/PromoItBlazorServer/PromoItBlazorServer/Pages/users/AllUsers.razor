@@ -17,6 +17,7 @@
     <thead class="thead-style">
         <tr>
             <th>Username</th>
+            <th>Email or TwitterId</th>
             <th>Address</th>
             <th>TelNumber</th>
             <th>Role</th>
@@ -26,29 +27,49 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var user in users)
+        @foreach (var user in users.AsEnumerable().Reverse())
         {
                         <tr>
                             <td>@user.UserName</td>
+                            <td>@user.EmailTwitterId</td>
                             <td>@user.Address</td>
                             <td>@user.TelNumber</td>
                             <td>@user.Role</td>
                             <td>@user.CompanyName</td>
                             <td>@user.Status</td>
+                            <td>
+                            @if (user.Status != "Verified")
+                            {
+                               <button class="btn btn-@buttonStyle" @onclick="() => VerifyUser(user.UserId)">@buttonText</button>
+                            }
+                            </td>
                         </tr>
         }
     </tbody>
 </table>
 
 @code {
+    HttpClient http = new HttpClient();
 
     private List<UserForAdmin> users = new List<UserForAdmin>();
+    public UpdateStatus updateStatus = new UpdateStatus();
+
+    private string buttonText = "Verify";
+    private string buttonStyle = "warning";
+
+    private async Task VerifyUser(string userId)
+    {
+        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+
+        HttpResponseMessage response = await http.PutAsJsonAsync($"https://localhost:7096/api/Users/{userId}", updateStatus);
+
+        buttonText = "Done";
+        buttonStyle = "success";
+    }
 
     protected override async Task OnInitializedAsync()
     {
         string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
-
-        HttpClient http = new HttpClient();
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
