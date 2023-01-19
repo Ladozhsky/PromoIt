@@ -27,7 +27,7 @@ namespace APIPRromoIt.Controllers
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("user_id")?.Value;
-            string role = identity?.FindFirst("https://promoit.co.il/claims/role")?.Value;
+            //string role = identity?.FindFirst("https://promoit.co.il/claims/role")?.Value;
             string email = identity?.FindFirst("https://promoit.co.il/claims/email")?.Value;
             string twitterId = userId.Split('|')[1];
 
@@ -38,7 +38,7 @@ namespace APIPRromoIt.Controllers
                 Email = (email == null) ? twitterId : email,
                 Address = userDto.Address,
                 TelNumber = userDto.TelNumber,
-                Role = role,
+                Role = userDto.Role,
                 CompanyId = userDto.CompanyId
             };
 
@@ -79,5 +79,13 @@ namespace APIPRromoIt.Controllers
             
             return Ok(dollarsByCampaign);
         }
-}
+
+        //Get Roles
+        [HttpGet("roles")]
+        //[Authorize]
+        public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
+        {
+            return await _context.Roles.ToListAsync();
+        }
+    }
 }

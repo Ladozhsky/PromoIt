@@ -14,7 +14,7 @@
 </div>
 
 <div class="card text-center donation-card">
-<h3>Choose your company or create new</h3>
+<h3>Select your company or create new</h3>
 <div>
     <select id="company" class="form-select form-select-lg mb-3" @bind="@user.CompanyId">
     <option value="" selected disabled></option>
@@ -41,7 +41,16 @@
         <label for="telnumber">Phone number</label>
         <input type="telnumber" placeholder="Phone number" class="form-control" id="telnumber" @bind="@user.TelNumber" required />
     </div>
-    
+    <div>
+        <label for="role">Select who you are</label>
+    <select id="role" class="form-select form-select-lg mb-3" @bind="@user.Role">
+    <option value="" selected disabled></option>
+            @foreach (var role in roles)
+            {
+                <option value="@role.RoleName">@role.RoleName</option>
+            }
+    </select>
+</div>
     <button type="submit" class="btn btn-success">End register</button>
     </form>
 </div>
@@ -73,6 +82,8 @@
 
     private List<CompanyDto> companies = new List<CompanyDto>();
 
+    private List<Role> roles = new List<Role>();
+
     HttpClient client = new HttpClient();
 
 
@@ -85,6 +96,7 @@
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             HttpResponseMessage response = await client.PostAsJsonAsync("https://localhost:7096/api/Users", user);
+
             if (response.IsSuccessStatusCode)
             {
                 response.EnsureSuccessStatusCode();
@@ -111,5 +123,7 @@
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         companies = await client.GetFromJsonAsync<List<CompanyDto>>("https://localhost:7096/api/Companies");
+        roles = await client.GetFromJsonAsync<List<Role>>("https://localhost:7096/api/Users/roles");
+
     }
 }
