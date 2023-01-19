@@ -150,7 +150,13 @@ input[type="number"]::-webkit-outer-spin-button {
     line-height: 30px;
 }
 
-.quantity{
+.h3-reg {
+    color: #5f6b3b;
+    font-family: 'Comic Sans MS';
+    font-weight: 900;
+}
+
+.quantity {
     width: 50px;
 }
 
