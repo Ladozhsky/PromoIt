@@ -74,7 +74,6 @@ builder.Services.AddAuthorization(options =>
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();

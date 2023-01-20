@@ -16,4 +16,11 @@
             public string CampaignName { get; set; }
             public int Amount { get; set; }
     }
+
+    public partial class ExistingDonatedProductDto
+    {
+        public int ProductId { get; set; }
+        public int CampaignId { get; set; }
+
+    }
 }
