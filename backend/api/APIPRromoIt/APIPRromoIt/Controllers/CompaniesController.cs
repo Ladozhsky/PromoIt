@@ -13,23 +13,29 @@ namespace APIPRromoIt.Controllers
     public class CompaniesController : ControllerBase
     {
         private readonly promoitContext _context;
+        private readonly ILogger<CompaniesController> _logger;
 
-        public CompaniesController(promoitContext context)
+        public CompaniesController(promoitContext context, ILogger<CompaniesController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies()
         {
-            return await _context.Companies.Select(c => CompanyToTDO(c)).ToListAsync();
+                _logger.LogInformation("Getting companies");
+
+                return await _context.Companies.Select(c => CompanyToTDO(c)).ToListAsync();
         }
 
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<Company>> PostCompany(CompanyDto companyDto)
         {
+            _logger.LogInformation("Adding company");
+
             Company company = new Company
             {
                 CompanyId = companyDto.CompanyId,
@@ -39,10 +45,10 @@ namespace APIPRromoIt.Controllers
                 CompanyType = companyDto.CompanyType
             };
 
-            _context.Companies.Add(company);
-            await _context.SaveChangesAsync();
+                _context.Companies.Add(company);
+                await _context.SaveChangesAsync();
 
-            return Ok(company);
+                return Ok(company);
         }
         private static CompanyDto CompanyToTDO(Company company) =>
         new CompanyDto
