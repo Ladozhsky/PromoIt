@@ -9,4 +9,12 @@ namespace APIPRromoIt.ModelsDto
         public int Amount { get; set; }
 
     }
+
+    public partial class ExistingDonatedProductDto
+    {
+        public int ProductId { get; set; }
+        public int CampaignId { get; set; }
+        public string UserId { get; set; }
+
+    }
 }

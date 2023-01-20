@@ -87,5 +87,39 @@ namespace APIPRromoIt.Controllers
 
             return Ok(donatedProducts);
         }
+
+        //Checking of existing the same donated product
+        [HttpGet("{productId}/{campaignId}")]
+        [Authorize(Policy = "Social Activist")]
+        public async Task<ActionResult<bool>> DonatedProductExisting(int productId, int campaignId)
+        {
+            _logger.LogInformation("Donated product existing checking");
+
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            string userId = identity?.FindFirst("user_id")?.Value;
+
+            DonatedProduct existingDonatedProduct = _context.DonatedProducts.FirstOrDefault(dp => dp.UserId == userId && dp.ProductId == productId && dp.CampaignId == campaignId);
+            if (existingDonatedProduct != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        // Update amount of donated products
+        [HttpPut("{productId}/{campaignId}")]
+        [Authorize(Policy = "Social Activist")]
+        public async Task<ActionResult<DonatedProduct>> UpdateAmount(UpdateQuantity updateQuantity, int productId, int campaignId)
+        {
+            _logger.LogInformation("Updating donation status");
+
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            string userId = identity?.FindFirst("user_id")?.Value;
+
+            var donatedProduct = _context.DonatedProducts.Single(dp => dp.UserId == userId && dp.ProductId == productId && dp.CampaignId == campaignId);
+            donatedProduct.Amount += updateQuantity.Quantity;
+            _context.SaveChanges();
+            return Ok();
+        }
     }
 }

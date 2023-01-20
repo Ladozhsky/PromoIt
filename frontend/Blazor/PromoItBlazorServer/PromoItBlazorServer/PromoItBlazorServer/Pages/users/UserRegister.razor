@@ -65,13 +65,6 @@
 
     private string ErrorMessage { get; set; }
 
-    private bool showForm = false;
-
-    private void ToggleFormVisibility()
-    {
-        showForm = !showForm;
-    }
-
     public void NavigateToAddCompany()
     {
         NavigationManager.NavigateTo("/add-company");
