@@ -13,16 +13,20 @@ namespace APIPRromoIt.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly promoitContext _context;
+        private readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(promoitContext context)
+        public ProductsController(promoitContext context, ILogger<ProductsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpPost]
         [Authorize(Policy = "Business representative and Admin")]
         public async Task<ActionResult<ProductDto>> PostProduct(ProductDto productDto)
         {
+            _logger.LogInformation("Adding product");
+
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("user_id")?.Value;
 
@@ -49,6 +53,8 @@ namespace APIPRromoIt.Controllers
         [Authorize(Policy ="Business Representative")]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCompanyId()
         {
+            _logger.LogInformation("Getting products by company");
+
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("user_id")?.Value;
 
@@ -68,6 +74,8 @@ namespace APIPRromoIt.Controllers
         [Authorize(Policy = "Social Activist")]
         public async Task<ActionResult<IEnumerable<DonatedProductDto>>> GetDonatedProductsByUserId()
         {
+            _logger.LogInformation("Getting donated products");
+
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("user_id")?.Value;
 

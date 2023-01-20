@@ -14,10 +14,12 @@ namespace APIPRromoIt.Controllers
     public class PurchaseController : ControllerBase
     {
         private readonly promoitContext _context;
+        private readonly ILogger<PurchaseController> _logger;
 
-        public PurchaseController(promoitContext context)
+        public PurchaseController(promoitContext context, ILogger<PurchaseController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // Get sum of tweets/retweets by campaignId and twitterId
@@ -25,6 +27,8 @@ namespace APIPRromoIt.Controllers
         [Authorize(Policy = "Social Activist")]
         public async Task<int> GetTweetsSum(int campaignId)
         {
+            _logger.LogInformation("getting sum of tweets");
+
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("user_id")?.Value;
             string twitterId = userId.Split('|')[1];
@@ -41,6 +45,8 @@ namespace APIPRromoIt.Controllers
         [Authorize(Policy = "Social Activist")]
         public async Task<ActionResult<BalanceTransactionDto>> PostBalanceTransaction(BalanceTransactionDto balanceTransactionDto)
         {
+            _logger.LogInformation("Adding new transaction");
+
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("user_id")?.Value;
             string twitterId = userId.Split('|')[1];
@@ -67,6 +73,8 @@ namespace APIPRromoIt.Controllers
         [Authorize(Policy = "Social Activist")]
         public async Task<ActionResult<DonatedProduct>> PostDonatedProduct(DonatedProductDto donatedProductDto)
         {
+            _logger.LogInformation("Adding donated products");
+
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("user_id")?.Value;
 
@@ -89,6 +97,8 @@ namespace APIPRromoIt.Controllers
         [Authorize(Policy = "Social Activist")]
         public async Task<ActionResult<Donation>> UpdateAmount(int orderId)
         {
+            _logger.LogInformation("Updating donation status");
+
             var currentDonation = _context.ProductToOrders.Single(p => p.OrderId == orderId);
             currentDonation.Status = 2;
             _context.SaveChanges();

@@ -13,15 +13,19 @@ namespace APIPRromoIt.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly promoitContext _context;
+        private readonly ILogger<OrdersController> _logger;
 
-        public OrdersController(promoitContext context)
+        public OrdersController(promoitContext context, ILogger<OrdersController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Donation>>> GetDonations()
         {
+            _logger.LogInformation("Getting donations");
+
             var donations = await (from ca in _context.Campaigns
                                    join o in _context.Orders on ca.CampaignId equals o.CampaignId
                                    join c in _context.Companies on o.CompanyId equals c.CompanyId
@@ -38,6 +42,8 @@ namespace APIPRromoIt.Controllers
         [Authorize(Policy ="Social Activist")]
         public async Task<ActionResult<Donation>> UpdateAmount(int orderId, UpdateQuantity updateQuantity)
         {
+            _logger.LogInformation("Updating amount");
+
             var productToOrder = _context.ProductToOrders.Single(p => p.OrderId == orderId);
             productToOrder.Amount -= updateQuantity.Quantity;
             _context.SaveChanges();
@@ -48,6 +54,8 @@ namespace APIPRromoIt.Controllers
         [Authorize(Policy ="Business Representative")]
         public async Task<ActionResult<OrderDto>> PostOrder(OrderDto orderDto)
         {
+            _logger.LogInformation("Adding order");
+
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("user_id")?.Value;
 
@@ -61,6 +69,8 @@ namespace APIPRromoIt.Controllers
                 CompanyId = (int)companyId,
                 UserId = userId,
             };
+
+            _logger.LogInformation("Adding product_to_order");
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();

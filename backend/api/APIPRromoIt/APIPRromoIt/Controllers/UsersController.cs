@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace APIPRromoIt.Controllers
 {
@@ -14,10 +15,12 @@ namespace APIPRromoIt.Controllers
     public class UsersController : ControllerBase
     {
         private readonly promoitContext _context;
+        private readonly ILogger<UsersController> _logger;
 
-        public UsersController(promoitContext context)
+        public UsersController(promoitContext context, ILogger<UsersController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // Get all users
@@ -25,6 +28,8 @@ namespace APIPRromoIt.Controllers
         [Authorize(Policy="AdminOnly")]
 		public async Task<ActionResult<IEnumerable<UserForAdmin>>> GetAllUsers()
 		{
+            _logger.LogInformation("Getting Users");
+
 			var users = await (from u in _context.Users
 								   join c in _context.Companies on u.CompanyId equals c.CompanyId
                                    orderby u.Status descending
@@ -38,6 +43,8 @@ namespace APIPRromoIt.Controllers
         [Authorize]
         public async Task<ActionResult<User>> PostUser(UserDto userDto)
         {
+            _logger.LogInformation("Adding user");
+
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("user_id")?.Value;
             //string role = identity?.FindFirst("https://promoit.co.il/claims/role")?.Value;
@@ -65,6 +72,8 @@ namespace APIPRromoIt.Controllers
         [HttpGet]
         public async Task<ActionResult<bool>> UserExisting()
         {
+            _logger.LogInformation("UserExisting checking");
+
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("user_id")?.Value;
 
@@ -81,6 +90,8 @@ namespace APIPRromoIt.Controllers
         [Authorize(Policy = "Social Activist")]
         public async Task<ActionResult<IEnumerable<DollarsByUser>>> GetTweetsSum()
         {
+            _logger.LogInformation("getting sum of tweets");
+
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("user_id")?.Value;
             string twitterId = userId.Split('|')[1];
@@ -99,7 +110,10 @@ namespace APIPRromoIt.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
         {
-            return await _context.Roles.ToListAsync();
+            _logger.LogInformation("Getting roles");
+
+            IEnumerable<Role> roles = await _context.Roles.ToListAsync();
+            return Ok(roles);
         }
 
         // Update Status of User
@@ -107,6 +121,8 @@ namespace APIPRromoIt.Controllers
         [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult<User>> UpdateUserStatus(string userId)
         {
+            _logger.LogInformation("Updating user status");
+
             var currentUser = _context.Users.Single(u => u.UserId == userId);
             currentUser.Status = "Verified";
             _context.SaveChanges();
