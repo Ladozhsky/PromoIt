@@ -92,6 +92,30 @@ namespace APIPRromoIt.Controllers
             return Ok(donatedProduct);
         }
 
+        [HttpPost("complete-transaction")]
+        [Authorize(Policy="Social Activist")]
+        public async Task<ActionResult<CompleteTransaction>> AddCompleteTransaction(CompleteTransactionDto completeTransactionDto)
+        {
+            _logger.LogInformation("Adding cemplete transaction");
+
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            string userId = identity?.FindFirst("user_id")?.Value;
+
+            CompleteTransaction completeTransaction = new CompleteTransaction
+            {
+                UserId = userId,
+                CampaignId = completeTransactionDto.CampaignId,
+                CompanyId = completeTransactionDto.CompanyId,
+                ProductId = completeTransactionDto.ProductId,
+                Amount = completeTransactionDto.Amount
+            };
+
+            _context.CompleteTransactions.Add(completeTransaction);
+            await _context.SaveChangesAsync();
+
+            return Ok(completeTransaction);
+        }
+
         // Update Status or donation
         [HttpPut("{orderId}")]
         [Authorize(Policy = "Social Activist")]

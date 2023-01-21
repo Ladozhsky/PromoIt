@@ -19,6 +19,7 @@ namespace APIPRromoIt.Models
         public virtual DbSet<BalanceTransaction> BalanceTransactions { get; set; } = null!;
         public virtual DbSet<Campaign> Campaigns { get; set; } = null!;
         public virtual DbSet<Company> Companies { get; set; } = null!;
+        public virtual DbSet<CompleteTransaction> CompleteTransactions { get; set; } = null!;
         public virtual DbSet<DonatedProduct> DonatedProducts { get; set; } = null!;
         public virtual DbSet<Order> Orders { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
@@ -145,6 +146,49 @@ namespace APIPRromoIt.Models
                 entity.Property(e => e.Site)
                     .HasMaxLength(50)
                     .HasColumnName("site");
+            });
+
+            modelBuilder.Entity<CompleteTransaction>(entity =>
+            {
+                entity.HasKey(e => e.TransactionId);
+
+                entity.ToTable("complete_transaction");
+
+                entity.Property(e => e.TransactionId).HasColumnName("transaction_id");
+
+                entity.Property(e => e.CampaignId).HasColumnName("campaign_id");
+
+                entity.Property(e => e.CompanyId).HasColumnName("company_id");
+
+                entity.Property(e => e.ProductId).HasColumnName("product_id");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(100)
+                    .HasColumnName("user_id");
+
+                entity.HasOne(d => d.Campaign)
+                    .WithMany(p => p.CompleteTransactions)
+                    .HasForeignKey(d => d.CampaignId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_complete_transaction_campaign");
+
+                entity.HasOne(d => d.Company)
+                    .WithMany(p => p.CompleteTransactions)
+                    .HasForeignKey(d => d.CompanyId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_complete_transaction_company");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.CompleteTransactions)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_complete_transaction_product");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.CompleteTransactions)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_complete_transaction_user");
             });
 
             modelBuilder.Entity<DonatedProduct>(entity =>

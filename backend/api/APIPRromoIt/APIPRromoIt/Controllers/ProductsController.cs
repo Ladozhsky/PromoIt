@@ -51,7 +51,7 @@ namespace APIPRromoIt.Controllers
 
         [HttpGet("/api/Products/byCompany")]
         [Authorize(Policy ="Business Representative")]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCompanyId()
+        public async Task<ActionResult<List<ProductDto>>> GetProductsByCompanyId()
         {
             _logger.LogInformation("Getting products by company");
 
@@ -72,7 +72,7 @@ namespace APIPRromoIt.Controllers
 
         [HttpGet("/api/donated-products")]
         [Authorize(Policy = "Social Activist")]
-        public async Task<ActionResult<IEnumerable<DonatedProductDto>>> GetDonatedProductsByUserId()
+        public async Task<ActionResult<List<DonatedProductDto>>> GetDonatedProductsByUserId()
         {
             _logger.LogInformation("Getting donated products");
 

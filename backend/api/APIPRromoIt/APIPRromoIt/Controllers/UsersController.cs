@@ -26,7 +26,7 @@ namespace APIPRromoIt.Controllers
         // Get all users
         [HttpGet("/allUsers")]
         [Authorize(Policy="AdminOnly")]
-		public async Task<ActionResult<IEnumerable<UserForAdmin>>> GetAllUsers()
+		public async Task<ActionResult<List<UserForAdmin>>> GetAllUsers()
 		{
             _logger.LogInformation("Getting Users");
 
@@ -38,8 +38,26 @@ namespace APIPRromoIt.Controllers
 			return Ok(users);
 		}
 
-		// Add user
-		[HttpPost]
+        // Get info about completed transactions
+        [HttpGet("transactions")]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<ActionResult<List<CompleteTransactionsForAdmin>>> GetAllCompletedTransactions()
+        {
+            _logger.LogInformation("Get info about transactions");
+
+            var completeTransactions = await (from ct in _context.CompleteTransactions
+                                              join c in _context.Companies on ct.CompanyId equals c.CompanyId
+                                              join ca in _context.Campaigns on ct.CampaignId equals ca.CampaignId
+                                              join p in _context.Products on ct.ProductId equals p.ProductId
+                                              join u in _context.Users on ct.UserId equals u.UserId
+                                              select new { u.UserName, u.Address, u.TelNumber, ca.CampaignName, c.CompanyName, p.ProductName, ct.Amount
+                                              }).ToListAsync();
+
+            return Ok(completeTransactions);
+        }
+
+        // Add user
+        [HttpPost]
         [Authorize]
         public async Task<ActionResult<User>> PostUser(UserDto userDto)
         {
@@ -88,7 +106,7 @@ namespace APIPRromoIt.Controllers
         // Get sum of tweets/retweets by campaignId and twitterId
         [HttpGet("/sum")]
         [Authorize(Policy = "Social Activist")]
-        public async Task<ActionResult<IEnumerable<DollarsByUser>>> GetTweetsSum()
+        public async Task<ActionResult<List<DollarsByUser>>> GetTweetsSum()
         {
             _logger.LogInformation("getting sum of tweets");
 
@@ -108,7 +126,7 @@ namespace APIPRromoIt.Controllers
         //Get Roles
         [HttpGet("roles")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
+        public async Task<ActionResult<List<Role>>> GetRoles()
         {
             _logger.LogInformation("Getting roles");
 

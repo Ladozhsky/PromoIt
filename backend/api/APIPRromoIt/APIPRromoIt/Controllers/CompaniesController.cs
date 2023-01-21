@@ -23,7 +23,7 @@ namespace APIPRromoIt.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies()
+        public async Task<ActionResult<List<CompanyDto>>> GetCompanies()
         {
                 _logger.LogInformation("Getting companies");
 

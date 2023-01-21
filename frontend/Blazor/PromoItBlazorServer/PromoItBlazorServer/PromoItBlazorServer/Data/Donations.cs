@@ -3,6 +3,7 @@
     public partial class DonationDto
     {
         public int CampaignId { get; set; }
+        public int CompanyId { get; set; }
         public string CampaignName { get; set; }
         public string CompanyName { get; set; }
         public int ProductId { get; set; }

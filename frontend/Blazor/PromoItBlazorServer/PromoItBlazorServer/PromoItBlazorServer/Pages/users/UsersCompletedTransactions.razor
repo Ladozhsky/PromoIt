@@ -1,0 +1,58 @@
+﻿@page "/completed-transactions"
+@attribute [Authorize(Policy = "AdminOnly")]
+@using PromoItBlazorServer.Data
+@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Collections.Generic
+@using System.Net.Http.Headers;
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+<PageTitle>Completed transactions</PageTitle>
+
+<h1>Completed transactions</h1>
+
+<table class="table table-hover table-striped">
+    <thead class="thead-style">
+        <tr>
+            <th>Username</th>
+            <th>Address</th>
+            <th>Tel Number</th>
+            <th>Campaign</th>
+            <th>Company</th>
+            <th>Product</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var completedTransaction in completedTransactions.AsEnumerable().Reverse())
+        {
+                            <tr>
+                                    <td>@completedTransaction.UserName</td>
+                                    <td>@completedTransaction.Address</td>
+                                    <td>@completedTransaction.TelNumber</td>
+                                    <td>@completedTransaction.CampaignName</td>
+                                    <td>@completedTransaction.CompanyName</td>
+                                    <td>@completedTransaction.ProductName</td>
+                                    <td>@completedTransaction.Amount</td>
+                           </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    HttpClient http = new HttpClient();
+
+    private List<CompleteTransactionsForAdmin> completedTransactions = new List<CompleteTransactionsForAdmin>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        completedTransactions = await http.GetFromJsonAsync<List<CompleteTransactionsForAdmin>>("https://localhost:7096/api/Users/transactions");
+    }
+}
+

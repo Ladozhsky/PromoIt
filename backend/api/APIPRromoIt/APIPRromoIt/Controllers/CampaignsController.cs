@@ -23,7 +23,7 @@ namespace APIPRromoIt.Controllers
 
         // Get all campaigns
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CampaignDto>>> GetCampaigns()
+        public async Task<ActionResult<List<CampaignDto>>> GetCampaigns()
         {
             _logger.LogInformation("Getting all campaigns");
 
@@ -39,7 +39,7 @@ namespace APIPRromoIt.Controllers
         // Get campaign by user id
         [HttpGet("/api/Campaigns/byUser")]
         [Authorize(Policy = "NPO Representative")]
-        public async Task<ActionResult<IEnumerable<CampaignDto>>> GetCampaignsByUserId()
+        public async Task<ActionResult<List<CampaignDto>>> GetCampaignsByUserId()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity?.FindFirst("user_id")?.Value;

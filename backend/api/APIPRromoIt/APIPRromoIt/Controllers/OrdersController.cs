@@ -22,7 +22,7 @@ namespace APIPRromoIt.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Donation>>> GetDonations()
+        public async Task<ActionResult<List<Donation>>> GetDonations()
         {
             _logger.LogInformation("Getting donations");
 
@@ -32,7 +32,7 @@ namespace APIPRromoIt.Controllers
                                    join po in _context.ProductToOrders on o.OrderId equals po.OrderId
                                    join p in _context.Products on po.ProductId equals p.ProductId
                                    where po.Status == 1
-                                   select new { ca.CampaignId, ca.CampaignName, c.CompanyName, p.ProductName, p.ProductId, p.Price, po.Amount, ca.Hashtag, o.Quantity, o.OrderId
+                                   select new { ca.CampaignId, ca.CampaignName, c.CompanyName, c.CompanyId, p.ProductName, p.ProductId, p.Price, po.Amount, ca.Hashtag, o.Quantity, o.OrderId
         }).ToListAsync();
 
             return Ok(donations);
@@ -70,10 +70,10 @@ namespace APIPRromoIt.Controllers
                 UserId = userId,
             };
 
-            _logger.LogInformation("Adding product_to_order");
-
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Adding product_to_order");
 
             ProductToOrder orderToProduct = new ProductToOrder
             {
