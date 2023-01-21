@@ -53,7 +53,7 @@
                     <button class="btn-id" @onclick="() => Decrement(donation)"><i class="fa fa-minus"></i></button>
                 </div>
                 <div style="align-item: center">
-                <button class="btn btn-purchase" @onclick="() => Purchase(donation.CampaignId, donation.Price, donation.ProductId, donation.Quantity, donation.OrderId, donation.Amount,
+                <button class="btn btn-purchase" @onclick="() => Purchase(donation.CampaignId, donation.CompanyId, donation.Price, donation.ProductId, donation.Quantity, donation.OrderId, donation.Amount,
                     donation.CampaignName, donation.CompanyName, donation.ProductName)">Purchase</button>
                 </div>
             </AuthorizeView>
@@ -90,7 +90,7 @@
         else donation.Quantity = 1;
     }
 
-    private async Task Purchase(int campaignId, int price, int productId, int quantity, int orderId, int amount, string campaignName, string companyName, string productName)
+    private async Task Purchase(int campaignId, int companyId, int price, int productId, int quantity, int orderId, int amount, string campaignName, string companyName, string productName)
     {
         //int selectedCampaignId = campaignId;
         donatedProduct.CampaignId = campaignId;
@@ -116,6 +116,15 @@
         tweetParams.company = companyName;
         tweetParams.product = productName;
 
+        CompleteTransaction completeTransaction = new CompleteTransaction
+            {
+                CampaignId = campaignId,
+                CompanyId = companyId,
+                ProductId = productId,
+                Amount = quantity
+            };
+
+
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         int dollarsAmount = await http.GetFromJsonAsync<int>($"https://localhost:7096/api/Purchase/{campaignId}");
@@ -128,6 +137,7 @@
             await http.PutAsJsonAsync($"https://localhost:7096/api/Products/{productId}/{campaignId}", updateQuantity);
 
             HttpResponseMessage response3 = await http.PutAsJsonAsync($"https://localhost:7096/api/Orders/{orderId}", updateQuantity);
+            HttpResponseMessage response4 = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/complete-transaction", completeTransaction);
 
             NavigationManager.NavigateTo("/thanks");
 
@@ -135,7 +145,7 @@
             {
                 HttpResponseMessage response5 = await http.PutAsJsonAsync($"https://localhost:7096/api/Purchase/{orderId}", updateStatus);
             }
-            HttpResponseMessage response4 = await http.PostAsJsonAsync("http://localhost:5555/twitter/", tweetParams);
+            HttpResponseMessage response6 = await http.PostAsJsonAsync("http://localhost:5555/twitter/", tweetParams);
         }
         else
         {

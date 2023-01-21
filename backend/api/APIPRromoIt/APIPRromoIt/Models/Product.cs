@@ -7,6 +7,7 @@ namespace APIPRromoIt.Models
     {
         public Product()
         {
+            CompleteTransactions = new HashSet<CompleteTransaction>();
             DonatedProducts = new HashSet<DonatedProduct>();
             ProductToOrders = new HashSet<ProductToOrder>();
         }
@@ -18,6 +19,7 @@ namespace APIPRromoIt.Models
         public string? Image { get; set; }
 
         public virtual Company Company { get; set; } = null!;
+        public virtual ICollection<CompleteTransaction> CompleteTransactions { get; set; }
         public virtual ICollection<DonatedProduct> DonatedProducts { get; set; }
         public virtual ICollection<ProductToOrder> ProductToOrders { get; set; }
     }

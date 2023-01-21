@@ -8,6 +8,7 @@ namespace APIPRromoIt.Models
         public Company()
         {
             Campaigns = new HashSet<Campaign>();
+            CompleteTransactions = new HashSet<CompleteTransaction>();
             Orders = new HashSet<Order>();
             Products = new HashSet<Product>();
             Users = new HashSet<User>();
@@ -20,6 +21,7 @@ namespace APIPRromoIt.Models
         public string CompanyType { get; set; } = null!;
 
         public virtual ICollection<Campaign> Campaigns { get; set; }
+        public virtual ICollection<CompleteTransaction> CompleteTransactions { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Product> Products { get; set; }
         public virtual ICollection<User> Users { get; set; }
