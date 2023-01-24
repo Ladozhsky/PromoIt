@@ -78,21 +78,16 @@
 
     private void Increment(DonationDto donation)
     {
-        if (donation.Quantity < donation.Amount)
-            donation.Quantity++;
-        else donation.Quantity = donation.Amount;
+        donation.Quantity = donation.Quantity < donation.Amount ? donation.Quantity++ : donation.Amount;
     }
 
     private void Decrement(DonationDto donation)
     {
-        if (donation.Quantity >= 2)
-            donation.Quantity--;
-        else donation.Quantity = 1;
+        donation.Quantity = donation.Quantity >= 2 ? donation.Quantity-- : 1;
     }
 
     private async Task Purchase(int campaignId, int companyId, int price, int productId, int quantity, int orderId, int amount, string campaignName, string companyName, string productName)
     {
-        //int selectedCampaignId = campaignId;
         donatedProduct.CampaignId = campaignId;
         donatedProduct.ProductId = productId;
         donatedProduct.Amount = quantity;
@@ -127,10 +122,10 @@
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        int dollarsAmount = await http.GetFromJsonAsync<int>($"https://localhost:7096/api/Purchase/{campaignId}");
+        bool availableTransaction = await http.GetFromJsonAsync<bool>($"https://localhost:7096/api/Purchase/{campaignId}/{productId}/{quantity}");
         bool existingDonatedProduct = await http.GetFromJsonAsync<bool>($"https://localhost:7096/api/Products/{productId}/{campaignId}");
 
-        if (dollarsAmount >= price * quantity)
+        if (availableTransaction)
         {
             HttpResponseMessage balanceTransaction = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase", balance);
             HttpResponseMessage addingProductOrUpdatingAmount = !existingDonatedProduct ? await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/api/Add-donated-product", donatedProduct) :
@@ -145,7 +140,7 @@
             {
                 HttpResponseMessage updatingDonationStatus = await http.PutAsJsonAsync($"https://localhost:7096/api/Purchase/{orderId}", updateStatus);
             }
-            HttpResponseMessage postingTweet = await http.PostAsJsonAsync("http://localhost:5555/twitter/", tweetParams);
+            //HttpResponseMessage postingTweet = await http.PostAsJsonAsync("http://localhost:5555/twitter/", tweetParams);
         }
         else
         {
