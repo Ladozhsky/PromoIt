@@ -2,6 +2,7 @@
 using APIPRromoIt.ModelsDto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.Design;
@@ -22,10 +23,10 @@ namespace APIPRromoIt.Controllers
             _logger = logger;
         }
 
-        // Get sum of tweets/retweets by campaignId and twitterId
-        [HttpGet("{campaignId}")]
+        // Checking of enough money for transaction
+        [HttpGet("{campaignId}/{productId}/{quantity}")]
         [Authorize(Policy = "Social Activist")]
-        public async Task<int> GetTweetsSum(int campaignId)
+        public async Task<bool> GetTweetsSum(int campaignId, int productId, int quantity)
         {
             _logger.LogInformation("getting sum of tweets");
 
@@ -37,7 +38,14 @@ namespace APIPRromoIt.Controllers
                                           where bt.UserId == twitterId && bt.CampaignId == campaignId
                                              select bt.Amount).ToArrayAsync();
             int tweetsSumByCampaign = tweetsByCampaign.Sum();
-            return tweetsSumByCampaign;
+            
+            int price = await (from p in _context.Products
+                               where p.ProductId == productId
+                               select p.Price).FirstOrDefaultAsync();
+
+            bool availableTransaction = tweetsSumByCampaign >= price * quantity ? true : false;
+
+            return availableTransaction;
         }
 
         // Post new transaction after purchase
