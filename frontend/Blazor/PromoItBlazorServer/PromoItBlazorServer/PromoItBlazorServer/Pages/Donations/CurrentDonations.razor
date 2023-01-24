@@ -132,20 +132,20 @@
 
         if (dollarsAmount >= price * quantity)
         {
-            HttpResponseMessage response1 = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase", balance);
-            HttpResponseMessage response2 = !existingDonatedProduct ? await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/api/Add-donated-product", donatedProduct) :
+            HttpResponseMessage balanceTransaction = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase", balance);
+            HttpResponseMessage addingProductOrUpdatingAmount = !existingDonatedProduct ? await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/api/Add-donated-product", donatedProduct) :
             await http.PutAsJsonAsync($"https://localhost:7096/api/Products/{productId}/{campaignId}", updateQuantity);
 
-            HttpResponseMessage response3 = await http.PutAsJsonAsync($"https://localhost:7096/api/Orders/{orderId}", updateQuantity);
-            HttpResponseMessage response4 = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/complete-transaction", completeTransaction);
+            HttpResponseMessage updatedAmount = await http.PutAsJsonAsync($"https://localhost:7096/api/Orders/{orderId}", updateQuantity);
+            HttpResponseMessage addingCompletedTransaction = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/complete-transaction", completeTransaction);
 
             NavigationManager.NavigateTo("/thanks");
 
             if (quantity == amount)
             {
-                HttpResponseMessage response5 = await http.PutAsJsonAsync($"https://localhost:7096/api/Purchase/{orderId}", updateStatus);
+                HttpResponseMessage updatingDonationStatus = await http.PutAsJsonAsync($"https://localhost:7096/api/Purchase/{orderId}", updateStatus);
             }
-            HttpResponseMessage response6 = await http.PostAsJsonAsync("http://localhost:5555/twitter/", tweetParams);
+            HttpResponseMessage postingTweet = await http.PostAsJsonAsync("http://localhost:5555/twitter/", tweetParams);
         }
         else
         {
