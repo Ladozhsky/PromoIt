@@ -43,6 +43,7 @@
     </div>
 @code {
     private List<string> companyTypes = new List<string> { "Business", "NPO" };
+    private RequestsUrls requestsUrls = new RequestsUrls();
 
     private string ErrorMessage { get; set; }
 
@@ -65,7 +66,7 @@
 
             http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            HttpResponseMessage response = await http.PostAsJsonAsync("https://localhost:7096/api/Companies", company);
+            HttpResponseMessage response = await http.PostAsJsonAsync(requestsUrls.Companies, company);
             if (response.IsSuccessStatusCode)
             {
                 response.EnsureSuccessStatusCode();

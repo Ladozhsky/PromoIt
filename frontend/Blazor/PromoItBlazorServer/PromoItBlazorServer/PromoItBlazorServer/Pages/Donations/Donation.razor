@@ -56,6 +56,7 @@
     private CampaignDto campaign = new CampaignDto();
     private List<ProductDto> products = new List<ProductDto>();
     public OrderDto order = new OrderDto();
+    private RequestsUrls requestsUrls = new RequestsUrls();
 
     protected override async Task OnInitializedAsync()
     {
@@ -63,9 +64,9 @@
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        campaign = await http.GetFromJsonAsync<CampaignDto>($"https://localhost:7096/api/Campaigns/{id}");
+        campaign = await http.GetFromJsonAsync<CampaignDto>($"{requestsUrls.Campaigns}/{id}");
 
-        products = await http.GetFromJsonAsync<List<ProductDto>>("https://localhost:7096/api/Products/byCompany");
+        products = await http.GetFromJsonAsync<List<ProductDto>>(requestsUrls.ProductsByCompany);
 
     }
 
@@ -79,7 +80,7 @@
 
             order.CampaignId = campaign.CampaignId;
 
-            HttpResponseMessage response = await http.PostAsJsonAsync("https://localhost:7096/api/Orders", order);
+            HttpResponseMessage response = await http.PostAsJsonAsync(requestsUrls.Orders, order);
             if (response.IsSuccessStatusCode)
             {
                 response.EnsureSuccessStatusCode();

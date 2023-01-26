@@ -68,6 +68,7 @@
     public UpdateQuantity updateQuantity = new UpdateQuantity();
     public UpdateStatus updateStatus = new UpdateStatus();
     public TweetParams tweetParams = new TweetParams();
+    private RequestsUrls requestsUrls = new RequestsUrls();
 
     HttpClient http = new HttpClient();
 
@@ -78,12 +79,12 @@
 
     private void Increment(DonationDto donation)
     {
-        donation.Quantity = donation.Quantity < donation.Amount ? donation.Quantity++ : donation.Amount;
+        donation.Quantity = donation.Quantity < donation.Amount ? ++donation.Quantity : donation.Quantity = donation.Amount;
     }
 
     private void Decrement(DonationDto donation)
     {
-        donation.Quantity = donation.Quantity >= 2 ? donation.Quantity-- : 1;
+        donation.Quantity = donation.Quantity > 1 ? --donation.Quantity : 1;
     }
 
     private async Task Purchase(int campaignId, int companyId, int price, int productId, int quantity, int orderId, int amount, string campaignName, string companyName, string productName)
@@ -122,25 +123,25 @@
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        bool availableTransaction = await http.GetFromJsonAsync<bool>($"https://localhost:7096/api/Purchase/{campaignId}/{productId}/{quantity}");
-        bool existingDonatedProduct = await http.GetFromJsonAsync<bool>($"https://localhost:7096/api/Products/{productId}/{campaignId}");
+        bool availableTransaction = await http.GetFromJsonAsync<bool>($"{requestsUrls.Purchase}/{campaignId}/{productId}/{quantity}");
+        bool existingDonatedProduct = await http.GetFromJsonAsync<bool>($"{requestsUrls.Products}/{productId}/{campaignId}");
 
         if (availableTransaction)
         {
-            HttpResponseMessage balanceTransaction = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase", balance);
-            HttpResponseMessage addingProductOrUpdatingAmount = !existingDonatedProduct ? await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/api/Add-donated-product", donatedProduct) :
-            await http.PutAsJsonAsync($"https://localhost:7096/api/Products/{productId}/{campaignId}", updateQuantity);
+            HttpResponseMessage balanceTransaction = await http.PostAsJsonAsync(requestsUrls.Purchase, balance);
+            HttpResponseMessage addingProductOrUpdatingAmount = !existingDonatedProduct ? await http.PostAsJsonAsync(requestsUrls.NewDonatedProducts, donatedProduct) :
+            await http.PutAsJsonAsync($"{requestsUrls.Products}/{productId}/{campaignId}", updateQuantity);
 
-            HttpResponseMessage updatedAmount = await http.PutAsJsonAsync($"https://localhost:7096/api/Orders/{orderId}", updateQuantity);
-            HttpResponseMessage addingCompletedTransaction = await http.PostAsJsonAsync("https://localhost:7096/api/Purchase/complete-transaction", completeTransaction);
+            HttpResponseMessage updatedAmount = await http.PutAsJsonAsync($"{requestsUrls.Orders}/{orderId}", updateQuantity);
+            HttpResponseMessage addingCompletedTransaction = await http.PostAsJsonAsync(requestsUrls.CompletedTransactions, completeTransaction);
 
             NavigationManager.NavigateTo("/thanks");
 
             if (quantity == amount)
             {
-                HttpResponseMessage updatingDonationStatus = await http.PutAsJsonAsync($"https://localhost:7096/api/Purchase/{orderId}", updateStatus);
+                HttpResponseMessage updatingDonationStatus = await http.PutAsJsonAsync($"{requestsUrls.Purchase}/{orderId}", updateStatus);
             }
-            //HttpResponseMessage postingTweet = await http.PostAsJsonAsync("http://localhost:5555/twitter/", tweetParams);
+            HttpResponseMessage postingTweet = await http.PostAsJsonAsync(requestsUrls.Twitter, tweetParams);
         }
         else
         {
@@ -154,7 +155,7 @@
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        donations = await http.GetFromJsonAsync<List<DonationDto>>("https://localhost:7096/api/Orders");
+        donations = await http.GetFromJsonAsync<List<DonationDto>>(requestsUrls.Orders);
     }
 }
 

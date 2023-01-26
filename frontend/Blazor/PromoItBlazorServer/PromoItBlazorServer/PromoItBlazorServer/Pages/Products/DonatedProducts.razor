@@ -36,6 +36,7 @@
 @code {
 
     private List<DonatedProductList> donatedProducts = new List<DonatedProductList>();
+    private RequestsUrls requestsUrls = new RequestsUrls();
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,7 +46,7 @@
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        donatedProducts = await http.GetFromJsonAsync<List<DonatedProductList>>("https://localhost:7096/api/donated-products");
+        donatedProducts = await http.GetFromJsonAsync<List<DonatedProductList>>(requestsUrls.DonatedProducts);
     }
 }
 

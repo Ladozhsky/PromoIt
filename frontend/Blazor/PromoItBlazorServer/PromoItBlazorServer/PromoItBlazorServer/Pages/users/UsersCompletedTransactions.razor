@@ -45,6 +45,7 @@
     HttpClient http = new HttpClient();
 
     private List<CompleteTransactionsForAdmin> completedTransactions = new List<CompleteTransactionsForAdmin>();
+    private RequestsUrls requestsUrls = new RequestsUrls();
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,7 +53,7 @@
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        completedTransactions = await http.GetFromJsonAsync<List<CompleteTransactionsForAdmin>>("https://localhost:7096/api/Users/transactions");
+        completedTransactions = await http.GetFromJsonAsync<List<CompleteTransactionsForAdmin>>(requestsUrls.Transactions);
     }
 }
 

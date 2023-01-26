@@ -62,6 +62,7 @@
 
 @code {
     private List<string> companyTypes = new List<string> { "Business", "NPO" };
+    private RequestsUrls requestsUrls = new RequestsUrls();
 
     private string ErrorMessage { get; set; }
 
@@ -89,7 +90,7 @@
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            HttpResponseMessage response = await client.PostAsJsonAsync("https://localhost:7096/api/Users", user);
+            HttpResponseMessage response = await client.PostAsJsonAsync(requestsUrls.User, user);
 
             if (response.IsSuccessStatusCode)
             {
@@ -116,8 +117,8 @@
 
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        companies = await client.GetFromJsonAsync<List<CompanyDto>>("https://localhost:7096/api/Companies");
-        roles = await client.GetFromJsonAsync<List<Role>>("https://localhost:7096/api/Users/roles");
+        companies = await client.GetFromJsonAsync<List<CompanyDto>>(requestsUrls.Companies);
+        roles = await client.GetFromJsonAsync<List<Role>>(requestsUrls.Roles);
 
     }
 }

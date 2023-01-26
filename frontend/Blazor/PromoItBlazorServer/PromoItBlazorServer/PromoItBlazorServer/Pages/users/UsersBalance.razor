@@ -28,6 +28,7 @@
 
 @code {
     public List<DollarsByUser> dollars = new List<DollarsByUser>();
+    private RequestsUrls requestsUrls = new RequestsUrls();
 
     HttpClient http = new HttpClient();
 
@@ -37,7 +38,7 @@
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        dollars = await http.GetFromJsonAsync<List<DollarsByUser>>("https://localhost:7096/sum");
+        dollars = await http.GetFromJsonAsync<List<DollarsByUser>>(requestsUrls.Dollars);
     }
 }
 
