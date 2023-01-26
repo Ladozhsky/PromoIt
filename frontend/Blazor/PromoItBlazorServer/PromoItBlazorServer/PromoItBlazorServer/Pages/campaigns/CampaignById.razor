@@ -29,6 +29,7 @@
     public int? id { get; set; }
 
     private CampaignDto campaign = new CampaignDto();
+    private RequestsUrls requestsUrls = new RequestsUrls();
 
     public void NavigateToDonation()
     {
@@ -43,7 +44,7 @@
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        campaign = await http.GetFromJsonAsync<CampaignDto>($"https://localhost:7096/api/Campaigns/{id}");
+        campaign = await http.GetFromJsonAsync<CampaignDto>($"{requestsUrls.Campaigns}/{id}");
 
     }
 }

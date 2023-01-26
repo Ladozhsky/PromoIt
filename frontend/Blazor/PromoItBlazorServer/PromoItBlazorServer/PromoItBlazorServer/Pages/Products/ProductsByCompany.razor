@@ -37,8 +37,7 @@
 @code {
 
     private List<ProductDto> products = new List<ProductDto>();
-
-
+    private RequestsUrls requestsUrls = new RequestsUrls();
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,7 +47,7 @@
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        products = await http.GetFromJsonAsync<List<ProductDto>>("https://localhost:7096/api/Products/byCompany");
+        products = await http.GetFromJsonAsync<List<ProductDto>>(requestsUrls.ProductsByCompany);
     }
 }
 

@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "server=LAPTOP-V0M7V3Q0;Database=promoit;Trusted_Connection=Yes;Driver={ODBC Driver 17 for SQL Server}"
+  }
+}

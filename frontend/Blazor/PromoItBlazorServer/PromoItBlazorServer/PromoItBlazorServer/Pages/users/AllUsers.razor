@@ -53,6 +53,7 @@
 
     private List<UserForAdmin> users = new List<UserForAdmin>();
     public UpdateStatus updateStatus = new UpdateStatus();
+    private RequestsUrls requestsUrls = new RequestsUrls();
 
     private string buttonText = "Verify";
     private string buttonStyle = "warning";
@@ -61,7 +62,7 @@
     {
         string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
-        HttpResponseMessage response = await http.PutAsJsonAsync($"https://localhost:7096/api/Users/{userId}", updateStatus);
+        HttpResponseMessage response = await http.PutAsJsonAsync($"{requestsUrls.User}/{userId}", updateStatus);
 
         buttonText = "Done";
         buttonStyle = "success";
@@ -73,6 +74,6 @@
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        users = await http.GetFromJsonAsync<List<UserForAdmin>>("https://localhost:7096/allUsers");
+        users = await http.GetFromJsonAsync<List<UserForAdmin>>(requestsUrls.AllUsers);
     }
 }

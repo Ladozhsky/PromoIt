@@ -38,7 +38,9 @@
 @code {
     private string ErrorMessage { get; set; }
 
-    CampaignDto campaign = new CampaignDto();
+    private CampaignDto campaign = new CampaignDto();
+    private RequestsUrls requestsUrls = new RequestsUrls();
+
 
     private async Task SubmitForm()
     {
@@ -50,7 +52,7 @@
             http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 
-            HttpResponseMessage response = await http.PostAsJsonAsync("https://localhost:7096/api/Campaigns", campaign);
+            HttpResponseMessage response = await http.PostAsJsonAsync(requestsUrls.Campaigns, campaign);
             if (response.IsSuccessStatusCode)
             {
                 response.EnsureSuccessStatusCode();

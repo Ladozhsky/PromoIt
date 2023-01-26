@@ -37,8 +37,7 @@
 @code {
 
     private List<CampaignDto> campaigns = new List<CampaignDto>();
-
-
+    private RequestsUrls requestsUrls = new RequestsUrls();
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,7 +47,7 @@
 
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        campaigns = await http.GetFromJsonAsync<List<CampaignDto>>("https://localhost:7096/api/Campaigns/byUser");
+        campaigns = await http.GetFromJsonAsync<List<CampaignDto>>(requestsUrls.CampaignsByUser);
     }
 }
 
