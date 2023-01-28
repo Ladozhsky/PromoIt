@@ -2,7 +2,10 @@ import { Connection, SqlClient, Error, Query, ProcedureManager } from "msnodesql
 import { DB_CONNECTION_STRING, Queries } from "../constants";
 import { systemError } from "../entities";
 import { AppError } from "../enums";
+import { StaticEnvironment } from "../services/enviroment.static";
 import { ErrorService } from "../services/error.service";
+
+require('dotenv').config();
 
 export class SqlHelper {
     static sql: SqlClient = require("msnodesqlv8");
@@ -70,7 +73,6 @@ export class SqlHelper {
         });
     }
     
-
 
     private static openConnection(errorService: ErrorService): Promise<Connection> {
         return new Promise<Connection>((resolve, reject) => {

@@ -60,10 +60,14 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Business representative", policy => policy.RequireClaim("https://promoit.co.il/claims/role", "Business representative"));
 });
 
+var config = new ConfigurationBuilder()
+    .AddJsonFile("C:/PromoIt/backend/config/Connection.json")
+    .Build();
+
 builder.Services.AddDbContext<APIPRromoIt.Models.promoitContext>(
     options =>
     {
-        options.UseSqlServer(builder.Configuration.GetConnectionString("promoConnection"));
+        options.UseSqlServer(config.GetConnectionString("DotNetConnection"));
     });
 
 var app = builder.Build();

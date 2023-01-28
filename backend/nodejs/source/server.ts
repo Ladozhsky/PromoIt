@@ -2,6 +2,7 @@
 import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
+require('dotenv').config();
 
 import twitterRoutes from './routes/twitter.routes';
 
