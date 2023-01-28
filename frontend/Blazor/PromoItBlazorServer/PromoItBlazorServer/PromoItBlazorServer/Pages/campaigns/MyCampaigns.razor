@@ -6,7 +6,7 @@
 @using System.Collections.Generic
 @using System.Net.Http.Headers;
 @inject IHttpContextAccessor HttpContextAccessor
-
+@inject ILogger<MyCampaigns> Logger
 
 <PageTitle>My Campaigns</PageTitle>
 
@@ -35,19 +35,30 @@
 </table>
 
 @code {
+    private string ErrorMessage { get; set; }
 
     private List<CampaignDto> campaigns = new List<CampaignDto>();
     private RequestsUrls requestsUrls = new RequestsUrls();
 
     protected override async Task OnInitializedAsync()
     {
-        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+        try
+        {
+            Logger.LogInformation("Getting campaigns by current user");
 
-        HttpClient http = new HttpClient();
+            string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
-        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            HttpClient http = new HttpClient();
 
-        campaigns = await http.GetFromJsonAsync<List<CampaignDto>>(requestsUrls.CampaignsByUser);
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            campaigns = await http.GetFromJsonAsync<List<CampaignDto>>(requestsUrls.CampaignsByUser);
+        }
+        catch (HttpRequestException ex)
+        {
+            ErrorMessage = ex.Message;
+            Logger.LogError(ErrorMessage);
+        }
     }
 }
 

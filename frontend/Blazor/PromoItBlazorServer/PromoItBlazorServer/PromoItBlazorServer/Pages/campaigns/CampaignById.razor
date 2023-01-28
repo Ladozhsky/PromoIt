@@ -7,6 +7,7 @@
 @using System.Net.Http.Headers;
 @inject NavigationManager NavigationManager
 @inject IHttpContextAccessor HttpContextAccessor
+@inject ILogger<CampaignById> Logger
 
 
 <PageTitle>@campaign.CampaignName</PageTitle>
@@ -28,6 +29,7 @@
     [Parameter]
     public int? id { get; set; }
 
+    private string ErrorMessage { get; set; }
     private CampaignDto campaign = new CampaignDto();
     private RequestsUrls requestsUrls = new RequestsUrls();
 
@@ -38,13 +40,22 @@
 
     protected override async Task OnInitializedAsync()
     {
-        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+        try
+        {
+            Logger.LogInformation($"Getting campaign {id}...");
 
-        HttpClient http = new HttpClient();
+            string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
-        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            HttpClient http = new HttpClient();
 
-        campaign = await http.GetFromJsonAsync<CampaignDto>($"{requestsUrls.Campaigns}/{id}");
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+            campaign = await http.GetFromJsonAsync<CampaignDto>($"{requestsUrls.Campaigns}/{id}");
+        }
+        catch (HttpRequestException ex)
+        {
+            ErrorMessage = ex.Message;
+            Logger.LogError(ErrorMessage);
+        }
     }
 }

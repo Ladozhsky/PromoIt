@@ -7,6 +7,7 @@
 @using System.Net.Http.Headers;
 @inject NavigationManager NavigationManager
 @inject IHttpContextAccessor HttpContextAccessor
+@inject ILogger<AllUsers> Logger
 
 
 <PageTitle>All users</PageTitle>
@@ -49,6 +50,8 @@
 </table>
 
 @code {
+    private string ErrorMessage { get; set; }
+
     HttpClient http = new HttpClient();
 
     private List<UserForAdmin> users = new List<UserForAdmin>();
@@ -70,10 +73,19 @@
 
     protected override async Task OnInitializedAsync()
     {
-        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+        try
+        {
+            string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
-        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        users = await http.GetFromJsonAsync<List<UserForAdmin>>(requestsUrls.AllUsers);
+            Logger.LogInformation("Getting users...");
+            users = await http.GetFromJsonAsync<List<UserForAdmin>>(requestsUrls.AllUsers);
+        }
+        catch (HttpRequestException ex)
+        {
+            ErrorMessage = ex.Message;
+            Logger.LogError(ErrorMessage);
+        }
     }
 }

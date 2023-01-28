@@ -6,6 +6,7 @@
 @using System.Net.Http.Headers;
 @inject NavigationManager NavigationManager
 @inject IHttpContextAccessor HttpContextAccessor
+@inject ILogger<Campaigns> Logger
 
 
 <PageTitle>Campaigns</PageTitle>
@@ -39,6 +40,7 @@
 </table>
 
 @code {
+    private string ErrorMessage { get; set; }
 
     private List<CampaignDto> campaigns = new List<CampaignDto>();
     private RequestsUrls requestsUrls = new RequestsUrls();
@@ -50,12 +52,22 @@
 
     protected override async Task OnInitializedAsync()
     {
-        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+        try
+        {
+            Logger.LogInformation("Getting all campaigns");
 
-        HttpClient http = new HttpClient();
+            string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
-        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            HttpClient http = new HttpClient();
 
-        campaigns = await http.GetFromJsonAsync<List<CampaignDto>>(requestsUrls.Campaigns);
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            campaigns = await http.GetFromJsonAsync<List<CampaignDto>>(requestsUrls.Campaigns);
+        }
+        catch (HttpRequestException ex)
+        {
+            ErrorMessage = ex.Message;
+            Logger.LogError(ErrorMessage);
+        }
     }
 }
