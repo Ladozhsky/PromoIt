@@ -141,7 +141,7 @@
             {
                 HttpResponseMessage updatingDonationStatus = await http.PutAsJsonAsync($"{requestsUrls.Purchase}/{orderId}", updateStatus);
             }
-            HttpResponseMessage postingTweet = await http.PostAsJsonAsync(requestsUrls.Twitter, tweetParams);
+            //HttpResponseMessage postingTweet = await http.PostAsJsonAsync(requestsUrls.Twitter, tweetParams);
         }
         else
         {

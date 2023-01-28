@@ -30,6 +30,7 @@ export class Queries {
 export const DB_CONNECTION_STRING: string =
   "server=LAPTOP-V0M7V3Q0;Database=promoit;Trusted_Connection=Yes;Driver={ODBC Driver 17 for SQL Server}";
 
+
 export const client: TwitterApiReadWrite = new TwitterApiReadWrite({
   appKey: "OL3a0lj0AdyP4Yoswr9QFikM1",
   appSecret: "VCN23IQOU67cfQOOmlRiAAWYRgVyWHbEdwaLoQglsrHVctF6vz",

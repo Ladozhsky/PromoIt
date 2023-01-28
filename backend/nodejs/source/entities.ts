@@ -59,3 +59,7 @@ export interface tweetParams {
   company: string;
   product: string;
 }
+
+export interface environment {
+  dbConnectionString: string;
+}
