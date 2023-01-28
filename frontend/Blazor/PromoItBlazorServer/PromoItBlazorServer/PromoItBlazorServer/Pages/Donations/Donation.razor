@@ -7,6 +7,7 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 @inject IHttpContextAccessor HttpContextAccessor
+@inject ILogger<Donation> Logger
 
 <head>
     <title>Donation</title>
@@ -42,7 +43,7 @@
 </div>
 @if (ErrorMessage != null)
 {
-                <div class="alert alert-danger">@ErrorMessage</div>
+         <div class="alert alert-danger">@ErrorMessage</div>
 }
 
 @code {
@@ -60,14 +61,22 @@
 
     protected override async Task OnInitializedAsync()
     {
-        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+        try
+        {
+            string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
-        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        campaign = await http.GetFromJsonAsync<CampaignDto>($"{requestsUrls.Campaigns}/{id}");
-
-        products = await http.GetFromJsonAsync<List<ProductDto>>(requestsUrls.ProductsByCompany);
-
+            Logger.LogInformation("Getting campaigns...");
+            campaign = await http.GetFromJsonAsync<CampaignDto>($"{requestsUrls.Campaigns}/{id}");
+            Logger.LogInformation("Getting products...");
+            products = await http.GetFromJsonAsync<List<ProductDto>>(requestsUrls.ProductsByCompany);
+        }
+        catch (HttpRequestException ex)
+        {
+            ErrorMessage = ex.Message;
+            Logger.LogError(ErrorMessage);
+        }
     }
 
     private async Task SubmitForm()
@@ -97,6 +106,7 @@
         catch (HttpRequestException ex)
         {
             ErrorMessage = ex.Message;
+            Logger.LogError(ErrorMessage);
         }
     }
 }

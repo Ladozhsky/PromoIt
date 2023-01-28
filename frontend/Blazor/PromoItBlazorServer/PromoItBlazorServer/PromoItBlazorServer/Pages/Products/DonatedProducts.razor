@@ -7,6 +7,7 @@
 @using System.Net.Http.Headers;
 @inject NavigationManager NavigationManager
 @inject IHttpContextAccessor HttpContextAccessor
+@inject ILogger<DonatedProducts> Logger
 
 
 <PageTitle>Donated products</PageTitle>
@@ -34,19 +35,29 @@
 </table>
 
 @code {
+    private string ErrorMessage { get; set; }
 
     private List<DonatedProductList> donatedProducts = new List<DonatedProductList>();
     private RequestsUrls requestsUrls = new RequestsUrls();
 
     protected override async Task OnInitializedAsync()
     {
-        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+        try
+        {
+            string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
-        HttpClient http = new HttpClient();
+            HttpClient http = new HttpClient();
 
-        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        donatedProducts = await http.GetFromJsonAsync<List<DonatedProductList>>(requestsUrls.DonatedProducts);
+            Logger.LogInformation("Getting donated products...");
+            donatedProducts = await http.GetFromJsonAsync<List<DonatedProductList>>(requestsUrls.DonatedProducts);
+        }
+        catch (HttpRequestException ex)
+        {
+            ErrorMessage = ex.Message;
+            Logger.LogError(ErrorMessage);
+        }
     }
 }
 

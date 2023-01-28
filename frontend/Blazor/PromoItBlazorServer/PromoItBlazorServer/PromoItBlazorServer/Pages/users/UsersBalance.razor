@@ -10,6 +10,7 @@
 @inject NavigationManager NavigationManager
 @inject IHttpContextAccessor HttpContextAccessor
 @inject IJSRuntime JSRuntime
+@inject ILogger<UsersBalance> Logger
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <PageTitle>My balance</PageTitle>
@@ -27,6 +28,8 @@
 </div>
 
 @code {
+    private string ErrorMessage { get; set; }
+
     public List<DollarsByUser> dollars = new List<DollarsByUser>();
     private RequestsUrls requestsUrls = new RequestsUrls();
 
@@ -34,11 +37,20 @@
 
     protected override async Task OnInitializedAsync()
     {
-        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+        try
+        {
+            string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
-        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        dollars = await http.GetFromJsonAsync<List<DollarsByUser>>(requestsUrls.Dollars);
+            Logger.LogInformation("Getting user's balance...");
+            dollars = await http.GetFromJsonAsync<List<DollarsByUser>>(requestsUrls.Dollars);
+        }
+        catch (HttpRequestException ex)
+        {
+            ErrorMessage = ex.Message;
+            Logger.LogError(ErrorMessage);
+        }
     }
 }
 

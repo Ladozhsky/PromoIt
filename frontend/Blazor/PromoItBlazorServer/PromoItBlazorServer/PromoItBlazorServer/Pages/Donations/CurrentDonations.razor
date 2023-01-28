@@ -10,6 +10,7 @@
 @inject NavigationManager NavigationManager
 @inject IHttpContextAccessor HttpContextAccessor
 @inject IJSRuntime JSRuntime
+@inject ILogger<CurrentDonations> Logger
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <PageTitle>Current donations</PageTitle>
@@ -62,6 +63,7 @@
 </div>
 
 @code {
+    private string ErrorMessage { get; set; }
     public List<DonationDto> donations = new List<DonationDto>();
     public DonatedProductDto donatedProduct = new DonatedProductDto();
     public BalanceTransactionDto balance = new BalanceTransactionDto();
@@ -89,73 +91,97 @@
 
     private async Task Purchase(int campaignId, int companyId, int price, int productId, int quantity, int orderId, int amount, string campaignName, string companyName, string productName)
     {
-        donatedProduct.CampaignId = campaignId;
-        donatedProduct.ProductId = productId;
-        donatedProduct.Amount = quantity;
-
-        balance.CampaignId = campaignId;
-        balance.Amount = price * quantity;
-
-        updateQuantity.Quantity = quantity;
-
-        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
-
-        var handler = new JwtSecurityTokenHandler();
-        var jwtToken = handler.ReadJwtToken(token);
-
-        string userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "user_id").Value;
-
-        string twitterId = userId.Split('|')[1];
-
-        tweetParams.twitter_user_id = twitterId;
-        tweetParams.campaign = campaignName;
-        tweetParams.company = companyName;
-        tweetParams.product = productName;
-
-        CompleteTransaction completeTransaction = new CompleteTransaction
-            {
-                CampaignId = campaignId,
-                CompanyId = companyId,
-                ProductId = productId,
-                Amount = quantity
-            };
-
-
-        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-        bool availableTransaction = await http.GetFromJsonAsync<bool>($"{requestsUrls.Purchase}/{campaignId}/{productId}/{quantity}");
-        bool existingDonatedProduct = await http.GetFromJsonAsync<bool>($"{requestsUrls.Products}/{productId}/{campaignId}");
-
-        if (availableTransaction)
+        try
         {
-            HttpResponseMessage balanceTransaction = await http.PostAsJsonAsync(requestsUrls.Purchase, balance);
-            HttpResponseMessage addingProductOrUpdatingAmount = !existingDonatedProduct ? await http.PostAsJsonAsync(requestsUrls.NewDonatedProducts, donatedProduct) :
-            await http.PutAsJsonAsync($"{requestsUrls.Products}/{productId}/{campaignId}", updateQuantity);
+            donatedProduct.CampaignId = campaignId;
+            donatedProduct.ProductId = productId;
+            donatedProduct.Amount = quantity;
 
-            HttpResponseMessage updatedAmount = await http.PutAsJsonAsync($"{requestsUrls.Orders}/{orderId}", updateQuantity);
-            HttpResponseMessage addingCompletedTransaction = await http.PostAsJsonAsync(requestsUrls.CompletedTransactions, completeTransaction);
+            balance.CampaignId = campaignId;
+            balance.Amount = price * quantity;
 
-            NavigationManager.NavigateTo("/thanks");
+            updateQuantity.Quantity = quantity;
 
-            if (quantity == amount)
+            string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            string userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "user_id").Value;
+
+            string twitterId = userId.Split('|')[1];
+
+            tweetParams.twitter_user_id = twitterId;
+            tweetParams.campaign = campaignName;
+            tweetParams.company = companyName;
+            tweetParams.product = productName;
+
+            CompleteTransaction completeTransaction = new CompleteTransaction
+                {
+                    CampaignId = campaignId,
+                    CompanyId = companyId,
+                    ProductId = productId,
+                    Amount = quantity
+                };
+
+
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            Logger.LogInformation("Checking enough money for transaction...");
+            bool availableTransaction = await http.GetFromJsonAsync<bool>($"{requestsUrls.Purchase}/{campaignId}/{productId}/{quantity}");
+            Logger.LogInformation("Checking existing of current donating product...");
+            bool existingDonatedProduct = await http.GetFromJsonAsync<bool>($"{requestsUrls.Products}/{productId}/{campaignId}");
+
+            if (availableTransaction)
             {
-                HttpResponseMessage updatingDonationStatus = await http.PutAsJsonAsync($"{requestsUrls.Purchase}/{orderId}", updateStatus);
+                Logger.LogInformation("Post new row in balance transaction...");
+                HttpResponseMessage balanceTransaction = await http.PostAsJsonAsync(requestsUrls.Purchase, balance);
+                Logger.LogInformation("Adding new donated product or update amount of existing...");
+                HttpResponseMessage addingProductOrUpdatingAmount = !existingDonatedProduct ? await http.PostAsJsonAsync(requestsUrls.NewDonatedProducts, donatedProduct) :
+                await http.PutAsJsonAsync($"{requestsUrls.Products}/{productId}/{campaignId}", updateQuantity);
+                Logger.LogInformation("Updating current amount in donation...");
+                HttpResponseMessage updatedAmount = await http.PutAsJsonAsync($"{requestsUrls.Orders}/{orderId}", updateQuantity);
+                Logger.LogInformation("Adding new completed transaction...");
+                HttpResponseMessage addingCompletedTransaction = await http.PostAsJsonAsync(requestsUrls.CompletedTransactions, completeTransaction);
+
+                NavigationManager.NavigateTo("/thanks");
+
+                if (quantity == amount)
+                {
+                    Logger.LogInformation("Updating donation status...");
+                    HttpResponseMessage updatingDonationStatus = await http.PutAsJsonAsync($"{requestsUrls.Purchase}/{orderId}", updateStatus);
+                }
+                Logger.LogInformation("Postig new tweet...");
+                //HttpResponseMessage postingTweet = await http.PostAsJsonAsync(requestsUrls.Twitter, tweetParams);
             }
-            //HttpResponseMessage postingTweet = await http.PostAsJsonAsync(requestsUrls.Twitter, tweetParams);
+            else
+            {
+                await JSRuntime.InvokeAsync<string>("alert", "You don't have enough money to buy this product");
+            }
         }
-        else
+        catch (HttpRequestException ex)
         {
-            await JSRuntime.InvokeAsync<string>("alert", "You don't have enough money to buy this product");
+            ErrorMessage = ex.Message;
+            Logger.LogError(ErrorMessage);
         }
     }
 
     protected override async Task OnInitializedAsync()
     {
-        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+        try
+        {
+            string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
-        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        donations = await http.GetFromJsonAsync<List<DonationDto>>(requestsUrls.Orders);
+            Logger.LogInformation("Getting all donations...");
+            donations = await http.GetFromJsonAsync<List<DonationDto>>(requestsUrls.Orders);
+        }
+        catch (HttpRequestException ex)
+        {
+            ErrorMessage = ex.Message;
+            Logger.LogError(ErrorMessage);
+        }
     }
 }
 

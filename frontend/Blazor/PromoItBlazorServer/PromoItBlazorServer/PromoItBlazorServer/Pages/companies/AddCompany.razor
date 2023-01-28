@@ -7,6 +7,7 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 @inject IHttpContextAccessor HttpContextAccessor
+@inject ILogger<AddCompany> Logger
 
 <div style="margin-left:50px">
 <h1>Add new company</h1>
@@ -62,6 +63,8 @@
     {
         try
         {
+            Logger.LogInformation("Adding new company");
+
             string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
             http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -82,6 +85,7 @@
         catch (HttpRequestException ex)
         {
             ErrorMessage = ex.Message;
+            Logger.LogError(ErrorMessage);
         }
     }
 }

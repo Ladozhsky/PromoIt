@@ -7,6 +7,7 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 @inject IHttpContextAccessor HttpContextAccessor
+@inject ILogger<UserRegister> Logger
 
 <div style="margin-left:50px">
 <h1>Finish your registration</h1>
@@ -90,6 +91,7 @@
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+            Logger.LogInformation("Adding new user...");
             HttpResponseMessage response = await client.PostAsJsonAsync(requestsUrls.User, user);
 
             if (response.IsSuccessStatusCode)
@@ -108,17 +110,27 @@
         catch (HttpRequestException ex)
         {
             ErrorMessage = ex.Message;
+            Logger.LogError(ErrorMessage);
         }
     }
 
     protected override async Task OnInitializedAsync()
     {
-        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+        try
+        {
+            string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        companies = await client.GetFromJsonAsync<List<CompanyDto>>(requestsUrls.Companies);
-        roles = await client.GetFromJsonAsync<List<Role>>(requestsUrls.Roles);
-
+            Logger.LogInformation("Getting companies...");
+            companies = await client.GetFromJsonAsync<List<CompanyDto>>(requestsUrls.Companies);
+            Logger.LogInformation("Getting roles...");
+            roles = await client.GetFromJsonAsync<List<Role>>(requestsUrls.Roles);
+        }
+        catch (HttpRequestException ex)
+        {
+            ErrorMessage = ex.Message;
+            Logger.LogError(ErrorMessage);
+        }
     }
 }

@@ -6,6 +6,7 @@
 @using System.Collections.Generic
 @using System.Net.Http.Headers;
 @inject IHttpContextAccessor HttpContextAccessor
+@inject ILogger<ProductsByCompany> Logger
 
 
 <PageTitle>My Company's products</PageTitle>
@@ -35,19 +36,29 @@
 </table>
 
 @code {
+    private string ErrorMessage { get; set; }
 
     private List<ProductDto> products = new List<ProductDto>();
     private RequestsUrls requestsUrls = new RequestsUrls();
 
     protected override async Task OnInitializedAsync()
     {
-        string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
+        try
+        {
+            string token = HttpContextAccessor.HttpContext.Request.Cookies["auth_token"];
 
-        HttpClient http = new HttpClient();
+            HttpClient http = new HttpClient();
 
-        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        products = await http.GetFromJsonAsync<List<ProductDto>>(requestsUrls.ProductsByCompany);
+            Logger.LogInformation("Getting products...");
+            products = await http.GetFromJsonAsync<List<ProductDto>>(requestsUrls.ProductsByCompany);
+        }
+        catch (HttpRequestException ex)
+        {
+            ErrorMessage = ex.Message;
+            Logger.LogError(ErrorMessage);
+        }
     }
 }
 
