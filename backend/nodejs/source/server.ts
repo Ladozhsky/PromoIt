@@ -3,7 +3,8 @@ import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
 require('dotenv').config();
-
+import { StudentDB } from './database/student.db';
+import { Student } from './database/models/student.model';
 import twitterRoutes from './routes/twitter.routes';
 
 
@@ -34,6 +35,10 @@ router.use((req, res, next) => {
 
 router.use('/twitter/', twitterRoutes.router);
 
+router.use('/students', (req, res) => {
+    res.json(StudentDB);
+});
+
 /** Error handling */
 router.use((req, res, next) => {
     const error = new Error('not found');
@@ -41,6 +46,14 @@ router.use((req, res, next) => {
         message: error.message
     });
 });
+
+router.post('/data', (req, res) => {
+    const student = new Student(req.body);
+    student.save((err: any) => {
+      if (err) return res.status(400).send(err);
+      res.status(200).send(student);
+    });
+  });
 
 /** Server */
 const httpServer = http.createServer(router);
